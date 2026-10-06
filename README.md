@@ -1,3 +1,9 @@
+**JARVIS foundation:** This branch adds a separate authenticated JARVIS backend
+around the preserved Graphify engine. Start with
+[local development](docs/jarvis/LOCAL_DEVELOPMENT.md),
+[the transformation plan](JARVIS_PLAN.md), and
+[actual progress and limitations](JARVIS_PROGRESS.md).
+
 <p align="center">
   <a href="https://graphify.com"><img src="https://raw.githubusercontent.com/Graphify-Labs/graphify/v8/docs/graphify-logo.png" width="480" height="252" alt="Graphify"/></a>
 </p>
@@ -925,3 +931,5 @@ The README is available in 32 languages. Use the language switcher at the top of
   <a href="https://github.com/sponsors/safishamsi"><img src="https://img.shields.io/badge/sponsor-safishamsi-ea4aaa?logo=github-sponsors" alt="Sponsor"/></a>
   <a href="https://safishamsi.gumroad.com/l/qetvlo"><img src="https://img.shields.io/badge/Book-The%20Memory%20Layer-2ea44f?style=flat&logo=gitbook&logoColor=white" alt="The Memory Layer"/></a>
 </p>
+
+Codex continuation and transfer: [CODEX_HANDOFF.md](CODEX_HANDOFF.md).

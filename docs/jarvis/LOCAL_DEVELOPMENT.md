@@ -1,0 +1,133 @@
+# Local development and demonstrations
+
+Requirements: Python 3.11+, uv, POSIX filesystem, Docker Compose/PostgreSQL 17.
+No model key is required in fake mode. Use one API worker at this checkpoint.
+
+## Install
+
+From the Graphify repository root:
+
+```sh
+uv sync --frozen
+uv pip install --python .venv/bin/python --require-hashes -r apps/jarvis/requirements.lock
+uv pip install --python .venv/bin/python --no-deps --no-build-isolation -e apps/jarvis
+cd apps/jarvis
+cp .env.example .env
+```
+
+Put a generated token into JARVIS_AUTH_TOKEN in `.env`:
+
+```sh
+../../.venv/bin/python -c 'import secrets; print(secrets.token_urlsafe(32))'
+docker compose up -d postgres
+```
+
+Load `.env` for Alembic and start the server (both from apps/jarvis):
+
+```sh
+../../.venv/bin/python - <<'PY'
+from dotenv import load_dotenv
+from alembic.config import Config
+from alembic import command
+load_dotenv()
+command.upgrade(Config("alembic.ini"), "head")
+PY
+../../.venv/bin/uvicorn jarvis.api:create_app --factory --host 127.0.0.1 --port 8000
+```
+
+Visit http://127.0.0.1:8000/docs for the interactive API. This is API documentation,
+not the future Command Center frontend. Models are server-only configuration.
+Settings.from-env automatically reads `.env` in the current working directory.
+Keep the token private; `.env` and local state are ignored by Git.
+
+Authenticate requests with `Authorization: Bearer <your token>`. The single token
+maps to the stable JARVIS_ACTOR_ID; changing that UUID creates a different data
+owner. There is no multi-user registration or OAuth at this checkpoint.
+
+## DEMO A — Code intelligence (implemented)
+
+In `/docs`, POST `/api/code/projects/graphify/graph/update` with your authorization
+header. Its response gives a run_id; poll GET `/api/runs/{id}` or connect to its
+`/events` SSE endpoint. The update capability is enabled in `.env.example`.
+
+Then POST `/api/code/projects/graphify/graph/query` with:
+
+```json
+{"question":"jarvis engine PolicyEngine approval", "budget":1200}
+```
+
+The completed run's result is a JSON tool envelope with source evidence and
+confidence labels. `graph.explain` and `graph.impact` are available through
+POST `/api/tools/execute`, e.g.:
+
+```json
+{"name":"graph.explain","arguments":{"project_id":"graphify","node":"apps/jarvis/src/jarvis/engine.py::Engine"}}
+```
+
+Project paths are trusted operator registrations, never accepted in tool args.
+For a large repository, narrow questions or use file-qualified symbols.
+
+## DEMO B — Engineer evidence (partial)
+
+POST `/api/chat` with:
+
+```json
+{"message":"How does approval resume a protected operation?", "mode":"ENGINEER", "project_id":"graphify"}
+```
+
+The run queries Graphify before the first model call and records evidence/tool
+activity. Fake mode explicitly identifies its response. Full code modification,
+worktree isolation, test execution and diff review are phase 6, not implemented.
+The fixture index/update/impact workflow is automated in test_graph_security.py.
+
+## Approval contract demonstration (implemented via fake integration tests)
+
+No real external-write adapter is registered. The test
+`test_external_write_pause_exact_approval_resume_and_replay` exercises a fake
+external write, verifies no side effect before approval, approves exact normalized
+arguments, resumes once and rejects replay. Other tests cover argument/target/run/
+expiry/tool-version mutation, revoked capability, races and concurrent PG claims.
+
+## DEMO C/D/E — Chief of Staff, Tutor, Game Master
+
+These modes can start independent generic text runs today. Their project/task and
+personal-memory workflows, learner mastery, campaign state/secrecy/dice services
+are not implemented yet; their requested end-to-end demonstrations are pending
+phases 5–8. No fake claim of canonical state, mastery or GM secrecy is made.
+
+## Tests
+
+From apps/jarvis, with the root .venv from the setup above:
+
+```sh
+../../.venv/bin/python -m pytest -q
+../../.venv/bin/ruff check .
+../../.venv/bin/ruff format --check .
+../../.venv/bin/pyright
+```
+
+Default suite skips PostgreSQL integration if JARVIS_TEST_DATABASE_URL is absent.
+To include it, explicitly create a disposable local `jarvis_test` database and
+set that variable. The tests perform upgrade/downgrade/upgrade and teardown its
+schema; they refuse non-local addresses and database names without `_test`.
+Use a separate database from your persisted development runs.
+
+```sh
+JARVIS_TEST_DATABASE_URL=postgresql+asyncpg://jarvis:jarvis-local-only@127.0.0.1:5432/jarvis_test \
+  ../../.venv/bin/python -m pytest -q
+```
+
+From the repository root, preserve and run upstream tests independently:
+`.venv/bin/python -m pytest tests/ -q`. Optional language/model dependencies affect
+upstream results. Its installer tests prefer uv tool resolution when uv is on PATH;
+for offline testing use a PATH containing the root .venv and standard system bins.
+See UPSTREAM_BASELINE.md for the exact session environment and known failures.
+
+## Live models
+
+Set JARVIS_PROVIDER=openai and OPENAI_API_KEY only on the backend. Configure model
+IDs from your own provider access; example IDs are preferences, not an availability
+guarantee. Fallback needs both JARVIS_ALLOW_FALLBACK=true and allow_fallback=true
+on the request. High-stakes requests deny fallback. Live streaming is consumed
+through the Responses SDK; the public SSE surface streams run updates and the
+completed result, not intermediate reasoning or token deltas.

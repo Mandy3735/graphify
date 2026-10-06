@@ -2,6 +2,11 @@
 
 graphify is a Claude Code skill backed by a Python library. The skill orchestrates the library; the library can be used standalone.
 
+The separate JARVIS application in this branch is documented in
+[docs/jarvis/ARCHITECTURE.md](docs/jarvis/ARCHITECTURE.md). Its
+[upstream boundary](docs/jarvis/UPSTREAM_BOUNDARY.md) preserves the Graphify
+modules and interfaces described below.
+
 ## Pipeline
 
 ```

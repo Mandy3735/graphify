@@ -1,0 +1,46 @@
+# JARVIS foundation architecture
+
+This first checkpoint is an authenticated, single-user API modular monolith.
+It is not a production personal operating system. See JARVIS_PROGRESS.md for
+implementation and verification status. Graphify retains its upstream package,
+CLI/MCP, tests, dependencies and license attribution.
+
+```
+HTTP bearer identity → FastAPI → durable run engine → model gateway
+                                 ↓ tool proposals (untrusted)
+                          typed registry → policy → bound approval
+                                 ↓ approved invocation
+                       bounded Graphify / workspace adapters
+                                 ↓
+                      PostgreSQL + transitions + audit
+```
+
+PostgreSQL is authoritative for runs, transitions, approvals and audit. Alembic
+is the schema authority; startup never silently creates production tables. Tests
+may explicitly use SQLite for fast unit isolation, but PostgreSQL migration and
+transaction tests are mandatory. No Redis or agent framework is necessary here.
+
+One configured bearer token maps to one stable configured actor UUID. This is
+an explicit single-user prototype, not a simulated multi-user login system.
+Project registrations, capabilities, model choices and fallback policy are trusted
+server configuration. Requests/model results never grant authority. Actor IDs
+and capabilities are not accepted from API bodies.
+
+Agent runs record public action summaries and provenance, not hidden reasoning.
+Models propose tools; the backend validates schema, permissions and approvals.
+Runs are bounded by tool count, output/context limits, model timeouts and a run
+deadline. On restart, in-flight runs fail safely; pending approvals remain durable.
+An operation already attempted is never automatically replayed after a crash.
+
+Text model availability is independent of future voice. Fake mode is the local
+default. Live reasoning uses only the official SDK behind a provider protocol.
+Model identifiers and fallback decisions are configuration driven.
+
+Indexing parses safely staged source snapshots in a credential-free subprocess.
+This parser worker is not an arbitrary-code sandbox. No shell/run-command tool is
+registered. The Engineer editing sandbox is a separate future phase requiring OS
+isolation before hostile project code can be executed.
+
+Deploy this checkpoint as one backend process. Multi-worker coordination, tenant
+identity/OAuth, a production restricted DB role, production UI, pgvector/personal
+memory and later operating-mode workflows are subsequent milestones.

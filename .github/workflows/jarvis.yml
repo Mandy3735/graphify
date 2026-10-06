@@ -1,0 +1,45 @@
+name: JARVIS foundation
+on:
+  push:
+    branches: [main, work, "jarvis/**"]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  foundation:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: jarvis
+          POSTGRES_PASSWORD: jarvis-ci-only
+          POSTGRES_DB: jarvis_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U jarvis -d jarvis_test"
+          --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      JARVIS_TEST_DATABASE_URL: postgresql+asyncpg://jarvis:jarvis-ci-only@127.0.0.1:5432/jarvis_test
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v8.1.0
+        with:
+          python-version: "3.12"
+      - name: Preserve upstream environment and install JARVIS dependencies
+        run: |
+          uv sync --frozen
+          uv pip install --python .venv/bin/python --require-hashes -r apps/jarvis/requirements.lock
+          uv pip install --python .venv/bin/python --no-deps --no-build-isolation -e apps/jarvis
+      - name: JARVIS lint, format and types
+        working-directory: apps/jarvis
+        run: |
+          ../../.venv/bin/ruff check .
+          ../../.venv/bin/ruff format --check .
+          ../../.venv/bin/pyright
+      - name: Offline unit, security, Graphify fixture and PostgreSQL integration tests
+        working-directory: apps/jarvis
+        run: ../../.venv/bin/python -m pytest -q
+      - name: Build application wheel
+        run: .venv/bin/python -m build --no-isolation apps/jarvis

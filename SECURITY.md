@@ -1,5 +1,10 @@
 # Security Policy
 
+This policy describes the preserved Graphify subsystem. The persistent JARVIS
+extension has an additional [threat model](THREAT_MODEL.md) and
+[policy/approval contract](docs/jarvis/POLICY.md). Its current single-user backend
+requires bearer authentication and does not register arbitrary code execution.
+
 ## Supported Versions
 
 | Version | Supported |
