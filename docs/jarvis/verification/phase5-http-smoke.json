@@ -1,0 +1,16 @@
+{
+  "transport": "real loopback HTTP",
+  "database": "PostgreSQL 17 + pgvector",
+  "health": 200,
+  "unauthenticated_memory": 401,
+  "memory_create": 201,
+  "retrieval": "source IDs and reasons preserved",
+  "chat_state": "COMPLETED",
+  "context_provenance_recorded": true,
+  "correction": 200,
+  "stale_correction": 409,
+  "deletion": 204,
+  "post_deletion_search_and_export": "empty",
+  "provider": "fake",
+  "paid_calls": 0
+}

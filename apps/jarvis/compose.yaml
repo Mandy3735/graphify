@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17-alpine
+    image: ${JARVIS_POSTGRES_IMAGE:-postgres:17-alpine}
     environment:
       POSTGRES_USER: jarvis
       POSTGRES_PASSWORD: ${JARVIS_LOCAL_DB_PASSWORD:-jarvis-local-only}

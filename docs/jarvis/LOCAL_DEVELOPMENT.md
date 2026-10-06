@@ -90,10 +90,65 @@ expiry/tool-version mutation, revoked capability, races and concurrent PG claims
 
 ## DEMO C/D/E — Chief of Staff, Tutor, Game Master
 
-These modes can start independent generic text runs today. Their project/task and
-personal-memory workflows, learner mastery, campaign state/secrecy/dice services
-are not implemented yet; their requested end-to-end demonstrations are pending
-phases 5–8. No fake claim of canonical state, mastery or GM secrecy is made.
+These modes can start independent generic text runs with authorized personal
+memory. Dedicated project/task, learner mastery, campaign membership/state/dice
+workflows remain pending phases 6–8. Memory visibility is enforced, but campaign
+membership and the complete GM secrecy system are not yet implemented.
+
+## DEMO F — Memory inspector and provenance (implemented)
+
+In `/docs`, use bearer authentication and POST `/api/memories`:
+
+```json
+{
+  "memory_class": "SEMANTIC",
+  "namespace": "personal",
+  "visibility": "PRIVATE",
+  "content": "The automobile repair manual is stored with my project notes.",
+  "sources": [{"kind": "USER_NOTE", "locator": "owner note, 2026-10-05"}]
+}
+```
+
+Save the returned ID. POST `/api/memories/search` with
+`{"question":"vehicle repair manual"}`. Inspect its source IDs/locator and
+retrieval reasons. POST `/api/chat` with that question, then inspect the run's
+metadata.context_sources and retrieved_memory_ids. Fake mode verifies the flow;
+it does not pretend to provide a live model's source-grounded answer. The E2E
+grounded-fake test verifies response citations and inspector provenance.
+
+PATCH `/api/memories/{id}` with expected_revision=1, new content, structured_data
+and sources. The returned replacement ID links to the old record. Only the new
+record is active in search; a stale revision gets 409. DELETE the replacement ID
+and search again; its full correction lineage, sources and embeddings are purged.
+GET `/api/memories/export` returns a scoped cursor page. Memory details and
+retention limits are in MEMORY.md.
+
+The `memory.propose_write` model tool creates an inactive proposal. Inspect it at
+GET `/api/memory-proposals`; explicitly POST its `/accept` or `/reject` endpoint.
+The model has no tool for accepting its own proposal or altering canonical state.
+
+## Optional pgvector setup
+
+Before creating a new local PostgreSQL volume, choose an image with the extension
+available by adding `JARVIS_POSTGRES_IMAGE=pgvector/pgvector:pg17` to `.env`.
+For an existing database, arrange compatible extension binaries with its operator
+before enabling this setting; do not replace or delete persisted data.
+
+After startup and migration, explicitly install the extension as the local
+database administrator:
+
+```sh
+docker compose exec postgres psql -U jarvis -d jarvis -c 'CREATE EXTENSION IF NOT EXISTS vector;'
+```
+
+Then set `JARVIS_MEMORY_PGVECTOR=true` in `.env` and restart the backend. Without
+that flag, no extension is needed. With it, startup checks extension availability.
+JSON vectors are ranked with the cosine operator only after authorization and a
+bounded candidate selection; no ANN index or Python pgvector dependency is added.
+
+Offline embeddings remain the default. For deliberate live embedding calls,
+select JARVIS_EMBEDDING_PROVIDER=openai, an accessible JARVIS_EMBEDDING_MODEL, and
+compatible JARVIS_EMBEDDING_DIMENSIONS. The OpenAI key stays on the backend.
 
 ## Tests
 
@@ -116,6 +171,18 @@ Use a separate database from your persisted development runs.
 JARVIS_TEST_DATABASE_URL=postgresql+asyncpg://jarvis:jarvis-local-only@127.0.0.1:5432/jarvis_test \
   ../../.venv/bin/python -m pytest -q
 ```
+
+To verify optional vector SQL, use a separate disposable local `_test` database
+with pgvector available, and run the same suite with `JARVIS_TEST_PGVECTOR=true`:
+
+```sh
+JARVIS_TEST_DATABASE_URL=postgresql+asyncpg://jarvis:jarvis-local-only@127.0.0.1:5432/jarvis_vector_test \
+  JARVIS_TEST_PGVECTOR=true ../../.venv/bin/python -m pytest -q
+```
+
+The opt-in test setup installs the extension only in that explicitly disposable
+database. Both configurations run migration, persistence, correction/deletion
+race, proposal-claim, protected audit and approval tests. CI has both image jobs.
 
 From the repository root, preserve and run upstream tests independently:
 `.venv/bin/python -m pytest tests/ -q`. Optional language/model dependencies affect

@@ -12,9 +12,13 @@ from sqlalchemy import select, text
 from jarvis.config import Settings
 from jarvis.db import AgentRun, AgentStep, ApprovalRequest, AuditEvent, Database, audit
 from jarvis.domain import TERMINAL, ChatRequest, Mode, StrictModel, ToolProposal
+from jarvis.embeddings import EmbeddingProvider, embedding_provider
 from jarvis.engine import Conflict, Engine
 from jarvis.graph import GraphifyKnowledgeProvider
-from jarvis.models import FakeModelProvider, ModelRouter, OpenAIModelProvider
+from jarvis.memory import MemoryConflict, MemoryDenied, MemoryService
+from jarvis.memory_api import memory_router
+from jarvis.memory_tools import register_memory_tools
+from jarvis.models import FakeModelProvider, ModelRouter, OpenAIModelProvider, ProviderFailure
 from jarvis.tools import ToolRegistry, graph_tools
 
 
@@ -45,7 +49,10 @@ def run_json(run: AgentRun) -> dict:
 
 
 def create_app(
-    settings: Settings | None = None, provider=None, registry: ToolRegistry | None = None
+    settings: Settings | None = None,
+    provider=None,
+    registry: ToolRegistry | None = None,
+    embeddings: EmbeddingProvider | None = None,
 ):
     # BaseSettings obtains required fields from environment/.env at runtime.
     cfg = settings or Settings()  # pyright: ignore[reportCallIssue]
@@ -54,12 +61,16 @@ def create_app(
     provider = provider or (
         FakeModelProvider() if cfg.provider == "fake" else OpenAIModelProvider(cfg)
     )
-    registry = registry or graph_tools(graph)
-    engine = Engine(cfg, db, ModelRouter(cfg, provider), registry)
+    memory = MemoryService(db, cfg, embeddings or embedding_provider(cfg))
+    if registry is None:
+        registry = graph_tools(graph)
+        register_memory_tools(registry, memory)
+    engine = Engine(cfg, db, ModelRouter(cfg, provider), registry, memory)
 
     @asynccontextmanager
     async def lifespan(app):
         # Requires an explicitly migrated database. Recovery never replays effects.
+        await memory.check_backend()
         await engine.recover()
         yield
         await engine.close()
@@ -67,8 +78,9 @@ def create_app(
             await provider.close()
         await db.dispose()
 
-    app = FastAPI(title="JARVIS foundation", version="0.1.0", lifespan=lifespan)
+    app = FastAPI(title="JARVIS", version="0.2.0", lifespan=lifespan)
     app.state.engine, app.state.database, app.state.graph = engine, db, graph
+    app.state.memory = memory
 
     async def authenticate(authorization: Annotated[str | None, Header()] = None):
         if not authorization or not authorization.startswith("Bearer "):
@@ -81,6 +93,25 @@ def create_app(
             audit(session, engine.actor.id, "authentication.accepted", {})
 
     auth = [Depends(authenticate)]
+    app.include_router(memory_router(memory, engine.actor, auth))
+
+    @app.exception_handler(MemoryDenied)
+    async def memory_denied(request, exc):
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(status_code=403, content={"detail": str(exc)})
+
+    @app.exception_handler(MemoryConflict)
+    async def memory_conflict(request, exc):
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(status_code=409, content={"detail": str(exc)})
+
+    @app.exception_handler(ProviderFailure)
+    async def provider_unavailable(request, exc):
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(status_code=503, content={"detail": "Embedding provider unavailable"})
 
     @app.exception_handler(KeyError)
     async def missing(request, exc):
@@ -233,7 +264,12 @@ def create_app(
             "fallback_enabled": cfg.allow_fallback,
             "voice": "not_implemented",
             "modes": [mode.value for mode in Mode],
-            "checkpoint": "foundation; dedicated mode workflows pending",
+            "checkpoint": "phase 5 memory; dedicated mode workflows pending",
+            "memory": {
+                "embedding_provider": cfg.embedding_provider,
+                "pgvector": cfg.memory_pgvector,
+                "token_budget": cfg.memory_context_tokens,
+            },
         }
 
     @app.get("/api/projects", dependencies=auth)
@@ -254,9 +290,17 @@ def create_app(
             registry.validate(proposal)
         except ValueError:
             raise HTTPException(422, "Unknown tool or invalid arguments") from None
+        scope_fields = {}
+        # This is an authenticated direct request; a model cannot set run context.
+        if proposal.name.startswith("memory."):
+            namespace = proposal.arguments.get("namespace", "personal")
+            if ":" in namespace:
+                kind, value = namespace.split(":", 1)
+                scope_fields[f"{kind}_id"] = value
         return {
             "run_id": await engine.create(
-                ChatRequest(message=f"Execute {proposal.name}", mode=mode), direct=proposal
+                ChatRequest(message=f"Execute {proposal.name}", mode=mode, **scope_fields),
+                direct=proposal,
             )
         }
 

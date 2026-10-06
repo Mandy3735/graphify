@@ -1,4 +1,4 @@
-# JARVIS threat model (foundation checkpoint)
+# JARVIS threat model (phases 0–5 checkpoint)
 
 Existing Graphify controls remain documented in SECURITY.md. This document
 describes the added persistent application and must not be mistaken for future
@@ -18,7 +18,8 @@ features being implemented.
 | Excessive cost / loops | Run/model/tool deadlines, fixed max tool calls, bounded model outputs; production request rate limits pending |
 | Crash → duplicate effect | Durable transitions; no replay of executing runs after restart; external idempotency integration pending |
 | Audit rewrite | No API/tool mutation; PostgreSQL append-only trigger; privileged DB administrators remain trusted |
-| Poisoned personal memory / cross-tenant leaks | Personal memory and multi-user authentication pending; not exposed yet |
+| Poisoned personal memory / cross-owner leaks | SQL owner/namespace/mode/visibility/lifecycle filters before retrieval; untrusted data context; no permission grants; human acceptance for model proposals |
+| Stale/deleted memory → model context | Recheck live records after embedding awaits; rebuild context and refilter historical memory tools before each model call; purge eligible revision lineages |
 | GM secrets / voice spoof / device authority | GM/voice/device workflows pending; no placeholder claim of enforcement |
 | OAuth/MCP/plugins/supply chain | No integration authority enabled; dependency lock/checks; future integration-specific review |
 | Proactive automation | Watchers pending; no unrestricted polling or self-spawning agents |
@@ -28,3 +29,10 @@ migration/admin DB role. Untrusted: model responses, source files/comments/READM
 graph text, remote integration responses. Server secrets never enter model input
 or worker environment. Production needs TLS, secret management, a non-owner DB
 role, token rotation, identity/session hardening and admission/rate limits.
+
+Phase 5 keeps PUBLIC/PARTY owner-scoped. GM-secret personal memory needs trusted
+capability plus GM mode; campaign membership/sharing remains phase 8. Canonical
+memory cannot edit application authorization state. Source locators are asserted
+data and never fetched/executed. Inspector exports are scoped bounded pages.
+Conversation/model/tool transcripts have separate retention from eligible memory
+deletion; historical memory search data is revalidated before future model input.

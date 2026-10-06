@@ -1,13 +1,13 @@
 # JARVIS engineering report — 2026-10-05
 
-A runnable **foundation checkpoint** is implemented in the existing Graphify
-repository. It completes the bounded phases 0–4 scope in JARVIS_PLAN.md. The full
+A runnable **memory checkpoint** is implemented in the existing Graphify
+repository. It completes the bounded phases 0–5 scope in JARVIS_PLAN.md. The full
 personal AI operating system specification is not complete.
 
-Repository: `/workspace/graphify`; branch `jarvis/foundation`; parent commit
-`5c7b84792f453582676548185aaec3824d51dfe2`, Graphify 0.9.77. The foundation is
-prepared as a local checkpoint with Codex continuation instructions. Consult the
-delivery manifest and remote branch for its commit and publication status.
+Repository: `/workspace/graphify`; active branch `jarvis/phase-5-memory`; parent
+checkpoint `b04e109ab2d15967d06dff364f376de41e92bde0` (published foundation).
+Original Graphify parent `5c7b84792f453582676548185aaec3824d51dfe2`, release 0.9.77,
+is preserved. The phase-5 checkpoint is local and not pushed or deployed.
 The adjacent empty My-JARVIS-AI- repository was left untouched.
 
 ## What works
@@ -24,13 +24,16 @@ The adjacent empty My-JARVIS-AI- repository was left untouched.
   approval pause/resume and run-state SSE. Engineer requests query Graphify first.
 - Credential-free parser worker, descriptor-relative no-follow source IO, safe
   snapshot staging, atomic writes, and file/byte/context/tool/time/concurrency caps.
+- Structured personal memory, provenance, scoped semantic/lexical retrieval,
+  bounded explainable context, authenticated inspector/export/correction/deletion
+  APIs, and human acceptance for inactive model proposals. See MEMORY.md.
 
 The four mode identifiers exist and keep independent run context. Dedicated
 Chief of Staff, Tutor and Game Master workflows are pending. No arbitrary-code
 execution or real external-write integration is registered; fake integration
 fixtures prove approval behavior without performing external communications.
 
-## Verification actually executed
+## Foundation verification history
 
 | Check | Observed result |
 |---|---|
@@ -225,7 +228,7 @@ Core Graphify changes: **none**. Small additive edits: `.gitignore`, `README.md`
 
 ## Deferred work and next task
 
-Phases 5–10 are pending: personal memory/pgvector/context inspector, OS-isolated
+Phases 6–10 are pending: OS-isolated
 Engineer editing/testing/worktrees, Tutor evidence/mastery, canonical GM state/
 visibility/dice/rules/transcripts, responsive Command Center/PWA, optional voice.
 Watchers/integrations and full production hardening remain pending. Scope checks
@@ -236,9 +239,10 @@ rotation, restricted DB role, deployment/worker coordination, request quotas,
 budget enforcement, integration idempotency and true untrusted-code sandboxing.
 Do not run multiple API workers or publicly deploy this local prototype.
 
-**Next recommended task:** execute phase 5 from JARVIS_PROGRESS.md: structured
-personal memory and source provenance, owner/visibility filtering before model
-context, bounded ContextBuilder, inspector APIs and fake embedding tests. Preserve
+**Next recommended task:** execute phase 6 from JARVIS_PROGRESS.md: isolated
+Engineer worktrees, Graphify retrieval/impact, constrained OS worker, regression
+execution and reviewed diffs. Establish isolation before enabling shell/code
+execution. Preserve the memory visibility, provenance and lifecycle guarantees
 and rerun the existing JARVIS/PostgreSQL tests, relevant upstream checks, update
 Graphify, review security and record actual results.
 
@@ -251,7 +255,7 @@ Setup: `docs/jarvis/LOCAL_DEVELOPMENT.md` and `apps/jarvis/.env.example`.
 - **B — Engineer:** graph-first text analysis works. Editing/worktree/test/diff
   E2E is deferred to phase 6; adapter change-update-impact fixture tests pass.
 - **C — Chief of Staff:** generic text runs and approval contract work; projects/
-  checkpoints/personal retrieval are pending. Fake external approval demo is tested.
+  checkpoints are pending; personal memory/context works. Fake external approval demo is tested.
 - **D — Tutor:** generic independent text mode only; quizzes/mastery pending phase 7.
 - **E — Game Master:** generic independent text mode only; campaign secrets,
   player/NPC dice and canonical event proposals pending phase 8.
@@ -265,3 +269,60 @@ attachment/link is claimed. Publish the checkpoint branch to the user's existing
 fork for another Codex cloud session, or clone the bundle for local Codex.
 The built wheel requires Graphify installed alongside it and the source
 migration/configuration files; it is not a standalone deployed product.
+
+## Phase 5 implementation and verification
+
+Application 0.2.0 adds a separate memory database boundary, retaining the Graphify
+source, CLI, package metadata, root lock, licenses and generated skills unchanged.
+New source modules: memory.py, memory_schema.py, memory_api.py, memory_tools.py,
+context.py and embeddings.py. Immutable migration 0002 adds MemoryItem,
+MemorySource and MemoryProposal without rewriting foundation schema/history.
+Configuration, run/model input preparation, typed execution context, inspector
+router, CI and tests extend the existing package. Full source requirements remain
+in MASTER_SPEC.md; the dedicated mode/UI program is not claimed complete.
+
+Owner/namespace/mode/visibility/lifecycle predicates precede candidate reads and
+ranking. Required sources retain IDs, locators, quotes, timestamps and hashes of
+supplied source assertions. Correction creates linked immutable revisions;
+eligible deletion purges their content/sources/embeddings and accepted proposal
+payloads. PostgreSQL lock/claim tests cover edit/delete and acceptance races.
+WORKING state is session-scoped and expires without extending on correction;
+EPISODIC/CANONICAL retention is protected through this inspector. Canonical memory
+cannot modify authorization, campaign state or learner mastery.
+
+Context combines only relevant fitting class records and separate Graphify tool
+evidence. It labels personal memory as untrusted data, counts UTF-8 bytes/framing
+as a conservative token bound including registered tool schemas, records
+retrieval explanations/source IDs and
+rebuilds before model calls. It revalidates after embedding awaits and refilters
+historical memory tools. Models can propose inactive notes, with run-bound actor/
+mode/namespaces; only explicit human acceptance creates active memory. No memory
+text can grant permissions or bypass exact protected-tool approvals.
+
+Deterministic fake embeddings default to an offline bounded retrieval path.
+Official SDK live embeddings require configured model/dimension/key. Optional
+pgvector runs real cosine SQL on already-authorized candidate IDs; the operator
+must explicitly enable the flag and install the extension. The default fixed
+migration is independent of extension availability. No ANN index, cross-owner
+sharing, campaign membership, background expiry purge or dedicated inspector UI
+is claimed; MEMORY.md documents these limits and separate transcript retention.
+
+| Phase-5 check | Actual result |
+|---|---|
+| Receiving foundation baseline | 59 passed including PostgreSQL (6.51 s), lint/format/types passed |
+| Final complete application + ordinary PostgreSQL | 106 passed, 1 optional-vector skip (15.27 s) |
+| Final complete application + PostgreSQL/pgvector | 106 passed, 1 missing-extension skip (14.05 s) |
+| Application lint/format/types | Passed; 30 files formatted; 0 type errors/warnings |
+| Migration/metadata/foundation persistence | Upgrade/downgrade/upgrade and 0001 → 0002 sentinel retained |
+| Memory concurrency and lifecycle | Correction/delete races, one-use proposal acceptance, reconnect, no stale resurrection passed |
+| Security and provenance | Owner/namespace/mode/GM filters, filter-before-limit, injection denial, Unicode budgets, deleted-tool refresh, grounded fake citations passed |
+| Real migrated loopback HTTP / pgvector | Health 200, unauthorized 401, create 201, search/chat provenance, correction 200/stale 409, delete 204, empty search/export |
+| 0.2.0 wheel and source distribution | Built successfully; source migrations/tests included |
+| Full upstream regression | 6,470 passed, 108 skipped, same 9 failures (119.53 s); no new failures |
+
+The application suite requires no paid service. Both vector CI configurations were
+added; local runs verify them, without claiming a remotely executed CI result.
+Complete logs/builds/smoke evidence are in ignored work/. Portable summaries and
+failure comparison are in docs/jarvis/verification. JARVIS_REVIEW.md records fixes,
+including a deletion/embedding race and real pgvector parameter-binding issue.
+CODEX_HANDOFF.md and CODEX_NEXT_PROMPT.md now resume phase 6.

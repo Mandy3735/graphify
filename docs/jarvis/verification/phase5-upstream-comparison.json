@@ -1,0 +1,26 @@
+{
+  "previous_foundation_failures": [
+    "tests/test_detect.py::test_graphifyignore_hermetic_without_vcs",
+    "tests/test_hooks.py::test_no_git_repo_raises",
+    "tests/test_security.py::test_validate_url_accepts_http",
+    "tests/test_security.py::test_validate_url_accepts_https",
+    "tests/test_security.py::test_safe_fetch_returns_bytes",
+    "tests/test_security.py::test_safe_fetch_raises_on_non_2xx",
+    "tests/test_security.py::test_safe_fetch_raises_on_size_exceeded",
+    "tests/test_security.py::test_safe_fetch_text_decodes_utf8",
+    "tests/test_security.py::test_safe_fetch_text_replaces_bad_bytes"
+  ],
+  "phase5_failures": [
+    "tests/test_detect.py::test_graphifyignore_hermetic_without_vcs",
+    "tests/test_hooks.py::test_no_git_repo_raises",
+    "tests/test_security.py::test_validate_url_accepts_http",
+    "tests/test_security.py::test_validate_url_accepts_https",
+    "tests/test_security.py::test_safe_fetch_returns_bytes",
+    "tests/test_security.py::test_safe_fetch_raises_on_non_2xx",
+    "tests/test_security.py::test_safe_fetch_raises_on_size_exceeded",
+    "tests/test_security.py::test_safe_fetch_text_decodes_utf8",
+    "tests/test_security.py::test_safe_fetch_text_replaces_bad_bytes"
+  ],
+  "new_failures": [],
+  "summary": "9 failed, 6470 passed, 108 skipped in 119.53s"
+}

@@ -6,10 +6,10 @@ from typing import Any
 
 from pydantic import Field
 
-from jarvis.domain import Mode, StrictModel, ToolOutput, ToolProposal
+from jarvis.domain import ChatRequest, Mode, StrictModel, ToolOutput, ToolProposal
 from jarvis.graph import GraphifyKnowledgeProvider
 from jarvis.paths import TEXT_SUFFIXES, PathDenied, safe_read
-from jarvis.policy import Risk
+from jarvis.policy import Actor, Risk
 
 
 class ProjectInput(StrictModel):
@@ -39,6 +39,12 @@ class ReadInput(ProjectInput):
 
 
 @dataclass(frozen=True)
+class ToolExecutionContext:
+    actor: Actor
+    request: ChatRequest
+
+
+@dataclass(frozen=True)
 class ToolDefinition:
     name: str
     description: str
@@ -52,6 +58,9 @@ class ToolDefinition:
     side_effects: str = "None"
     version: int = 1
     modes: frozenset[str] = frozenset(mode.value for mode in Mode)
+    context_handler: (
+        Callable[[dict[str, Any], ToolExecutionContext], Awaitable[ToolOutput]] | None
+    ) = None
 
 
 class ToolRegistry:
@@ -81,10 +90,19 @@ class ToolRegistry:
         ]
 
     async def _execute_authorized(
-        self, tool: ToolDefinition, arguments: dict[str, Any]
+        self,
+        tool: ToolDefinition,
+        arguments: dict[str, Any],
+        context: ToolExecutionContext | None = None,
     ) -> ToolOutput:
         # Internal to Engine: callers must perform policy and durable claim first.
-        result = await asyncio.wait_for(tool.handler(arguments), timeout=tool.timeout)
+        if tool.context_handler is not None:
+            if context is None:
+                raise ValueError("Trusted tool execution context required")
+            invocation = tool.context_handler(arguments, context)
+        else:
+            invocation = tool.handler(arguments)
+        result = await asyncio.wait_for(invocation, timeout=tool.timeout)
         validated = tool.output_schema.model_validate(result.model_dump(mode="json"))
         if len(validated.model_dump_json()) > 24000:
             raise ValueError("Tool output exceeds budget")

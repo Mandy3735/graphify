@@ -9,17 +9,22 @@ from pathlib import Path
 import pytest
 from alembic.autogenerate import compare_metadata
 from alembic.migration import MigrationContext
-from sqlalchemy import text
+from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError
 from test_engine_api import drain, fake_external, pending_approval
+from test_memory import correction, record
 
 from jarvis.config import Settings
-from jarvis.db import Base, Database
-from jarvis.domain import ChatRequest, RunState
+from jarvis.db import AuditEvent, Base, Database, MemoryItem, MemoryProposal, audit
+from jarvis.domain import ChatRequest, Mode, RunState
+from jarvis.embeddings import FakeEmbeddingProvider
 from jarvis.engine import Conflict, Engine
+from jarvis.memory import MemoryConflict, MemoryScope, MemoryService
 from jarvis.models import FakeModelProvider, ModelRouter
+from jarvis.policy import Actor
 
 TEST_URL = os.environ.get("JARVIS_TEST_DATABASE_URL", "")
+ALEMBIC_INI = Path(__file__).resolve().parents[1] / "alembic.ini"
 pytestmark = pytest.mark.skipif(not TEST_URL, reason="Set disposable JARVIS_TEST_DATABASE_URL")
 
 
@@ -31,7 +36,7 @@ def migrated_postgres():
     assert url.host in {"localhost", "127.0.0.1"} and url.database.endswith("_test"), (
         "Destructive migration test requires an explicitly disposable local *_test database"
     )
-    ini = Path(__file__).resolve().parents[1] / "alembic.ini"
+    ini = ALEMBIC_INI
     environment = {**os.environ, "JARVIS_DATABASE_URL": TEST_URL}
     for operation in [("upgrade", "head"), ("downgrade", "base"), ("upgrade", "head")]:
         subprocess.run(
@@ -41,6 +46,15 @@ def migrated_postgres():
             capture_output=True,
             timeout=30,
         )
+    if os.environ.get("JARVIS_TEST_PGVECTOR") == "true":
+
+        async def enable_vector():
+            db = Database(TEST_URL)
+            async with db.sessions.begin() as session:
+                await session.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+            await db.dispose()
+
+        asyncio.run(enable_vector())
     yield
     subprocess.run(
         [sys.executable, "-m", "alembic", "-c", str(ini), "downgrade", "base"],
@@ -108,3 +122,118 @@ async def test_postgres_audit_cannot_be_updated_deleted_or_truncated(postgres):
         with pytest.raises(DBAPIError, match="append-only"):
             async with postgres.sessions.begin() as session:
                 await session.execute(text(statement))
+
+
+def pg_memory(database, *, vector=False):
+    cfg = pg_settings().model_copy(update={"memory_pgvector": vector})
+    service = MemoryService(database, cfg, FakeEmbeddingProvider())
+    actor = Actor(str(cfg.actor_id), frozenset({"memory.read", "memory.write", "memory.propose"}))
+    return service, MemoryScope(actor, Mode.CHIEF_OF_STAFF)
+
+
+async def test_postgres_memory_revision_upgrade_preserves_existing_foundation_audit(postgres):
+    # Exercise the actual additive 0001 → 0002 boundary, with existing protected audit.
+    async with postgres.sessions.begin() as session:
+        audit(
+            session, str(pg_settings().actor_id), "phase5.migration_sentinel", {"foundation": True}
+        )
+    async with postgres.sessions() as session:
+        before = list(await session.scalars(select(AuditEvent.id)))
+    ini = ALEMBIC_INI
+    environment = {**os.environ, "JARVIS_DATABASE_URL": TEST_URL}
+    for operation in [("downgrade", "0001"), ("upgrade", "head")]:
+        await asyncio.to_thread(
+            subprocess.run,
+            [sys.executable, "-m", "alembic", "-c", str(ini), *operation],
+            env=environment,
+            check=True,
+            capture_output=True,
+            timeout=30,
+        )
+    async with postgres.sessions() as session:
+        after = list(await session.scalars(select(AuditEvent.id)))
+    assert set(before) == set(after)
+
+
+async def test_postgres_memory_survives_reconnect_and_remains_owner_scoped(postgres):
+    memory, scope = pg_memory(postgres)
+    item = await memory.create(scope, record("persistent automobile repair"))
+    fresh = Database(TEST_URL)
+    restored, _ = pg_memory(fresh)
+    hits = await restored.search(scope, "vehicle fix")
+    assert any(h["id"] == item["id"] and h["sources"] for h in hits)
+    foreign = MemoryScope(
+        Actor("2e85dfde-df21-49e9-840c-2b5e04b2eed0", scope.actor.capabilities), scope.mode
+    )
+    assert await restored.search(foreign, "vehicle fix") == []
+    await fresh.dispose()
+
+
+async def test_postgres_concurrent_corrections_and_delete_cannot_resurrect_memory(postgres):
+    memory, scope = pg_memory(postgres)
+    original = await memory.create(scope, record("concurrent memory"))
+    first, second = await asyncio.gather(
+        memory.correct(scope, original["id"], correction("first correction")),
+        memory.correct(scope, original["id"], correction("second correction")),
+        return_exceptions=True,
+    )
+    assert sum(isinstance(value, MemoryConflict) for value in [first, second]) == 1
+    current = next(value for value in [first, second] if isinstance(value, dict))
+    results = await asyncio.gather(
+        memory.correct(scope, current["id"], correction("race against deletion", revision=2)),
+        memory.delete(scope, original["id"]),
+        return_exceptions=True,
+    )
+    assert all(value is None or isinstance(value, (dict, MemoryConflict)) for value in results)
+    async with postgres.sessions() as session:
+        rows = list(
+            await session.scalars(select(MemoryItem).where(MemoryItem.lineage_id == original["id"]))
+        )
+    assert all(
+        row.deleted_at is not None and row.content == "" and not row.embedding_json for row in rows
+    )
+
+
+async def test_postgres_memory_proposal_acceptance_is_atomic(postgres):
+    memory, scope = pg_memory(postgres)
+    proposal = await memory.propose(scope, record("one accepted proposal"))
+    claims = await asyncio.gather(
+        memory.decide_proposal(scope, proposal["proposal_id"], accept=True),
+        memory.decide_proposal(scope, proposal["proposal_id"], accept=True),
+        return_exceptions=True,
+    )
+    assert sum(isinstance(value, MemoryConflict) for value in claims) == 1
+    accepted = next(value for value in claims if isinstance(value, dict))
+    async with postgres.sessions() as session:
+        stored = await session.get(MemoryProposal, proposal["proposal_id"])
+        assert stored.status == "ACCEPTED" and stored.memory_id == accepted["memory_id"]
+    assert (await memory.inspect(scope, accepted["memory_id"]))["sources"][0][
+        "kind"
+    ] == "MODEL_PROPOSAL"
+
+
+@pytest.mark.skipif(
+    os.environ.get("JARVIS_TEST_PGVECTOR") != "true", reason="Optional pgvector database"
+)
+async def test_postgres_pgvector_retrieval_matches_offline_ranking(postgres):
+    memory, scope = pg_memory(postgres)
+    item = await memory.create(scope, record("optional automobile repair"))
+    offline = await memory.search(scope, "vehicle fix", limit=50)
+    configured, _ = pg_memory(postgres, vector=True)
+    await configured.check_backend()
+    accelerated = await configured.search(scope, "vehicle fix", limit=50)
+    assert [h["id"] for h in accelerated] == [h["id"] for h in offline]
+    assert item["id"] in [h["id"] for h in accelerated]
+    assert [h["retrieval"]["score"] for h in accelerated] == pytest.approx(
+        [h["retrieval"]["score"] for h in offline],
+        abs=0.0001,
+    )
+
+
+@pytest.mark.skipif(
+    os.environ.get("JARVIS_TEST_PGVECTOR") == "true", reason="Vector intentionally installed"
+)
+async def test_postgres_vector_flag_requires_installed_extension(postgres):
+    memory, _ = pg_memory(postgres, vector=True)
+    with pytest.raises(MemoryConflict, match="extension is not installed"):
+        await memory.check_backend()

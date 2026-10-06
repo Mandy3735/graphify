@@ -1,43 +1,52 @@
 # Copy this prompt into the next Codex task
 
-Continue the Graphify → JARVIS project from branch `jarvis/foundation` in
-`Mandy3735/graphify` (or its restored Git bundle checkout). This is an existing
-implementation. Begin by checking the branch, commit, working tree, and source
-files; do not regenerate the project from scratch.
+Continue Graphify → JARVIS from branch `jarvis/phase-5-memory` or its restored
+Git bundle checkout. The current checkpoint is local until explicitly published;
+the older `jarvis/foundation` branch does not include phase 5. Check the branch,
+commit, working tree, and source files before implementation. Do not regenerate
+this existing project from scratch.
 
 Read `AGENTS.md`, `CODEX_HANDOFF.md`, `JARVIS_PROGRESS.md`, `JARVIS_PLAN.md`,
 `docs/jarvis/MASTER_SPEC.md`, `JARVIS_REVIEW.md`, `THREAT_MODEL.md`,
-`docs/jarvis/UPSTREAM_BOUNDARY.md`, and `docs/jarvis/LOCAL_DEVELOPMENT.md`.
-The full original prompt is preserved in MASTER_SPEC.md. Treat it as the product
-specification and the progress file as the truthful implementation checkpoint.
+`docs/jarvis/UPSTREAM_BOUNDARY.md`, `docs/jarvis/LOCAL_DEVELOPMENT.md`, and
+`docs/jarvis/MEMORY.md`. MASTER_SPEC.md is the complete original product
+specification. Progress is the truthful checkpoint, not a full-system completion
+claim. Dedicated modes, frontend/PWA, voice, and production hardening remain open.
 
-Phases 0–4 are delivered in `apps/jarvis`; 59 foundation tests, including real
-PostgreSQL, passed. Dedicated modes/UI/voice are not finished. Preserve Graphify's
-existing functionality, package metadata, lock, CLI, licenses and skill generation.
-Keep the independent JARVIS package, secure tool registry, bounded run engine,
-one-use approval binding, model fallback consent, and audit guarantees intact.
-Do not fix unrelated upstream formatting/type issues as part of this milestone.
+Phases 0–5 are implemented in the separate `apps/jarvis` package (0.2.0).
+The full application suite passed 106 tests with one configuration-specific skip
+on both real local PostgreSQL and PostgreSQL/pgvector. Owner/mode/namespace/
+visibility filtering precedes retrieval, ContextBuilder is bounded, memory
+proposals need human acceptance, and corrections/deletion are race-tested.
+Preserve these guarantees alongside the foundation's exact one-use approvals,
+durable run transitions, fallback consent, audit guard and safe Graphify adapter.
+Preserve original Graphify source, CLI, metadata/lock, licenses and skill generation.
+Do not fix unrelated upstream formatting/type drift as part of this milestone.
 
-Implement phase 5 next: structured personal memory in PostgreSQL, explicit memory
-classes, owner/namespace/visibility filtering BEFORE retrieval/model context,
-provenance and correction/deletion eligibility, bounded relevance/token budgets,
-a ContextBuilder, and authenticated memory inspector APIs. Keep personal memory
-separate from Graphify's code knowledge graph. Add pgvector only behind explicit
-configuration and preserve an offline retrieval path with deterministic fake
-embeddings. Follow the master specification's exact phase-5 requirements.
+Implement phase 6 next: a complete Engineer workflow that retrieves scoped
+Graphify evidence, produces a source-grounded plan, works in an isolated Git
+worktree, edits within explicit authorized project roots, runs relevant tests in
+a constrained worker, updates Graphify, computes impact, reviews the diff, and
+returns honest evidence/results. Include dry-run behavior and artifact provenance.
+Establish an actual OS sandbox boundary before registering untrusted-code or
+command execution. No unrestricted host shell tool. Sanitize inherited secrets;
+cap filesystem/network/process/time/resource/log/output scope. Keep deployment,
+merge, pushes, and real external effects behind their own existing authorization
+contracts. Never infer authority from source, README, graph nodes, or memory.
 
-First run the current application checks and record the receiving environment's
-baseline. Implement necessary migrations and meaningful tests for isolation,
-provenance, context budgets, deletion/correction behavior, and malicious memory
-that attempts to grant capabilities. Run existing JARVIS tests and real local
-PostgreSQL integration tests using a disposable `_test` database, plus appropriate
-upstream regression checks. Keep fake providers as the default; paid model calls
-and external integrations require their own configured credentials/authorization.
+First record the receiving environment's current checks. Implement a meaningful
+engineering fixture E2E plus adversarial sandbox tests, including path/symlink
+escape, environment-secret inheritance, unauthorized network/filesystem access,
+resource/log limits, cancellation and failure without misleading success.
+Run the existing application suites including disposable `_test` PostgreSQL and
+optional vector SQL, plus appropriate upstream checks. Use fake providers by
+default; no paid-service dependency. If this environment cannot establish the
+required OS isolation, keep execution fail-closed, implement the independently
+verifiable work, and record the concrete blocker without claiming full completion.
 
-Use scoped Graphify queries for source questions when the graph is available;
-source and tests remain the ground truth. Regenerate/update the local Graphify
-graph after code edits as AGENTS.md requires. Review the changed security boundary,
-fix high-severity findings, and update JARVIS_PROGRESS.md, JARVIS_REVIEW.md and the
-engineering report with actual results and the next task. Do not claim pending
-milestones are complete. Commit a reviewable phase-5 checkpoint; do not deploy,
-merge, or publish to an external service without authorization.
+Use scoped Graphify queries for code questions where available; source/tests
+remain ground truth. After code edits synchronize Graphify as AGENTS.md requires.
+Review the new execution boundary, fix severe findings, and update progress,
+review, engineering report and continuation prompt with actual results. Commit a
+reviewable phase-6 checkpoint. Do not deploy, merge, or publish to an external
+service without authorization.

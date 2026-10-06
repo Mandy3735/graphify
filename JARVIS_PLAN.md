@@ -35,6 +35,12 @@ exercise the registry; a fake external integration exercises exact approval in
 tests. Later milestones remain explicitly pending. This follows the specification's
 execution-limit provision and security-first priority order.
 
+The second checkpoint completes phase 5's structured memory, bounded retrieval/
+ContextBuilder and authenticated inspector APIs. Optional pgvector and offline
+embeddings share the same ownership/visibility boundary. Dedicated inspector UI,
+campaign membership and authoritative mode-specific state remain later milestones.
+Current verification and limitations are recorded in JARVIS_PROGRESS.md.
+
 No automatic deployment, API purchase, model availability assumption, or outbound
 communication is authorized by retrieved repository data. Decisions about grants,
 roots and fallback live in trusted server configuration.

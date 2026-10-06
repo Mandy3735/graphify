@@ -1,15 +1,14 @@
 # JARVIS progress — 2026-10-05
 
-Repository `/workspace/graphify`; branch `jarvis/foundation`; parent commit
-`5c7b84792f453582676548185aaec3824d51dfe2` (Graphify 0.9.77).
-The foundation is prepared as a reviewable checkpoint on `jarvis/foundation`.
-`CODEX_HANDOFF.md` explains transfer and continuation. The delivery manifest and
-remote branch establish checkpoint identity and publication status; no deployment
-is part of this handoff.
+Repository `/workspace/graphify`; active branch `jarvis/phase-5-memory`; parent
+checkpoint `b04e109ab2d15967d06dff364f376de41e92bde0` (`jarvis/foundation`).
+Original Graphify 0.9.77 parent: `5c7b84792f453582676548185aaec3824d51dfe2`.
+Phase 5 is a local reviewable checkpoint. The previously published foundation
+branch remains available; this new checkpoint is not pushed or deployed.
 
 ## Delivered checkpoint
 
-Phases 0–4, bounded to the foundation defined in JARVIS_PLAN.md:
+Phases 0–5, bounded to the application scope defined in JARVIS_PLAN.md:
 
 - Upstream reconnaissance, complete baseline, boundary and milestone plan.
 - Independent application package/dependency lock; FastAPI/OpenAPI; authenticated
@@ -27,8 +26,23 @@ Phases 0–4, bounded to the foundation defined in JARVIS_PLAN.md:
 - Engineer text requests query Graphify before model analysis when project_id is
   supplied. Four mode labels keep independent run context; dedicated mode workflows
   are not yet implemented. No arbitrary execution or real external writes enabled.
+- WORKING/EPISODIC/SEMANTIC/CANONICAL/PREFERENCE memory with required sources,
+  owner-scoped namespaces, mode/visibility/expiry filtering before retrieval,
+  linked revision corrections, eligible lineage deletion and append-only audit.
+- Deterministic offline embeddings and official SDK live embedding adapter;
+  optional pgvector cosine SQL for bounded authorized candidates. Provider keys
+  prevent mixing incompatible vectors; lexical retrieval remains available.
+- ContextBuilder uses current request/mode/project/campaign/session and trusted
+  capability scope, with token/character budgets and explainable source references.
+  Live memory is rechecked after embedding awaits and before subsequent model
+  context; automatic memory contents are not copied to durable run messages.
+- Authenticated inspector/search/create/correction/delete/export APIs. Models have
+  run-scoped memory.search and inactive memory.propose_write; only explicit human
+  acceptance creates active memory. Canonical/GM-secret model proposals are denied.
+- Additive immutable migration 0002, application 0.2.0, and PostgreSQL/pgvector CI
+  configurations. No root Graphify code, dependencies, licenses or locks changed.
 
-## Actual checks
+## Foundation verification history
 
 | Check | Observed result |
 |---|---|
@@ -58,29 +72,55 @@ Remaining upstream failures: one ignore-without-VCS assertion, one hooks test
 blocked by the sandbox's read-only `/tmp/.git`, and seven DNS-dependent URL/fetch
 security tests in this restricted environment. Full test names/logs are retained.
 
+## Phase 5 actual checks
+
+| Check | Observed result |
+|---|---|
+| Unchanged receiving foundation baseline | 59 passed, including PostgreSQL (6.51 s); lint/format/types passed |
+| Final full suite, ordinary PostgreSQL | **106 passed, 1 skipped** (15.27 s); skip is optional vector SQL |
+| Final full suite, PostgreSQL + pgvector | **106 passed, 1 skipped** (14.05 s); skip is missing-extension check |
+| Application Ruff lint/format | Passed; 30 Python files formatted |
+| Application Pyright | 0 errors, 0 warnings |
+| Additive migration / metadata | Upgrade/downgrade/upgrade; 0001 → 0002 retained existing foundation audit |
+| PostgreSQL races / persistence | Competing corrections and deletion, proposal acceptance, reconnect, original approvals/audit passed |
+| Source-grounded fake E2E / malicious memory | Citations and inspector provenance retained; memory could not gain capability or perform external write |
+| Real HTTP with PostgreSQL + pgvector | Health 200, unauthenticated 401, create 201, search/context complete, correction 200/stale 409, delete 204, search/export empty |
+| Application 0.2.0 wheel and sdist | Built successfully; migration/tests packaged |
+| Post-change upstream architecture docs | 38 passed, 1 warning (0.31 s) |
+| Graph synchronization | AST update: 19,202 nodes, 39,798 edges; local query/explain succeeded |
+| Full upstream Graphify regression | 6,470 passed, 108 skipped, 9 failed (119.53 s); identical prior failure list, no new failures |
+
+No paid model or embedding call was needed. SDK adapters are covered with fakes.
+Portable verification snapshots are in docs/jarvis/verification; complete raw logs
+remain in ignored work/. Graph synchronization is recorded there as well.
+
 ## Not done
 
-Phases 5–10 (personal memory/pgvector/context/inspector, sandboxed Engineer edits,
+Phases 6–10 (sandboxed Engineer edits,
 Tutor, Game Master, Command Center/PWA, voice), watcher/transcript/integration
 workflows, and complete production hardening/full-program adversarial acceptance
 remain pending. Phases 11–12 checks/review were applied only to delivered scope.
 No frontend build/tests or live paid model call is claimed. The full specification
-definition of done is not met by this foundation checkpoint.
+definition of done is not met by this memory checkpoint. Personal memory PUBLIC/
+PARTY data remains owner-scoped; campaign membership/sharing is phase 8. The
+dedicated memory UI is phase 9. Expired memory is filtered but not background
+purged, and conversation/tool transcript retention is distinct from memory
+deletion. See MEMORY.md for explicit lifecycle and retrieval limits.
 
 ## Exact next milestone
 
-Phase 5: PostgreSQL personal memory with explicit memory classes, ownership and
-visibility; provenance; relevance/token budgets; ContextBuilder; memory inspector
-APIs and security tests. Keep Graphify separate. Add pgvector only behind config
-and preserve an offline retrieval path with fake embeddings.
+Phase 6: Engineer workflow with Graphify plan/retrieval/impact, isolated worktrees,
+a constrained worker, resource/time/output limits, a sanitized environment,
+dry-run/diff review and meaningful regression tests. Establish OS isolation before
+enabling any untrusted code execution. Preserve memory visibility/provenance,
+exact approvals and the existing Graphify/application regression boundary.
 
 Recommended next Codex instruction:
 
-> Continue JARVIS phase 5 from JARVIS_PROGRESS.md and JARVIS_PLAN.md. Preserve
-> Graphify and the verified foundation. Implement structured personal memory,
-> provenance, owner/visibility filtering before retrieval, a bounded ContextBuilder,
-> inspector APIs and deterministic embedding tests. Run existing JARVIS and
-> PostgreSQL tests plus appropriate upstream checks, synchronize Graphify, review
-> security, and update progress without claiming later modes are complete.
+> Read CODEX_HANDOFF.md and docs/jarvis/CODEX_NEXT_PROMPT.md, then implement phase
+> 6's sandboxed Engineer workflow. Preserve the verified Graphify, foundation and
+> memory checkpoint. Do not register arbitrary host shell execution. Verify the
+> actual OS sandbox boundary, Graphify evidence/impact, worktree isolation and
+> complete applicable regression checks, review security and update progress.
 
 Setup/demonstrations: docs/jarvis/LOCAL_DEVELOPMENT.md. Review: JARVIS_REVIEW.md.

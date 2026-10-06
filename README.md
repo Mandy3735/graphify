@@ -1,5 +1,5 @@
 **JARVIS foundation:** This branch adds a separate authenticated JARVIS backend
-around the preserved Graphify engine. Start with
+with inspectable personal memory around the preserved Graphify engine. Start with
 [local development](docs/jarvis/LOCAL_DEVELOPMENT.md),
 [the transformation plan](JARVIS_PLAN.md), and
 [actual progress and limitations](JARVIS_PROGRESS.md).

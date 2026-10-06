@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Literal
 from uuid import UUID
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -18,6 +18,13 @@ class Settings(BaseSettings):
     utility_model: str = ""
     voice_model: str = "gpt-live-1"
     embedding_model: str = ""
+    embedding_provider: Literal["fake", "openai"] = "fake"
+    embedding_dimensions: int = Field(default=64, ge=16, le=3072)
+    memory_pgvector: bool = False
+    memory_candidates: int = Field(default=128, ge=16, le=512)
+    memory_context_tokens: int = Field(default=4000, ge=0, le=16000)
+    context_token_budget: int = Field(default=24000, ge=1000, le=64000)
+    working_memory_ttl: int = Field(default=3600, ge=60, le=86400)
     reasoning_effort: Literal["low", "medium", "high"] = "medium"
     allow_fallback: bool = False
     model_timeout: float = Field(default=30, gt=0, le=120)
@@ -29,9 +36,17 @@ class Settings(BaseSettings):
     context_chars: int = Field(default=24000, ge=1000, le=64000)
     approval_ttl: int = Field(default=900, ge=30, le=3600)
     project_roots: dict[str, Path] = Field(default_factory=dict)
-    capabilities: frozenset[str] = frozenset({"graph.read", "workspace.read"})
+    capabilities: frozenset[str] = frozenset(
+        {"graph.read", "workspace.read", "memory.read", "memory.write", "memory.propose"}
+    )
     # Per million input/output tokens. Empty means cost is unknown, not zero.
     pricing: dict[str, tuple[float, float]] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def embedding_configuration(self):
+        if self.embedding_provider == "openai" and not self.embedding_model:
+            raise ValueError("An explicit embedding model is required for OpenAI embeddings")
+        return self
 
     @field_validator("auth_token")
     @classmethod

@@ -1,6 +1,6 @@
-# JARVIS foundation architecture
+# JARVIS architecture — memory checkpoint
 
-This first checkpoint is an authenticated, single-user API modular monolith.
+This checkpoint is an authenticated, single-user API modular monolith.
 It is not a production personal operating system. See JARVIS_PROGRESS.md for
 implementation and verification status. Graphify retains its upstream package,
 CLI/MCP, tests, dependencies and license attribution.
@@ -15,7 +15,8 @@ HTTP bearer identity → FastAPI → durable run engine → model gateway
                       PostgreSQL + transitions + audit
 ```
 
-PostgreSQL is authoritative for runs, transitions, approvals and audit. Alembic
+PostgreSQL is authoritative for runs, transitions, approvals, audit and personal
+memory with source provenance. Alembic
 is the schema authority; startup never silently creates production tables. Tests
 may explicitly use SQLite for fast unit isolation, but PostgreSQL migration and
 transaction tests are mandatory. No Redis or agent framework is necessary here.
@@ -41,6 +42,12 @@ This parser worker is not an arbitrary-code sandbox. No shell/run-command tool i
 registered. The Engineer editing sandbox is a separate future phase requiring OS
 isolation before hostile project code can be executed.
 
+Personal memory uses owner/namespace/mode/visibility filtering before retrieval.
+ContextBuilder combines relevant bounded records with source references and
+rechecks memory-search history before each model call. Models can propose inactive
+memory, but only explicit authenticated user acceptance makes it active. Optional
+pgvector computes distances for bounded authorized candidates. See MEMORY.md.
+
 Deploy this checkpoint as one backend process. Multi-worker coordination, tenant
-identity/OAuth, a production restricted DB role, production UI, pgvector/personal
-memory and later operating-mode workflows are subsequent milestones.
+identity/OAuth, a production restricted DB role, production UI, complete campaign
+membership and later operating-mode workflows are subsequent milestones.

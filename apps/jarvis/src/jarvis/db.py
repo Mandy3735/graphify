@@ -2,7 +2,16 @@ from datetime import UTC, datetime
 from typing import Any
 from uuid import uuid4
 
-from sqlalchemy import JSON, DateTime, ForeignKey, String, Text, UniqueConstraint
+from sqlalchemy import (
+    JSON,
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    Index,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -66,6 +75,64 @@ class AuditEvent(Base):
     run_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
     event: Mapped[str] = mapped_column(String(80))
     details: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class MemoryItem(Base):
+    __tablename__ = "memory_items"
+    __table_args__ = (
+        Index("ix_memory_scope", "owner_id", "namespace", "visibility", "created_at"),
+        Index("ix_memory_lineage", "owner_id", "lineage_id"),
+        CheckConstraint("revision >= 1 AND revision <= 32", name="ck_memory_revision"),
+        CheckConstraint(
+            "memory_class IN ('WORKING','EPISODIC','SEMANTIC','CANONICAL','PREFERENCE')",
+            name="ck_memory_class",
+        ),
+        CheckConstraint(
+            "visibility IN ('PRIVATE','PUBLIC','PARTY','PLAYER_PRIVATE','GM_SECRET',"
+            "'INFERRED','RUMOR','RETIRED')",
+            name="ck_memory_visibility",
+        ),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    owner_id: Mapped[str] = mapped_column(String(36))
+    lineage_id: Mapped[str] = mapped_column(String(36))
+    memory_class: Mapped[str] = mapped_column(String(16))
+    namespace: Mapped[str] = mapped_column(String(100))
+    visibility: Mapped[str] = mapped_column(String(16))
+    mode: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    content: Mapped[str] = mapped_column(Text)
+    structured_data: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    revision: Mapped[int] = mapped_column(default=1)
+    supersedes_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    superseded_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    embedding_json: Mapped[list[float]] = mapped_column(JSON, default=list)
+    embedding_key: Mapped[str] = mapped_column(String(200), default="")
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class MemorySource(Base):
+    __tablename__ = "memory_sources"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    memory_id: Mapped[str] = mapped_column(
+        ForeignKey("memory_items.id", ondelete="CASCADE"), index=True
+    )
+    kind: Mapped[str] = mapped_column(String(24))
+    locator: Mapped[str] = mapped_column(String(300))
+    quote: Mapped[str] = mapped_column(Text, default="")
+    content_hash: Mapped[str] = mapped_column(String(64))
+    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class MemoryProposal(Base):
+    __tablename__ = "memory_proposals"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    owner_id: Mapped[str] = mapped_column(String(36), index=True)
+    status: Mapped[str] = mapped_column(String(16), default="PENDING")
+    payload: Mapped[dict[str, Any]] = mapped_column(JSON)
+    memory_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
 

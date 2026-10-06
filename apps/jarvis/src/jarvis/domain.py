@@ -65,6 +65,9 @@ class ChatRequest(StrictModel):
     message: str = Field(min_length=1, max_length=12000)
     mode: Mode = Mode.CHIEF_OF_STAFF
     project_id: str | None = Field(default=None, max_length=80)
+    campaign_id: str | None = Field(default=None, pattern=r"^[a-zA-Z0-9_-]{1,80}$")
+    session_id: str | None = Field(default=None, pattern=r"^[a-zA-Z0-9_-]{1,80}$")
+    context_token_budget: int | None = Field(default=None, ge=256, le=64000)
     allow_fallback: bool = False
     high_stakes: bool = False
     utility: bool = False

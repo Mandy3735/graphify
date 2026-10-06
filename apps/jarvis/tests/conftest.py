@@ -12,7 +12,17 @@ def settings(tmp_path: Path):
         auth_token="test-auth-token-with-more-than-32-characters",
         database_url=f"sqlite+aiosqlite:///{tmp_path / 'jarvis.db'}",
         project_roots={},
-        capabilities=frozenset({"graph.read", "graph.write", "workspace.read", "test.write"}),
+        capabilities=frozenset(
+            {
+                "graph.read",
+                "graph.write",
+                "workspace.read",
+                "test.write",
+                "memory.read",
+                "memory.write",
+                "memory.propose",
+            }
+        ),
         _env_file=None,
     )
 
