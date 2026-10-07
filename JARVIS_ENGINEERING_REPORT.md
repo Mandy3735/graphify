@@ -1,15 +1,15 @@
-# JARVIS engineering report — 2026-10-05
+# JARVIS engineering report — 2026-10-07
 
-A runnable **memory checkpoint** is implemented in the existing Graphify
-repository. It completes the bounded phases 0–5 scope in JARVIS_PLAN.md. The full
+A runnable **Engineer checkpoint** is implemented in the existing Graphify
+repository. It completes the bounded phases 0–6 scope in JARVIS_PLAN.md. The full
 personal AI operating system specification is not complete.
 
-Repository: `/workspace/graphify`; active branch `jarvis/phase-5-memory`; parent
-checkpoint `b04e109ab2d15967d06dff364f376de41e92bde0` (published foundation).
-Original Graphify parent `5c7b84792f453582676548185aaec3824d51dfe2`, release 0.9.77,
-is preserved. The complete GitHub handoff branch is `jarvis/phase-5-memory`,
-including the implementation commit `dc37855` and a subsequent type-check
-configuration fix. No deployment or merge is part of this handoff.
+Repository: `/workspace/graphify`; active local branch `jarvis/phase-6-engineer`;
+receiving checkpoint `5f622c094f0a023a0cbcfc0f39850f9866621b78`, the published
+phase-5 handoff. Original Graphify parent `5c7b84792f453582676548185aaec3824d51dfe2`,
+release 0.9.77, is preserved. Phase 6 is committed locally only; no push, merge or
+deployment is authorized by the continuation instruction. Resolve its exact HEAD
+with Git or the phase-6 delivery manifest.
 The adjacent empty My-JARVIS-AI- repository was left untouched.
 
 ## What works
@@ -31,8 +31,8 @@ The adjacent empty My-JARVIS-AI- repository was left untouched.
   APIs, and human acceptance for inactive model proposals. See MEMORY.md.
 
 The four mode identifiers exist and keep independent run context. Dedicated
-Chief of Staff, Tutor and Game Master workflows are pending. No arbitrary-code
-execution or real external-write integration is registered; fake integration
+Chief of Staff, Tutor and Game Master workflows are pending. Only opt-in kernel-isolated system-Python execution is registered when verified;
+no host shell or real external-write integration is registered. Fake integration
 fixtures prove approval behavior without performing external communications.
 
 ## Foundation verification history
@@ -241,7 +241,7 @@ rotation, restricted DB role, deployment/worker coordination, request quotas,
 budget enforcement, integration idempotency and true untrusted-code sandboxing.
 Do not run multiple API workers or publicly deploy this local prototype.
 
-**Next recommended task:** execute phase 6 from JARVIS_PROGRESS.md: isolated
+**Foundation-era next task (historical):** phase 6: isolated
 Engineer worktrees, Graphify retrieval/impact, constrained OS worker, regression
 execution and reviewed diffs. Establish isolation before enabling shell/code
 execution. Preserve the memory visibility, provenance and lifecycle guarantees
@@ -255,7 +255,7 @@ Setup: `docs/jarvis/LOCAL_DEVELOPMENT.md` and `apps/jarvis/.env.example`.
 - **A — Code intelligence:** index/update registered project; graph query/explain/
   path/impact API; inspect source/confidence in durable run result.
 - **B — Engineer:** graph-first text analysis works. Editing/worktree/test/diff
-  E2E is deferred to phase 6; adapter change-update-impact fixture tests pass.
+  E2E was deferred at the foundation checkpoint; phase 6 below now covers it.
 - **C — Chief of Staff:** generic text runs and approval contract work; projects/
   checkpoints are pending; personal memory/context works. Fake external approval demo is tested.
 - **D — Tutor:** generic independent text mode only; quizzes/mastery pending phase 7.
@@ -327,7 +327,8 @@ added; local runs verify them, without claiming a remotely executed CI result.
 Complete logs/builds/smoke evidence are in ignored work/. Portable summaries and
 failure comparison are in docs/jarvis/verification. JARVIS_REVIEW.md records fixes,
 including a deletion/embedding race and real pgvector parameter-binding issue.
-CODEX_HANDOFF.md and CODEX_NEXT_PROMPT.md now resume phase 6.
+At the phase-5 checkpoint, the handoff resumed phase 6. The current prompt
+now resumes phase 7.
 
 ## GitHub configuration correction — 2026-10-07
 
@@ -343,3 +344,92 @@ zero errors/warnings, wheel/sdist built, and the complete suites passed on both
 PostgreSQL (106 passed, 1 skip; 11.50 s) and pgvector (106 passed, 1 skip; 12.71 s).
 These observations are local; GitHub Actions provides the remote run outcome.
 The user explicitly authorized publication of the complete Phase 5 branch.
+
+## Phase 6 implementation and review — 2026-10-07
+
+Receiving branch was clean jarvis/phase-5-memory at 5f622c0. Its unchanged suite
+passed 106 tests with one skip (10.04 s); lint/format/types passed. Work continued
+on a new local jarvis/phase-6-engineer branch. No regeneration or upstream rewrite.
+
+Application 0.3.0 adds engineer.py, engineer_schema.py, engineer_tools.py and
+sandbox.py plus test_engineer.py. Small integration edits cover API/config/tool
+context/run failure metadata/source hashes. CI now installs the Linux runtime and
+opts into real-kernel tests. No new Python dependency or schema migration was
+needed; root/app locks and existing migrations remain unchanged. Engineer state
+is generated artifact storage, while PostgreSQL keeps authoritative run status,
+transitions and audit. Application architecture/policy/setup/threat/review/handoff
+and continuation documentation were updated, including ENGINEER.md.
+
+The change pipeline queries Graphify, reads safe tracked source, verifies target
+hashes, creates a fresh sanitized Git snapshot repository and real detached
+worktree, edits privately, computes a real Git diff, executes declared commands
+in a verified read-only offline OS worker, updates the changed graph, computes
+impact, rechecks original sources and returns owner/run-scoped artifacts. Dry runs
+say NOT_RUN. Nonzero exits, output overflow, deadlines, stale sources and resource
+failures cannot become successful AgentRuns. Actual source application, repository
+commits, pushes, merges and deployment are not registered. This application
+workflow does not perform the separate Git checkpoint action of this coding task.
+
+Bubblewrap's kernel probe checks PID/network isolation, UID/capability drop,
+no-new-privileges, hard process bounds and sanitized environment before tool
+registration. prlimit caps CPU/address space/file/descriptors; tmpfs caps aggregate
+temporary writes. No host fallback, application secrets, Git metadata, network or
+project dependency installation are available in the worker. Requirements/limits
+are documented precisely; production cgroup memory quotas, kernel defense in
+depth and multi-worker operation remain future work. Command support is system
+Python's standard library, not an unrestricted multi-language development image.
+
+Tests found and fixed process-cap placement during namespace setup, a writable
+private-root mount, generated PWD handling in readiness, CPU-signal wrapper exit
+representation and bounded Unicode report previews. Adversarial cases include
+symlink/path/credential targets, host/runtime/source writes, network, environment
+secrets, malicious Git hooks/filter configuration and README instructions, CPU/
+memory/process/file/tmpfs/log/wall limits, cancellation, stale hashes, source
+changes during tests, artifact ownership/retention and policy denial. Fake-model
+E2E traverses graph evidence → typed change → policy → real worker → durable result.
+No paid provider call was required. JARVIS_REVIEW.md records the self-review.
+
+Real migrated loopback HTTP smoke passed health 200, unauthorized 401, kernel
+readiness, change submission 202, run COMPLETED/VERIFIED, artifact 200 and artifact
+discovery. Source stayed unchanged; worker/server stopped afterward. Temporary
+fixtures/database/artifacts remain isolated scratch, not user data.
+
+Exact current commands (from apps/jarvis, fresh workflow dependency environment):
+
+```sh
+../../.venv/bin/ruff check .
+../../.venv/bin/ruff format --check .
+../../.venv/bin/pyright
+JARVIS_TEST_SANDBOX=true JARVIS_TEST_DATABASE_URL=postgresql+asyncpg://jarvis:jarvis-local-test@127.0.0.1:55432/jarvis_test ../../.venv/bin/python -m pytest -q
+JARVIS_TEST_SANDBOX=true JARVIS_TEST_PGVECTOR=true JARVIS_TEST_DATABASE_URL=postgresql+asyncpg://jarvis:jarvis-local-test@127.0.0.1:55433/jarvis_vector_test ../../.venv/bin/python -m pytest -q
+```
+
+Root commands actually executed:
+
+```sh
+PATH=/workspace/graphify/.venv/bin:/usr/local/bin:/usr/bin:/bin .venv/bin/python -m pytest tests/ -q
+work/jarvis-venv/bin/python -m build --no-isolation --outdir work/phase6-build apps/jarvis
+work/jarvis-venv/bin/python work/phase6-http-smoke.py
+.venv/bin/graphify update .
+```
+
+Raw logs/builds are in ignored work/phase6-* and recorded summaries are in
+docs/jarvis/verification/. The initial restricted upstream run had 6,469 passes,
+108 skips and ten failures, including an additional denied Unix socket. The
+local-socket-authorized full run had 6,472 passes, 108 skips and seven existing
+DNS-dependent failures (146.91 s). Comparison against Phase 5 shows no new failure
+identifier. No upstream source/test/metadata/license drift was changed to make
+checks pass. Graph synchronization produced 19,296 nodes, 40,153 edges and 1,109
+communities; no paid labeling was run.
+
+Next: phase 7 Tutor objectives/quizzes/learner-evidence mastery/review tasks.
+Chief of Staff/watchers, campaigns and dice, frontend/PWA, optional voice,
+integrations and complete production hardening remain pending. No Phase 6 push,
+merge, deployment, real external write or live-model availability is claimed.
+
+Final fresh-environment suites: **137 passed, 1 skipped** on PostgreSQL (23.66 s)
+and **137 passed, 1 skipped** on pgvector (21.44 s). Lint/format/types passed
+(35 Python files, zero type errors/warnings); the 0.3.0 wheel/sdist built and package
+source parity was checked. Full verification and preserved-boundary evidence are
+recorded in JARVIS_PROGRESS.md and docs/jarvis/verification/. Remote Phase 6 CI has
+not run because this task does not authorize publishing the local branch.

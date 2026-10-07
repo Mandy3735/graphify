@@ -1,4 +1,4 @@
-# Adversarial review — foundation and phase 5 checkpoint
+# Adversarial review — foundation, memory and Engineer checkpoint
 
 Reviewed the delivered API/model/run/tool/Graphify/persistence boundary as a hostile
 reviewer. This is source/test review, not a third-party penetration test. Future
@@ -18,7 +18,7 @@ features are not counted as complete merely because their names exist in config.
    no-follow traversal and atomic same-directory writes replace resolve-then-open
    patterns. Reads reject non-regular, oversized and multiply linked files.
    Graphify receives a safely staged source snapshot; the parser worker gets only
-   PATH/LANG/PYTHONHASHSEED, not application credentials. No shell tool is enabled.
+   PATH/LANG/PYTHONHASHSEED, not application credentials. No unrestricted host shell is enabled.
 4. **High-stakes utility selection and failed fallback lacked sufficient records.**
    High-stakes requests select the configured reasoning model even when utility
    routing is requested; no high-stakes fallback. Selected models, failed attempts,
@@ -73,6 +73,50 @@ configuration. Lint/format/types and 0.2.0 wheel/sdist pass. Real migrated HTTP
 create/search/chat-provenance/correct/delete/export workflow passes with fake
 providers. Full upstream regression retains the same nine pre-existing failures.
 
+## Phase 6 hostile review and fixes
+
+- Verified real PID/network namespace separation, UID 65534, zero effective
+  capabilities, no-new-privileges and hard process caps before registering tools.
+  Unavailable isolation leaves text/memory operational with no execution fallback.
+- **Applying NPROC before namespace setup blocked the runtime under shared host
+  user counts.** It now applies after isolation and privilege drop, before Python.
+  Real fork tests demonstrate the enforced cap without skipping failed setup.
+- **The private sandbox root initially allowed disposable root-file writes.**
+  Root/dev/proc are now read-only; only a 16 MiB private tmpfs is writable. Tests
+  prove host/source/runtime writes, symlink targets and network access are denied.
+- No Git checkout/add/diff runs against the untrusted original repository. Only
+  HEAD/tracked-name reads are allowed there; source bytes use no-follow IO. Fresh
+  private snapshot repositories exclude hooks/config/attributes/credentials.
+  Malicious post-checkout hooks, smudge configuration and README instructions
+  cannot gain host authority. Source trees never enter host shell execution.
+- Exact source hashes, duplicate-path rejection, new-target/symlink checks, actual
+  Git patches and source rechecks prevent stale/ambiguous edits. Source SHA is
+  emitted by the existing bounded read tool. The original repository is unchanged.
+- Untrusted tests get no inherited API/database/token secrets or Git metadata.
+  Memory, CPU, processes, per-file and aggregate tmpfs, wall/output limits are
+  exercised in real workers. Cancellation closes subprocess sessions/descendants,
+  removes intermediates and retains an owner/run-scoped report.
+- Failure envelopes make AgentRun FAILED before a model can describe success.
+  Artifact owner checks, real API authentication, mode/project/grant denial and
+  durable fake-model E2E are verified alongside all existing approval/memory tests.
+- Full reports retain bounded output and provenance; budgeted previews and Unicode
+  fallback envelopes prevent large reports overflowing registry/model context.
+  Retention is capped at 128 jobs; no unbounded artifact accumulation is permitted.
+
+Remaining execution limits: ordinary local Git repositories, eligible tracked
+text only, small replacement edits, standard-library Python runtime, no network
+or dependency installation, shared Linux kernel and per-process (not aggregate
+cgroup) memory cap. Operator cleanup handles retained/orphan jobs. No multi-worker,
+source-apply, repository commit/merge/push/deploy, or production release is claimed.
+See docs/jarvis/ENGINEER.md for details. This is a self-review, not an independent
+penetration test.
+
+Final Phase 6 checks: 137 passed, one configuration-specific skip in each full
+PostgreSQL/pgvector suite with real kernel tests enabled; lint/format/types,
+0.3.0 package builds, real HTTP smoke and scoped graph navigation passed. Full
+authorized upstream regression had 6,472 passes and seven existing DNS failures.
+No new upstream failure identifier. See progress for the restricted-run comparison.
+
 ## Remaining limitations and release decision
 
 - Only single-user bearer identity, one API process, local POSIX deployment and a
@@ -83,11 +127,11 @@ providers. Full upstream regression retains the same nine pre-existing failures.
 - No production TLS/token rotation/request-rate limiting or global cost quota.
   Concurrent runs, per-run tools/tokens/context/output/deadlines are bounded.
 - The parser worker is a credential-free AST parser, not an arbitrary-code sandbox.
-  Engineer editing/execution remains disabled pending OS sandbox isolation.
+  Engineer execution is opt-in, kernel-verified and limited to system-Python commands.
 - Non-idempotent external effects need provider idempotency or human reconciliation
   after an interrupted attempt. No real external-write adapter is registered.
 - Campaign membership/state/visibility, Tutor mastery, dedicated Chief of Staff,
-  Engineer edits, frontend accessibility/PWA, voice, watchers and integrations are
+  frontend accessibility/PWA, voice, watchers and integrations are
   pending. They have no implemented security or functionality claim yet.
 - Memory is owner-scoped, including PUBLIC/PARTY. Its dedicated UI, automatic
   expiry purge, comprehensive conversation retention and large-archive ANN indexing
@@ -99,5 +143,5 @@ providers. Full upstream regression retains the same nine pre-existing failures.
 
 No unresolved CRITICAL/HIGH issue is known within the bounded, single-process
 local checkpoint. This does not authorize public production release or imply the
-complete JARVIS definition of done has been met. Next: phase 6 sandboxed Engineer
-workflow, following JARVIS_PLAN.md.
+complete JARVIS definition of done has been met. Next: phase 7 evidence-backed
+Tutor workflow, following JARVIS_PLAN.md.

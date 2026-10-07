@@ -23,3 +23,10 @@ process fails afterward, do not automatically retry it: report failure and requi
 human reconciliation. Claiming exactly-once delivery to a remote service without
 its idempotency support would be incorrect. No real external integration is
 registered at this checkpoint; fake integrations verify the contract in tests.
+
+Phase 6 adds opt-in engineer.write and engineer.execute grants. Engineer tools
+remain ENGINEER-only, bind the actual run/project/actor, and operate only on
+private snapshots/worktrees. Kernel readiness is required before registration.
+No source apply, repository commit, push, merge, deployment or external-write
+adapter is registered. Declared command failure makes the run FAILED. See
+[ENGINEER.md](ENGINEER.md) for the enforced execution boundary.

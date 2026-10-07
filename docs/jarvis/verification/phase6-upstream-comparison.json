@@ -1,0 +1,29 @@
+{
+  "phase5_failures": [
+    "tests/test_detect.py::test_graphifyignore_hermetic_without_vcs",
+    "tests/test_hooks.py::test_no_git_repo_raises",
+    "tests/test_security.py::test_validate_url_accepts_http",
+    "tests/test_security.py::test_validate_url_accepts_https",
+    "tests/test_security.py::test_safe_fetch_returns_bytes",
+    "tests/test_security.py::test_safe_fetch_raises_on_non_2xx",
+    "tests/test_security.py::test_safe_fetch_raises_on_size_exceeded",
+    "tests/test_security.py::test_safe_fetch_text_decodes_utf8",
+    "tests/test_security.py::test_safe_fetch_text_replaces_bad_bytes"
+  ],
+  "phase6_failures": [
+    "tests/test_security.py::test_validate_url_accepts_http",
+    "tests/test_security.py::test_validate_url_accepts_https",
+    "tests/test_security.py::test_safe_fetch_returns_bytes",
+    "tests/test_security.py::test_safe_fetch_raises_on_non_2xx",
+    "tests/test_security.py::test_safe_fetch_raises_on_size_exceeded",
+    "tests/test_security.py::test_safe_fetch_text_decodes_utf8",
+    "tests/test_security.py::test_safe_fetch_text_replaces_bad_bytes"
+  ],
+  "new_failures": [],
+  "no_longer_failing_in_authorized_run": [
+    "tests/test_detect.py::test_graphifyignore_hermetic_without_vcs",
+    "tests/test_hooks.py::test_no_git_repo_raises"
+  ],
+  "summary": "7 failed, 6472 passed, 108 skipped, 1306 warnings in 146.91s (0:02:26)",
+  "environment_note": "Default sandbox run additionally denied a Unix-domain socket (10 failed, 6469 passed). Authorized local-socket run passed that test and two prior filesystem-dependent failures. Seven existing DNS-dependent failures remain."
+}

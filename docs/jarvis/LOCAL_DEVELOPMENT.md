@@ -67,7 +67,7 @@ POST `/api/tools/execute`, e.g.:
 Project paths are trusted operator registrations, never accepted in tool args.
 For a large repository, narrow questions or use file-qualified symbols.
 
-## DEMO B — Engineer evidence (partial)
+## DEMO B — Engineer workflow (implemented in bounded scope)
 
 POST `/api/chat` with:
 
@@ -76,9 +76,13 @@ POST `/api/chat` with:
 ```
 
 The run queries Graphify before the first model call and records evidence/tool
-activity. Fake mode explicitly identifies its response. Full code modification,
-worktree isolation, test execution and diff review are phase 6, not implemented.
-The fixture index/update/impact workflow is automated in test_graph_security.py.
+activity. Fake mode explicitly identifies its response. For an actual change workflow,
+opt in to the verified Linux worker and POST /api/engineer/changes with exact
+source hashes, proposed edits and standard-library Python test commands. Poll
+the durable run, inspect the owner-scoped artifact, and review the patch. The
+original repository stays unchanged. See [ENGINEER.md](ENGINEER.md) for setup,
+limits, dry runs and a complete request example. test_engineer.py runs the real
+worktree/command/impact workflow and adversarial isolation tests.
 
 ## Approval contract demonstration (implemented via fake integration tests)
 
@@ -92,7 +96,7 @@ expiry/tool-version mutation, revoked capability, races and concurrent PG claims
 
 These modes can start independent generic text runs with authorized personal
 memory. Dedicated project/task, learner mastery, campaign membership/state/dice
-workflows remain pending phases 6–8. Memory visibility is enforced, but campaign
+workflows remain pending later milestones. Memory visibility is enforced, but campaign
 membership and the complete GM secrecy system are not yet implemented.
 
 ## DEMO F — Memory inspector and provenance (implemented)
@@ -202,3 +206,10 @@ guarantee. Fallback needs both JARVIS_ALLOW_FALLBACK=true and allow_fallback=tru
 on the request. High-stakes requests deny fallback. Live streaming is consumed
 through the Responses SDK; the public SSE surface streams run updates and the
 completed result, not intermediate reasoning or token deltas.
+
+## Linux Engineer tests
+
+Install the Bubblewrap/util-linux/system-Python runtime described in ENGINEER.md.
+Add `JARVIS_TEST_SANDBOX=true` to both disposable PostgreSQL test commands above.
+This opts in to real kernel isolation tests; an unavailable sandbox fails those
+tests. The application keeps execution disabled by default and text available.

@@ -44,3 +44,9 @@ Current verification and limitations are recorded in JARVIS_PROGRESS.md.
 No automatic deployment, API purchase, model availability assumption, or outbound
 communication is authorized by retrieved repository data. Decisions about grants,
 roots and fallback live in trusted server configuration.
+
+The third checkpoint implements phase 6 within a bounded Linux/system-Python
+worker scope: graph-first private snapshot worktree, hash-bound edits, dry run,
+real offline tests, graph update/impact and owner/run-scoped patch artifacts.
+Source application/push/merge/deploy are separate authorities and not registered.
+Tutor remains the exact next milestone. See docs/jarvis/ENGINEER.md and current progress.

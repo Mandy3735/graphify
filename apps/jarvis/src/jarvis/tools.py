@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from pathlib import Path
@@ -42,6 +43,7 @@ class ReadInput(ProjectInput):
 class ToolExecutionContext:
     actor: Actor
     request: ChatRequest
+    run_id: str = ""
 
 
 @dataclass(frozen=True)
@@ -158,7 +160,12 @@ def graph_tools(provider: GraphifyKnowledgeProvider) -> ToolRegistry:
             raise PathDenied("Only bounded source/document text reads are enabled")
         content = await asyncio.to_thread(safe_read, provider.root(arguments["project_id"]), path)
         return ToolOutput(
-            data={"source_file": path, "text": content.decode(errors="replace")[:12000]}
+            data={
+                "source_file": path,
+                "text": content.decode(errors="replace")[:12000],
+                "sha256": hashlib.sha256(content).hexdigest(),
+                "preview_truncated": len(content.decode(errors="replace")) > 12000,
+            }
         )
 
     registry.register(

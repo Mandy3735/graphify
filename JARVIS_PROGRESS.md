@@ -1,12 +1,10 @@
 # JARVIS progress — 2026-10-07
 
-Repository `/workspace/graphify`; active branch `jarvis/phase-5-memory`; parent
-checkpoint `b04e109ab2d15967d06dff364f376de41e92bde0` (`jarvis/foundation`).
-Original Graphify 0.9.77 parent: `5c7b84792f453582676548185aaec3824d51dfe2`.
-Phase-5 implementation commit: `dc37855efea99f2074e5fe6e686df2a62b5ac6e3`.
-The GitHub handoff branch is `jarvis/phase-5-memory`, including a subsequent
-type-check configuration fix. The earlier `jarvis/foundation` remains available.
-No deployment or merge is part of this handoff.
+Repository `/workspace/graphify`; active **local** branch `jarvis/phase-6-engineer`;
+receiving checkpoint `5f622c094f0a023a0cbcfc0f39850f9866621b78` on the published
+`jarvis/phase-5-memory` branch. Original Graphify parent remains
+`5c7b84792f453582676548185aaec3824d51dfe2`. Phase 6 is not pushed, merged or deployed.
+Resolve the exact local checkpoint with `git rev-parse HEAD` or its delivery manifest.
 
 ## GitHub check configuration verification — 2026-10-07
 
@@ -24,7 +22,7 @@ skip (12.71 s). These are local results; inspect GitHub Actions for remote statu
 
 ## Delivered checkpoint
 
-Phases 0–5, bounded to the application scope defined in JARVIS_PLAN.md:
+Phases 0–6, bounded to the application scope defined in JARVIS_PLAN.md:
 
 - Upstream reconnaissance, complete baseline, boundary and milestone plan.
 - Independent application package/dependency lock; FastAPI/OpenAPI; authenticated
@@ -41,7 +39,8 @@ Phases 0–5, bounded to the application scope defined in JARVIS_PLAN.md:
   transaction tests and append-oriented audit with DB mutation guard.
 - Engineer text requests query Graphify before model analysis when project_id is
   supplied. Four mode labels keep independent run context; dedicated mode workflows
-  are not yet implemented. No arbitrary execution or real external writes enabled.
+  remain incomplete apart from bounded Engineer work below. No host execution or
+  real external-write adapter is enabled.
 - WORKING/EPISODIC/SEMANTIC/CANONICAL/PREFERENCE memory with required sources,
   owner-scoped namespaces, mode/visibility/expiry filtering before retrieval,
   linked revision corrections, eligible lineage deletion and append-only audit.
@@ -55,8 +54,22 @@ Phases 0–5, bounded to the application scope defined in JARVIS_PLAN.md:
 - Authenticated inspector/search/create/correction/delete/export APIs. Models have
   run-scoped memory.search and inactive memory.propose_write; only explicit human
   acceptance creates active memory. Canonical/GM-secret model proposals are denied.
-- Additive immutable migration 0002, application 0.2.0, and PostgreSQL/pgvector CI
+- Phase-5 immutable migration 0002, application 0.2.0, and PostgreSQL/pgvector CI
   configurations. No root Graphify code, dependencies, licenses or locks changed.
+
+- Opt-in kernel-verified Linux Bubblewrap worker: offline read-only source/runtime,
+  unprivileged UID, no capabilities, no-new-privileges, disabled nested user
+  namespaces and bounded CPU/memory/process/file/output/tmpfs/time resources.
+- Graph-first private sanitized Git snapshot repository and real detached worktree;
+  expected source hashes, dry-run proposals, actual Git patch, declared tests,
+  graph update/impact, source recheck and owner/run-scoped artifacts.
+- ENGINEER-only tools and authenticated status/change/artifact APIs; denied
+  capabilities cannot execute; failed verification makes the durable run FAILED.
+  Source reads expose exact SHA-256 and preview status. Cancellation kills workers,
+  cleans intermediates and retains discoverable CANCELLED reports.
+- No migration added: schema 0002 and all existing memory/approval/audit contracts
+  remain intact. Worker supports system-Python standard-library commands only;
+  see docs/jarvis/ENGINEER.md for precise limits and retained-artifact handling.
 
 ## Foundation verification history
 
@@ -110,14 +123,36 @@ No paid model or embedding call was needed. SDK adapters are covered with fakes.
 Portable verification snapshots are in docs/jarvis/verification; complete raw logs
 remain in ignored work/. Graph synchronization is recorded there as well.
 
+## Phase 6 actual checks — local checkpoint
+
+| Check | Observed result |
+|---|---|
+| Receiving phase-5 baseline | 106 passed, 1 skip (10.04 s); lint/format/types passed |
+| Final fresh-environment PostgreSQL + real sandbox | **137 passed, 1 skipped** (23.66 s) |
+| Final fresh-environment pgvector + real sandbox | **137 passed, 1 skipped** (21.44 s) |
+| Real-kernel / workflow coverage | Isolation, resource limits, cancellation, artifact ownership, stale sources, policy denial and fake-model E2E passed |
+| Ruff lint/format / Pyright | Passed; 35 Python files formatted; zero type errors/warnings |
+| Application 0.3.0 wheel/sdist | Built successfully; source/test/binary parity checked |
+| Real migrated loopback HTTP | Health 200, unauthorized 401, sandbox ready, submit 202, COMPLETED/VERIFIED, artifact 200, original source unchanged |
+| Full authorized upstream regression | 6,472 passed, 108 skipped, 7 existing DNS failures (146.91 s); no new failure identifier |
+| Restricted upstream run | 6,469 passed, 108 skipped, 10 failed; additional Unix-socket restriction resolved with local-socket authorization |
+| Graph synchronization / navigation | 19,296 nodes, 40,153 edges, 1,109 communities; scoped query/explain worked |
+| Preserved boundary | No changes to Graphify core/tests, root metadata/lock, licenses, skill generation, application lock or existing migrations |
+
+The kernel suite is opt-in; these runs explicitly enabled it and did not skip
+unavailable OS isolation. The single skip in each full run covers the opposite
+vector configuration. No paid provider call, source apply, external write, push,
+merge or deployment was performed. Updated CI is configured but has not run
+remotely for this unpushed checkpoint. Recorded snapshots are in
+`docs/jarvis/verification/phase6-*`; full logs/builds stay in ignored work/.
+
 ## Not done
 
-Phases 6–10 (sandboxed Engineer edits,
-Tutor, Game Master, Command Center/PWA, voice), watcher/transcript/integration
+Phases 7–10 (Tutor, Game Master, Command Center/PWA, voice), watcher/transcript/integration
 workflows, and complete production hardening/full-program adversarial acceptance
 remain pending. Phases 11–12 checks/review were applied only to delivered scope.
 No frontend build/tests or live paid model call is claimed. The full specification
-definition of done is not met by this memory checkpoint. Personal memory PUBLIC/
+definition of done is not met by this Engineer checkpoint. Personal memory PUBLIC/
 PARTY data remains owner-scoped; campaign membership/sharing is phase 8. The
 dedicated memory UI is phase 9. Expired memory is filtered but not background
 purged, and conversation/tool transcript retention is distinct from memory
@@ -125,18 +160,16 @@ deletion. See MEMORY.md for explicit lifecycle and retrieval limits.
 
 ## Exact next milestone
 
-Phase 6: Engineer workflow with Graphify plan/retrieval/impact, isolated worktrees,
-a constrained worker, resource/time/output limits, a sanitized environment,
-dry-run/diff review and meaningful regression tests. Establish OS isolation before
-enabling any untrusted code execution. Preserve memory visibility/provenance,
-exact approvals and the existing Graphify/application regression boundary.
+Phase 7: persisted Tutor learning objectives, source-grounded lessons/quizzes,
+learner attempts, evidence-backed mastery and due spaced-review tasks. An
+explanation, model-generated answer or self-reported success must never establish
+mastery by itself. Keep owner/capability boundaries and all Phase 6 guarantees.
 
 Recommended next Codex instruction:
 
 > Read CODEX_HANDOFF.md and docs/jarvis/CODEX_NEXT_PROMPT.md, then implement phase
-> 6's sandboxed Engineer workflow. Preserve the verified Graphify, foundation and
-> memory checkpoint. Do not register arbitrary host shell execution. Verify the
-> actual OS sandbox boundary, Graphify evidence/impact, worktree isolation and
-> complete applicable regression checks, review security and update progress.
+> 7's Tutor workflow. Preserve Graphify, memory, approvals and the opt-in kernel
+> sandbox. Establish learner-performance evidence before recording mastery.
 
-Setup/demonstrations: docs/jarvis/LOCAL_DEVELOPMENT.md. Review: JARVIS_REVIEW.md.
+Setup/demonstrations: docs/jarvis/LOCAL_DEVELOPMENT.md and ENGINEER.md. Review:
+JARVIS_REVIEW.md. This checkpoint does not complete the full original specification.

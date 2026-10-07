@@ -2,33 +2,29 @@
 
 This repository contains the original Graphify project and the JARVIS foundation
 created from [the full supplied specification](docs/jarvis/MASTER_SPEC.md).
-The current checkpoint branch is `jarvis/phase-5-memory`, based on the foundation
-at `b04e109ab2d15967d06dff364f376de41e92bde0`, preserving Graphify 0.9.77 at
+The current **local** checkpoint branch is `jarvis/phase-6-engineer`, based on
+`5f622c094f0a023a0cbcfc0f39850f9866621b78` (published phase 5), preserving
+Graphify 0.9.77 at
 `5c7b84792f453582676548185aaec3824d51dfe2`. The foundation was published on
-`jarvis/foundation`; the complete phase-5 handoff branch is
+`jarvis/foundation`; the published phase-5 handoff branch is
 `jarvis/phase-5-memory` in `Mandy3735/graphify`.
 
 ## Open the project in another Codex session
 
-The recommended transfer is the complete branch in your existing repository,
-`Mandy3735/graphify`. Connect/select this repository
-in Codex and select `jarvis/phase-5-memory` as the starting branch. Paste the contents
-of [CODEX_NEXT_PROMPT.md](docs/jarvis/CODEX_NEXT_PROMPT.md) into the task.
-Codex receives the source, tests, migrations, dependency locks, original prompt,
-licenses, and project history together. Chat history is not required.
+The current Phase 6 branch is local and not published. The GitHub branch
+`Mandy3735/graphify:jarvis/phase-5-memory` remains the earlier complete memory
+checkpoint; it does not contain the new Engineer implementation.
 
-If using Codex locally, open a checkout of this branch:
+For local Codex, open this repository and select `jarvis/phase-6-engineer`. For
+another cloud session, publish this branch only with user authorization, then
+select it in Codex. Alternatively restore `work/phase6-delivery/JARVIS-phase6.bundle`
+and verify HEAD against that directory's manifest before continuing. Source/tests,
+locks, original specification, migrations and history are included; chat history
+is unnecessary. Use the continuation prompt for Phase 7 in this checkout.
 
-```sh
-git clone --branch jarvis/phase-5-memory https://github.com/Mandy3735/graphify.git graphify-jarvis
-cd graphify-jarvis
-```
-
-The phase-5 implementation commit is `dc37855efea99f2074e5fe6e686df2a62b5ac6e3`.
-The handoff branch also includes the subsequent GitHub type-check configuration
-fix and these updated instructions. Verify its remote HEAD before starting
-another session. Offline delivery manifests identify their earlier snapshots;
-they do not identify subsequent branch commits.
+The receiving phase-5 commit is `5f622c094f0a023a0cbcfc0f39850f9866621b78`.
+Resolve current local HEAD with `git rev-parse HEAD`. Delivery manifests identify
+specific snapshots, not subsequent commits. No upload is established by this guide.
 
 ## Read these files first
 
@@ -37,7 +33,8 @@ they do not identify subsequent branch commits.
 3. `JARVIS_PLAN.md`: phases and acceptance criteria.
 4. `docs/jarvis/MASTER_SPEC.md`: the complete original product specification.
 5. `docs/jarvis/LOCAL_DEVELOPMENT.md`: install, migrate, run, and test commands.
-6. `JARVIS_REVIEW.md`, `THREAT_MODEL.md`, and `docs/jarvis/UPSTREAM_BOUNDARY.md`.
+6. `docs/jarvis/ENGINEER.md`, `JARVIS_REVIEW.md`, `THREAT_MODEL.md`, and
+   `docs/jarvis/UPSTREAM_BOUNDARY.md`.
 
 `JARVIS_ENGINEERING_REPORT.md` contains the detailed engineering record. The
 portable `docs/jarvis/verification/` snapshots retain the foundation test result
@@ -45,12 +42,14 @@ and the upstream failure comparison; full session logs remain scratch files.
 
 ## What has been delivered
 
-Phases 0–5 are implemented in the independent `apps/jarvis` Python package:
+Phases 0–6 are implemented in the independent `apps/jarvis` Python package:
 authenticated FastAPI, PostgreSQL/Alembic, Graphify adapter, fake and official
 OpenAI Responses providers, durable bounded runs, typed tools, deterministic
 policy, exact one-use approvals, cancellation, audit records, and structured
 personal memory with provenance, filtered retrieval, ContextBuilder and inspector
-APIs. Optional pgvector and deterministic fake embeddings are verified.
+APIs, plus kernel-isolated small Engineer changes, tests, actual Git patches,
+graph update/impact and owner/run-scoped artifacts. Optional pgvector and
+deterministic fake embeddings are verified.
 
 The receiving foundation suite passed **59 tests including real PostgreSQL**.
 The phase-5 suite passed **106 tests, 1 configuration-specific skip** on each of
@@ -65,37 +64,41 @@ fresh checkout. Explicitly configuring Pyright's Graphify source path fixed the
 nine missing-import errors seen in the foundation workflow. Lint, format, typing,
 wheel/sdist builds, and both PostgreSQL suites passed in that fresh environment.
 
-The entire JARVIS specification is not complete. Full Engineer
-edit/test workflow, dedicated Tutor and Game Master workflows, Command Center,
+Phase 6 passed **137 tests, one configuration-specific skip** on each database
+configuration with real kernel tests explicitly enabled in the fresh workflow
+dependency environment. Lint/format/types, package builds and real HTTP smoke
+passed. Authorized upstream regression passed 6,472 tests with 108 skips and
+seven existing DNS failures; there were no new failure identifiers. Phase 6 is
+local, so these are not remote CI results.
+
+The entire JARVIS specification is not complete. Engineer scope/limits are in
+docs/jarvis/ENGINEER.md. Dedicated Tutor and Game Master workflows, Command Center,
 and voice remain pending. Dedicated inspector UI and campaign membership/sharing
-remain later phases. The next implementation milestone is **phase 6**.
+remain later phases. The next implementation milestone is **phase 7**.
 
 ## Portable offline transfer
 
-The phase-5 delivery is prepared in `work/phase5-delivery`; verify its own manifest
-and branch when restoring this checkpoint. Original files in `work/delivery`
-retain the earlier foundation snapshot and do not contain phase 5.
+The phase-6 delivery is prepared in `work/phase6-delivery`. Earlier files in
+`work/phase5-delivery` and `work/delivery` retain their prior snapshots and do not
+contain Phase 6.
 
-- `JARVIS-phase5.bundle`: self-contained Git history and phase-5 branch.
-- `JARVIS-phase5-source.zip`: all tracked source files for manual inspection.
-- `JARVIS-phase5.patch`: changes against the verified foundation parent.
-- `CODEX_NEXT_PROMPT.md`: a standalone continuation prompt.
-- `manifest.json` and `checksums.json`: checkpoint identity, file inventory,
-  verification summary, and SHA-256 checksums.
-- Engineering/setup documents, memory guide, and installable 0.2.0 wheel/sdist.
+- `JARVIS-phase6.bundle`: complete Git history and the local Engineer branch.
+- `JARVIS-phase6-source.zip`: tracked source snapshot.
+- `JARVIS-phase6.patch`: changes against the receiving phase-5 handoff.
+- `manifest.json` and `SHA256SUMS`: exact commit, file inventory and checksums.
+- Updated handoff/prompt/Engineer/setup/report documents and 0.3.0 wheel/sdist.
 
-Restore the bundle in a fresh local directory:
+Restore in a fresh local directory:
 
 ```sh
-git clone --branch jarvis/phase-5-memory JARVIS-phase5.bundle graphify-jarvis
+git clone --branch jarvis/phase-6-engineer JARVIS-phase6.bundle graphify-jarvis
 cd graphify-jarvis
 git status --short
 git rev-parse HEAD
 ```
 
-Compare `HEAD` to `checkpoint_commit` in `manifest.json`. To inspect a bundle
-before cloning, run `git bundle list-heads JARVIS-phase5.bundle`.
-Use the bundle for a full Git checkout; the source ZIP is a source snapshot.
+Compare HEAD to `checkpoint_commit` in the manifest. Inspect bundle heads with
+`git bundle list-heads JARVIS-phase6.bundle` before cloning if needed.
 
 The delivery intentionally excludes virtual environments, caches, databases,
 generated graphs, `.env` credentials, and transient worker state. Recreate those

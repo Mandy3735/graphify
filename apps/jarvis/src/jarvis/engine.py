@@ -369,7 +369,7 @@ class Engine:
         output = await self.registry._execute_authorized(
             tool,
             arguments,
-            ToolExecutionContext(self.actor, ChatRequest.model_validate(run.request)),
+            ToolExecutionContext(self.actor, ChatRequest.model_validate(run.request), run.id),
         )
         async with self.db.sessions.begin() as session:
             run = await self._run(session, run_id)
@@ -392,6 +392,26 @@ class Engine:
             ]
             run.pending = None
             audit(session, self.actor.id, "tool.completed", {"tool": tool.name}, run_id)
+            if tool.name.startswith(("engineer.", "sandbox.")):
+                run.metadata_json = {
+                    **run.metadata_json,
+                    "engineering": output.data,
+                }
+                audit(
+                    session,
+                    self.actor.id,
+                    "engineer.result",
+                    {
+                        "artifact_id": output.data.get("artifact_id"),
+                        "status": output.data.get("workflow_status"),
+                    },
+                    run_id,
+                )
+                if output.data.get("workflow_status") == "FAILED":
+                    run.result = output.model_dump_json()
+                    run.error = "engineering_verification_failed"
+                    self._move(session, run, RunState.FAILED, "Engineering verification failed")
+                    return
             if tool.name.startswith("graph."):
                 run.metadata_json = {
                     **run.metadata_json,

@@ -1,0 +1,24 @@
+{
+  "health": 200,
+  "unauthorized": 401,
+  "sandbox": {
+    "configured": true,
+    "available": true,
+    "runtime": "Linux Bubblewrap, system Python standard library",
+    "host_execution_fallback": false
+  },
+  "submit": 202,
+  "state": "COMPLETED",
+  "workflow_status": "VERIFIED",
+  "artifact_id": "278dd76f-a2a4-4ff5-8419-1d0e833a3348",
+  "artifact": 200,
+  "artifact_discovery": [
+    {
+      "artifact_id": "278dd76f-a2a4-4ff5-8419-1d0e833a3348",
+      "workflow_status": "VERIFIED"
+    }
+  ],
+  "source_unchanged": true,
+  "diff_sha256": "136f8233fa87535a9a2a8140acd10a9b907cc1fbc0cfc245b4d34a52c92f074a",
+  "source_commit": "db7ae982f5c06ebd5d739f7f83f3574b41ddfa2c"
+}

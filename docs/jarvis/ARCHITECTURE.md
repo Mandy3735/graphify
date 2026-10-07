@@ -1,4 +1,4 @@
-# JARVIS architecture — memory checkpoint
+# JARVIS architecture — Engineer checkpoint
 
 This checkpoint is an authenticated, single-user API modular monolith.
 It is not a production personal operating system. See JARVIS_PROGRESS.md for
@@ -38,9 +38,12 @@ default. Live reasoning uses only the official SDK behind a provider protocol.
 Model identifiers and fallback decisions are configuration driven.
 
 Indexing parses safely staged source snapshots in a credential-free subprocess.
-This parser worker is not an arbitrary-code sandbox. No shell/run-command tool is
-registered. The Engineer editing sandbox is a separate future phase requiring OS
-isolation before hostile project code can be executed.
+This parser worker is not an arbitrary-code sandbox. Phase 6 adds a separate
+opt-in Linux Bubblewrap worker, verified before command tools are registered.
+A private snapshot repository/worktree produces edits and a read-only execution
+snapshot; host credentials, Git metadata and network access remain outside the
+worker. Durable run metadata links bounded owner-scoped artifact reports. See
+[ENGINEER.md](ENGINEER.md) for scope, exact limits and remaining production needs.
 
 Personal memory uses owner/namespace/mode/visibility filtering before retrieval.
 ContextBuilder combines relevant bounded records with source references and

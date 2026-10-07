@@ -14,11 +14,15 @@ from jarvis.db import AgentRun, AgentStep, ApprovalRequest, AuditEvent, Database
 from jarvis.domain import TERMINAL, ChatRequest, Mode, StrictModel, ToolProposal
 from jarvis.embeddings import EmbeddingProvider, embedding_provider
 from jarvis.engine import Conflict, Engine
+from jarvis.engineer import EngineerService
+from jarvis.engineer_schema import ChangeRequest
+from jarvis.engineer_tools import register_engineer_tools
 from jarvis.graph import GraphifyKnowledgeProvider
 from jarvis.memory import MemoryConflict, MemoryDenied, MemoryService
 from jarvis.memory_api import memory_router
 from jarvis.memory_tools import register_memory_tools
 from jarvis.models import FakeModelProvider, ModelRouter, OpenAIModelProvider, ProviderFailure
+from jarvis.sandbox import SandboxUnavailable
 from jarvis.tools import ToolRegistry, graph_tools
 
 
@@ -62,6 +66,8 @@ def create_app(
         FakeModelProvider() if cfg.provider == "fake" else OpenAIModelProvider(cfg)
     )
     memory = MemoryService(db, cfg, embeddings or embedding_provider(cfg))
+    engineer = EngineerService(cfg, graph) if cfg.engineer_enabled else None
+    default_registry = registry is None
     if registry is None:
         registry = graph_tools(graph)
         register_memory_tools(registry, memory)
@@ -71,6 +77,14 @@ def create_app(
     async def lifespan(app):
         # Requires an explicitly migrated database. Recovery never replays effects.
         await memory.check_backend()
+        if engineer is not None and default_registry:
+            try:
+                await engineer.check_backend()
+            except SandboxUnavailable:
+                # Text/memory remain available; no execution tools are registered.
+                pass
+            else:
+                register_engineer_tools(registry, engineer)
         await engine.recover()
         yield
         await engine.close()
@@ -78,9 +92,10 @@ def create_app(
             await provider.close()
         await db.dispose()
 
-    app = FastAPI(title="JARVIS", version="0.2.0", lifespan=lifespan)
+    app = FastAPI(title="JARVIS", version="0.3.0", lifespan=lifespan)
     app.state.engine, app.state.database, app.state.graph = engine, db, graph
     app.state.memory = memory
+    app.state.engineer = engineer
 
     async def authenticate(authorization: Annotated[str | None, Header()] = None):
         if not authorization or not authorization.startswith("Bearer "):
@@ -142,6 +157,47 @@ def create_app(
     async def chat(request: ChatRequest):
         await admit()
         return {"run_id": await engine.create(request)}
+
+    @app.get("/api/engineer/status", dependencies=auth)
+    async def engineer_status():
+        return {
+            "configured": cfg.engineer_enabled,
+            "available": engineer is not None and engineer.sandbox.ready,
+            "runtime": "Linux Bubblewrap, system Python standard library",
+            "host_execution_fallback": False,
+        }
+
+    @app.post("/api/engineer/changes", status_code=202, dependencies=auth)
+    async def engineering_change(request: ChangeRequest):
+        await admit()
+        if engineer is None or not engineer.sandbox.ready:
+            raise HTTPException(503, "Verified Engineer sandbox unavailable")
+        return {
+            "run_id": await engine.create(
+                ChatRequest(
+                    message=request.objective, mode=Mode.ENGINEER, project_id=request.project_id
+                ),
+                ToolProposal(name="engineer.change", arguments=request.model_dump(mode="json")),
+            )
+        }
+
+    @app.get("/api/engineer/artifacts/{artifact_id}", dependencies=auth)
+    async def engineering_artifact(artifact_id: str):
+        if engineer is None or "workspace.read" not in engine.actor.capabilities:
+            raise HTTPException(403, "Engineer artifact access denied")
+        try:
+            return engineer.artifact(artifact_id, engine.actor.id)
+        except (ValueError, FileNotFoundError):
+            raise HTTPException(404, "Artifact not found") from None
+
+    @app.get("/api/engineer/artifacts", dependencies=auth)
+    async def engineering_run_artifacts(run_id: str):
+        if engineer is None or "workspace.read" not in engine.actor.capabilities:
+            raise HTTPException(403, "Engineer artifact access denied")
+        try:
+            return engineer.artifacts_for_run(run_id, engine.actor.id)
+        except ValueError:
+            raise HTTPException(422, "A run UUID is required") from None
 
     @app.get("/api/runs", dependencies=auth)
     async def runs(limit: Annotated[int, Query(ge=1, le=100)] = 30):
@@ -292,6 +348,8 @@ def create_app(
             raise HTTPException(422, "Unknown tool or invalid arguments") from None
         scope_fields = {}
         # This is an authenticated direct request; a model cannot set run context.
+        if proposal.name.startswith(("engineer.", "sandbox.")):
+            scope_fields["project_id"] = proposal.arguments["project_id"]
         if proposal.name.startswith("memory."):
             namespace = proposal.arguments.get("namespace", "personal")
             if ":" in namespace:

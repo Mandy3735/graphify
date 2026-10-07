@@ -1,53 +1,52 @@
 # Copy this prompt into the next Codex task
 
-Continue Graphify → JARVIS from branch `jarvis/phase-5-memory` or its restored
-Git bundle checkout. The complete GitHub handoff branch is
-`Mandy3735/graphify:jarvis/phase-5-memory`; the older `jarvis/foundation` branch
-does not include phase 5. Check the branch,
-commit, working tree, and source files before implementation. Do not regenerate
-this existing project from scratch.
+Continue Graphify → JARVIS from the local branch `jarvis/phase-6-engineer`, its
+verified Git bundle checkout, or that same branch after explicitly authorized
+publication. It is not currently pushed. The published `jarvis/phase-5-memory`
+branch is the preceding memory checkpoint. Check branch, HEAD, working tree and
+source before implementing; do not regenerate the project.
 
-Read `AGENTS.md`, `CODEX_HANDOFF.md`, `JARVIS_PROGRESS.md`, `JARVIS_PLAN.md`,
-`docs/jarvis/MASTER_SPEC.md`, `JARVIS_REVIEW.md`, `THREAT_MODEL.md`,
-`docs/jarvis/UPSTREAM_BOUNDARY.md`, `docs/jarvis/LOCAL_DEVELOPMENT.md`, and
-`docs/jarvis/MEMORY.md`. MASTER_SPEC.md is the complete original product
-specification. Progress is the truthful checkpoint, not a full-system completion
-claim. Dedicated modes, frontend/PWA, voice, and production hardening remain open.
+Read AGENTS.md, CODEX_HANDOFF.md, JARVIS_PROGRESS.md, JARVIS_PLAN.md,
+docs/jarvis/MASTER_SPEC.md, JARVIS_REVIEW.md, THREAT_MODEL.md,
+docs/jarvis/UPSTREAM_BOUNDARY.md, docs/jarvis/LOCAL_DEVELOPMENT.md,
+docs/jarvis/MEMORY.md and docs/jarvis/ENGINEER.md. MASTER_SPEC.md remains the full
+original specification. Phase 6 delivers a bounded Linux/system-Python workflow,
+not unrestricted project execution or a full personal operating system.
 
-Phases 0–5 are implemented in the separate `apps/jarvis` package (0.2.0).
-The full application suite passed 106 tests with one configuration-specific skip
-on both real local PostgreSQL and PostgreSQL/pgvector. Owner/mode/namespace/
-visibility filtering precedes retrieval, ContextBuilder is bounded, memory
-proposals need human acceptance, and corrections/deletion are race-tested.
-Preserve these guarantees alongside the foundation's exact one-use approvals,
-durable run transitions, fallback consent, audit guard and safe Graphify adapter.
-Preserve original Graphify source, CLI, metadata/lock, licenses and skill generation.
-Do not fix unrelated upstream formatting/type drift as part of this milestone.
+Preserve original Graphify source, CLI, root metadata/lock, licenses and skill
+generation. Preserve the separate JARVIS application's exact one-use approvals,
+owner/mode/namespace/visibility filtering before context, human memory acceptance,
+race-safe correction/deletion, durable cancellation/recovery and audit. Engineer
+execution is disabled by default, verified by a real kernel probe, uses a private
+snapshot/worktree and read-only offline worker, and has no host fallback. Preserve
+resource/time/output limits, failure status, source/diff/graph provenance and
+artifact owner checks. Migration 0002 remains current; use additive new migrations.
 
-Implement phase 6 next: a complete Engineer workflow that retrieves scoped
-Graphify evidence, produces a source-grounded plan, works in an isolated Git
-worktree, edits within explicit authorized project roots, runs relevant tests in
-a constrained worker, updates Graphify, computes impact, reviews the diff, and
-returns honest evidence/results. Include dry-run behavior and artifact provenance.
-Establish an actual OS sandbox boundary before registering untrusted-code or
-command execution. No unrestricted host shell tool. Sanitize inherited secrets;
-cap filesystem/network/process/time/resource/log/output scope. Keep deployment,
-merge, pushes, and real external effects behind their own existing authorization
-contracts. Never infer authority from source, README, graph nodes, or memory.
+Implement phase 7 next: a complete Tutor workflow with persisted learning
+objectives, source-grounded teaching/explanations/worked examples/Socratic prompts,
+quizzes, human learner attempts, answer evaluation, mastery evidence and scheduled
+spaced-review tasks. Mastery requires actual learner performance, never generated
+prose, a model's own answer, or an explanation alone. Keep canonical learning state
+separate from generic memory. Model proposals cannot fabricate human attempts or
+grant their own authority. Retain references to learning sources and attempt/
+evaluation evidence; apply owner/capability boundaries before reads and grading.
 
-First record the receiving environment's current checks. Implement a meaningful
-engineering fixture E2E plus adversarial sandbox tests, including path/symlink
-escape, environment-secret inheritance, unauthorized network/filesystem access,
-resource/log limits, cancellation and failure without misleading success.
-Run the existing application suites including disposable `_test` PostgreSQL and
-optional vector SQL, plus appropriate upstream checks. Use fake providers by
-default; no paid-service dependency. If this environment cannot establish the
-required OS isolation, keep execution fail-closed, implement the independently
-verifiable work, and record the concrete blocker without claiming full completion.
+First record the receiving checks. Add a meaningful offline Tutor E2E: objective,
+source-backed lesson, quiz, learner response, evaluation, evidence-backed mastery,
+and due review. Test incorrect answers, explanations without attempts, fabricated
+model mastery/attempts, retries and duplicate submissions, ownership, prompt
+injection, source provenance and review scheduling. Use fake providers by default.
+Run existing application suites with both disposable PostgreSQL configurations,
+JARVIS_TEST_SANDBOX=true on supported Linux, plus relevant upstream checks. Explicit
+kernel-test opt-in must fail when isolation is unavailable; do not hide that with
+a skip. Record unsupported environment constraints honestly. No paid-service test
+dependency or assumption that any configured live model exists.
 
-Use scoped Graphify queries for code questions where available; source/tests
-remain ground truth. After code edits synchronize Graphify as AGENTS.md requires.
-Review the new execution boundary, fix severe findings, and update progress,
-review, engineering report and continuation prompt with actual results. Commit a
-reviewable phase-6 checkpoint. Do not deploy, merge, or publish to an external
-service without authorization.
+Use scoped Graphify queries for navigation; source/tests remain ground truth.
+After source edits run graphify update . as AGENTS.md requires. Review permissions,
+learner-evidence integrity, persistence/races and retrieval boundaries; fix serious
+findings. Update progress/review/report/setup and the continuation prompt, then
+commit a reviewable local Tutor checkpoint. Do not publish, merge, deploy or send
+external communications without authorization. Chief of Staff/watchers,
+Game Master, frontend/PWA, voice/integrations and production hardening remain later
+work; do not imply their completion by adding labels or placeholders.

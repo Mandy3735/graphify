@@ -36,6 +36,12 @@ class Settings(BaseSettings):
     context_chars: int = Field(default=24000, ge=1000, le=64000)
     approval_ttl: int = Field(default=900, ge=30, le=3600)
     project_roots: dict[str, Path] = Field(default_factory=dict)
+    engineer_enabled: bool = False
+    engineer_state_dir: Path | None = None
+    sandbox_timeout: float = Field(default=15, ge=1, le=30)
+    sandbox_memory_mb: int = Field(default=256, ge=64, le=512)
+    sandbox_processes: int = Field(default=24, ge=8, le=48)
+    sandbox_output_bytes: int = Field(default=8192, ge=1024, le=16384)
     capabilities: frozenset[str] = frozenset(
         {"graph.read", "workspace.read", "memory.read", "memory.write", "memory.propose"}
     )
