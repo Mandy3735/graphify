@@ -442,10 +442,14 @@ results; inspect the published branch's GitHub Actions for remote verification.
 The first GitHub run (37635312503) passed dependency installation and static
 checks but failed real isolation setup on Ubuntu's Bubblewrap 0.9.0. It reported
 `loopback: Failed RTM_NEWADDR: Operation not permitted`. Setting no-new-privileges
-before the trusted Bubblewrap executable transition blocked its AppArmor setup.
-The explicit wrapper now runs inside the isolated worker, before Python; real
+before the trusted Bubblewrap executable transition can interfere with an
+AppArmor launcher profile. The explicit wrapper now runs inside the isolated worker,
+before Python; real
 probes continue to require UID 65534, zero capabilities and no-new-privileges.
-No AppArmor policy, host security control or opt-in real test was disabled.
+Remote run 37635976274 showed that this change alone was insufficient. Ubuntu's
+distribution-supplied `bwrap-userns-restrict` launcher/child profile is now installed
+in CI, while global AppArmor user namespace restrictions are explicitly required
+to remain enabled. No host security control or opt-in real test was disabled.
 
 Both full local suites passed after this adjustment: PostgreSQL **137 passed,
 1 skipped** (28.01 s), pgvector **137 passed, 1 skipped** (28.29 s). Ruff checks,

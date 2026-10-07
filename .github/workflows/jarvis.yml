@@ -39,7 +39,14 @@ jobs:
       - name: Install Linux sandbox runtime
         run: |
           sudo apt-get update
-          sudo apt-get install --yes bubblewrap util-linux python3
+          sudo apt-get install --yes bubblewrap util-linux python3 apparmor-profiles apparmor-utils
+          # Ubuntu 24.04 requires an explicit launcher profile for user namespaces.
+          # Use the distribution's child-restricting profile; keep global protections on.
+          if [ ! -f /etc/apparmor.d/bwrap-userns-restrict ]; then
+            sudo install -m 0644 /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d/bwrap-userns-restrict
+          fi
+          sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict
+          test "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)" = 1
       - name: Preserve upstream environment and install JARVIS dependencies
         run: |
           uv sync --frozen

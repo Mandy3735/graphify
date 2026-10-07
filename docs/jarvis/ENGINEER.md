@@ -34,10 +34,22 @@ no host execution fallback. An enabled configuration does not establish readines
 
 The trusted Bubblewrap launcher establishes namespaces and drops capabilities
 before the inner `setpriv --no-new-privs` / `prlimit` wrapper starts Python.
-Setting no-new-privileges before Bubblewrap's executable transition can prevent
-Ubuntu AppArmor from granting the launcher the namespace setup permissions.
+Setting no-new-privileges before Bubblewrap's executable transition can interfere
+with an AppArmor launcher profile. Ubuntu 24.04 additionally needs an explicit
+profile allowing Bubblewrap's namespace setup; moving the wrapper alone is
+insufficient on GitHub's runner.
 The probe still requires no-new-privileges and zero capabilities in the worker;
 no AppArmor policy or host security setting is disabled.
+
+On Ubuntu 24.04, install `apparmor-profiles` and `apparmor-utils`. If no competing
+profile already attaches to `/usr/bin/bwrap`, install the distribution's
+`/usr/share/apparmor/extra-profiles/bwrap-userns-restrict` as
+`/etc/apparmor.d/bwrap-userns-restrict` and load it with `apparmor_parser -r`.
+An administrator must reconcile existing profiles rather than stack conflicting
+attachments. This profile permits trusted launcher setup and strips capabilities
+from its children. CI provisions it on a disposable runner and asserts that
+`kernel.apparmor_restrict_unprivileged_userns` remains enabled. See the
+[Ubuntu user namespace guidance](https://discourse.ubuntu.com/t/understanding-apparmor-user-namespace-restriction/58007).
 
 ## Workflow and trust boundaries
 
