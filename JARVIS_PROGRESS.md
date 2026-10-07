@@ -1,10 +1,26 @@
-# JARVIS progress — 2026-10-05
+# JARVIS progress — 2026-10-07
 
 Repository `/workspace/graphify`; active branch `jarvis/phase-5-memory`; parent
 checkpoint `b04e109ab2d15967d06dff364f376de41e92bde0` (`jarvis/foundation`).
 Original Graphify 0.9.77 parent: `5c7b84792f453582676548185aaec3824d51dfe2`.
-Phase 5 is a local reviewable checkpoint. The previously published foundation
-branch remains available; this new checkpoint is not pushed or deployed.
+Phase-5 implementation commit: `dc37855efea99f2074e5fe6e686df2a62b5ac6e3`.
+The GitHub handoff branch is `jarvis/phase-5-memory`, including a subsequent
+type-check configuration fix. The earlier `jarvis/foundation` remains available.
+No deployment or merge is part of this handoff.
+
+## GitHub check configuration verification — 2026-10-07
+
+The foundation push succeeded, but workflow run 37407305664 stopped at Pyright:
+nine Graphify imports were unresolved. Setuptools' editable import hook works
+at runtime but cannot be followed by Pyright. JARVIS now explicitly configures
+`extraPaths = ["../.."]` relative to its own pyproject.toml. No diagnostic was
+disabled, and no upstream source or root lock was changed.
+
+A fresh checkout using the exact workflow installation commands reproduced the
+nine errors before the fix. After the fix: Ruff lint/format passed, Pyright
+reported zero errors/warnings, both wheel and sdist built, ordinary PostgreSQL
+passed 106 tests with one skip (11.50 s), and pgvector passed 106 tests with one
+skip (12.71 s). These are local results; inspect GitHub Actions for remote status.
 
 ## Delivered checkpoint
 

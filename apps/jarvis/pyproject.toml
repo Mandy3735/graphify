@@ -34,6 +34,9 @@ select = ["E", "F", "I", "UP", "B", "ASYNC"]
 
 [tool.pyright]
 include = ["src"]
+# Graphify uses a setuptools editable import hook that Pyright cannot follow.
+# Resolve its source explicitly, relative to this configuration file.
+extraPaths = ["../.."]
 pythonVersion = "3.11"
 typeCheckingMode = "basic"
 venvPath = "../.."

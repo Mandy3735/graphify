@@ -5,12 +5,13 @@ created from [the full supplied specification](docs/jarvis/MASTER_SPEC.md).
 The current checkpoint branch is `jarvis/phase-5-memory`, based on the foundation
 at `b04e109ab2d15967d06dff364f376de41e92bde0`, preserving Graphify 0.9.77 at
 `5c7b84792f453582676548185aaec3824d51dfe2`. The foundation was published on
-`jarvis/foundation`; the phase-5 branch is currently local and not published.
+`jarvis/foundation`; the complete phase-5 handoff branch is
+`jarvis/phase-5-memory` in `Mandy3735/graphify`.
 
 ## Open the project in another Codex session
 
 The recommended transfer is the complete branch in your existing repository,
-`Mandy3735/graphify`. Once that branch is published, connect/select this repository
+`Mandy3735/graphify`. Connect/select this repository
 in Codex and select `jarvis/phase-5-memory` as the starting branch. Paste the contents
 of [CODEX_NEXT_PROMPT.md](docs/jarvis/CODEX_NEXT_PROMPT.md) into the task.
 Codex receives the source, tests, migrations, dependency locks, original prompt,
@@ -23,9 +24,11 @@ git clone --branch jarvis/phase-5-memory https://github.com/Mandy3735/graphify.g
 cd graphify-jarvis
 ```
 
-Publishing is a separate step from preparing this checkpoint. This document does
-not establish that a GitHub upload has happened; verify the remote branch and its
-commit against the delivery manifest before starting another session.
+The phase-5 implementation commit is `dc37855efea99f2074e5fe6e686df2a62b5ac6e3`.
+The handoff branch also includes the subsequent GitHub type-check configuration
+fix and these updated instructions. Verify its remote HEAD before starting
+another session. Offline delivery manifests identify their earlier snapshots;
+they do not identify subsequent branch commits.
 
 ## Read these files first
 
@@ -56,6 +59,11 @@ lint, format, typing, package builds, and HTTP smoke checks passed. Upstream
 Graphify regression results were 6,470 passed, 108 skipped, and 9 failures, all
 present in the earlier baseline. See progress and baseline documents for the
 environment limitations; do not present the upstream suite as fully passing.
+
+The 2026-10-07 publication check repeated GitHub's installation commands in a
+fresh checkout. Explicitly configuring Pyright's Graphify source path fixed the
+nine missing-import errors seen in the foundation workflow. Lint, format, typing,
+wheel/sdist builds, and both PostgreSQL suites passed in that fresh environment.
 
 The entire JARVIS specification is not complete. Full Engineer
 edit/test workflow, dedicated Tutor and Game Master workflows, Command Center,

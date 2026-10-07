@@ -1,8 +1,9 @@
 # Copy this prompt into the next Codex task
 
 Continue Graphify → JARVIS from branch `jarvis/phase-5-memory` or its restored
-Git bundle checkout. The current checkpoint is local until explicitly published;
-the older `jarvis/foundation` branch does not include phase 5. Check the branch,
+Git bundle checkout. The complete GitHub handoff branch is
+`Mandy3735/graphify:jarvis/phase-5-memory`; the older `jarvis/foundation` branch
+does not include phase 5. Check the branch,
 commit, working tree, and source files before implementation. Do not regenerate
 this existing project from scratch.
 

@@ -161,6 +161,10 @@ From apps/jarvis, with the root .venv from the setup above:
 ../../.venv/bin/pyright
 ```
 
+JARVIS's Pyright config explicitly includes the repository root as a source
+search path. This resolves Graphify imports because Pyright cannot follow
+setuptools' editable import hook; retain this path when changing CI setup.
+
 Default suite skips PostgreSQL integration if JARVIS_TEST_DATABASE_URL is absent.
 To include it, explicitly create a disposable local `jarvis_test` database and
 set that variable. The tests perform upgrade/downgrade/upgrade and teardown its

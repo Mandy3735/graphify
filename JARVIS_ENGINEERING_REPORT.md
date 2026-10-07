@@ -7,7 +7,9 @@ personal AI operating system specification is not complete.
 Repository: `/workspace/graphify`; active branch `jarvis/phase-5-memory`; parent
 checkpoint `b04e109ab2d15967d06dff364f376de41e92bde0` (published foundation).
 Original Graphify parent `5c7b84792f453582676548185aaec3824d51dfe2`, release 0.9.77,
-is preserved. The phase-5 checkpoint is local and not pushed or deployed.
+is preserved. The complete GitHub handoff branch is `jarvis/phase-5-memory`,
+including the implementation commit `dc37855` and a subsequent type-check
+configuration fix. No deployment or merge is part of this handoff.
 The adjacent empty My-JARVIS-AI- repository was left untouched.
 
 ## What works
@@ -326,3 +328,18 @@ Complete logs/builds/smoke evidence are in ignored work/. Portable summaries and
 failure comparison are in docs/jarvis/verification. JARVIS_REVIEW.md records fixes,
 including a deletion/embedding race and real pgvector parameter-binding issue.
 CODEX_HANDOFF.md and CODEX_NEXT_PROMPT.md now resume phase 6.
+
+## GitHub configuration correction — 2026-10-07
+
+The foundation push completed successfully. GitHub Actions run 37407305664 then
+failed its type-check step with nine missing Graphify imports; tests and builds
+were skipped. A fresh checkout using all three workflow installation commands
+reproduced those errors. Pyright cannot follow the root setuptools editable
+import hook, so the application config now explicitly adds the repository root
+as `extraPaths = ["../.."]`. No checks were disabled or upstream files changed.
+
+In that fresh environment, lint and format passed (30 files), Pyright reported
+zero errors/warnings, wheel/sdist built, and the complete suites passed on both
+PostgreSQL (106 passed, 1 skip; 11.50 s) and pgvector (106 passed, 1 skip; 12.71 s).
+These observations are local; GitHub Actions provides the remote run outcome.
+The user explicitly authorized publication of the complete Phase 5 branch.
