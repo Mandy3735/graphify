@@ -81,6 +81,11 @@ providers. Full upstream regression retains the same nine pre-existing failures.
 - **Applying NPROC before namespace setup blocked the runtime under shared host
   user counts.** It now applies after isolation and privilege drop, before Python.
   Real fork tests demonstrate the enforced cap without skipping failed setup.
+- **Ubuntu's AppArmor launcher transition was blocked by outer no-new-privileges.**
+  The explicit no-new-privileges wrapper now runs inside Bubblewrap, after trusted
+  namespace setup and capability drop and before any project Python executes.
+  Worker probes still require UID 65534, zero capabilities and no-new-privileges;
+  AppArmor stays enabled and there is no host execution fallback.
 - **The private sandbox root initially allowed disposable root-file writes.**
   Root/dev/proc are now read-only; only a 16 MiB private tmpfs is writable. Tests
   prove host/source/runtime writes, symlink targets and network access are denied.

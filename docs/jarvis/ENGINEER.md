@@ -32,6 +32,13 @@ a minimal environment, and absence of Git metadata. If the probe fails, text and
 memory remain available, but no Engineer/command tools are registered. There is
 no host execution fallback. An enabled configuration does not establish readiness.
 
+The trusted Bubblewrap launcher establishes namespaces and drops capabilities
+before the inner `setpriv --no-new-privs` / `prlimit` wrapper starts Python.
+Setting no-new-privileges before Bubblewrap's executable transition can prevent
+Ubuntu AppArmor from granting the launcher the namespace setup permissions.
+The probe still requires no-new-privileges and zero capabilities in the worker;
+no AppArmor policy or host security setting is disabled.
+
 ## Workflow and trust boundaries
 
 1. Bind actor, mode, project and run ID to actual server run context; enforce

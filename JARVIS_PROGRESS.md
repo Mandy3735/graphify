@@ -148,6 +148,19 @@ was performed. The subsequently authorized GitHub push is recorded above;
 inspect GitHub Actions for remote results. Recorded local snapshots are in
 `docs/jarvis/verification/phase6-*`; full logs/builds stay in ignored work/.
 
+## Phase 6 GitHub publication check
+
+Initial remote run [37635312503](https://github.com/Mandy3735/graphify/actions/runs/37635312503)
+passed installation, lint, format and typing, but failed the real sandbox tests:
+Ubuntu Bubblewrap reported `loopback: Failed RTM_NEWADDR: Operation not permitted`.
+The outer no-new-privileges wrapper prevented the launcher's AppArmor transition.
+The wrapper now runs inside Bubblewrap before Python, preserving all worker
+restrictions without disabling AppArmor or skipping the real kernel checks.
+
+After the fix, local full suites passed **137 tests, 1 skip** on PostgreSQL
+(28.01 s) and pgvector (28.29 s); Ruff lint/format and Pyright passed. The Graphify
+index was synchronized. Inspect subsequent GitHub runs for the remote verdict.
+
 ## Not done
 
 Phases 7–10 (Tutor, Game Master, Command Center/PWA, voice), watcher/transcript/integration

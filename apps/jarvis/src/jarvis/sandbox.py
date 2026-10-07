@@ -88,8 +88,6 @@ class BubblewrapSandbox:
             "--nofile=64",
             "--core=0",
             "--",
-            "/usr/bin/setpriv",
-            "--no-new-privs",
             "/usr/bin/bwrap",
             "--unshare-all",
             "--unshare-user",
@@ -144,6 +142,10 @@ class BubblewrapSandbox:
                 "PYTHONHASHSEED",
                 "0",
                 "--",
+                # Let the trusted launcher enter its AppArmor profile before
+                # making no-new-privileges irreversible for the worker.
+                "/usr/bin/setpriv",
+                "--no-new-privs",
                 "/usr/bin/prlimit",
                 f"--nproc={cfg.sandbox_processes}",
                 "--",
