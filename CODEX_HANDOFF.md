@@ -2,7 +2,7 @@
 
 This repository contains the original Graphify project and the JARVIS foundation
 created from [the full supplied specification](docs/jarvis/MASTER_SPEC.md).
-The current **local** checkpoint branch is `jarvis/phase-6-engineer`, based on
+The current published checkpoint branch is `jarvis/phase-6-engineer`, based on
 `5f622c094f0a023a0cbcfc0f39850f9866621b78` (published phase 5), preserving
 Graphify 0.9.77 at
 `5c7b84792f453582676548185aaec3824d51dfe2`. The foundation was published on
@@ -11,20 +11,22 @@ Graphify 0.9.77 at
 
 ## Open the project in another Codex session
 
-The current Phase 6 branch is local and not published. The GitHub branch
-`Mandy3735/graphify:jarvis/phase-5-memory` remains the earlier complete memory
-checkpoint; it does not contain the new Engineer implementation.
+The complete Phase 6 handoff is
+[`Mandy3735/graphify:jarvis/phase-6-engineer`](https://github.com/Mandy3735/graphify/tree/jarvis/phase-6-engineer).
+Its implementation commit is `dd69e080b8bd4b7aed72b2df07c54a8c879c5f93`.
+The older `jarvis/phase-5-memory` branch does not contain the Engineer implementation.
 
 For local Codex, open this repository and select `jarvis/phase-6-engineer`. For
-another cloud session, publish this branch only with user authorization, then
-select it in Codex. Alternatively restore `work/phase6-delivery/JARVIS-phase6.bundle`
+another cloud session, select `Mandy3735/graphify` and `jarvis/phase-6-engineer`
+in Codex. Alternatively restore `work/phase6-delivery/JARVIS-phase6.bundle`
 and verify HEAD against that directory's manifest before continuing. Source/tests,
 locks, original specification, migrations and history are included; chat history
 is unnecessary. Use the continuation prompt for Phase 7 in this checkout.
 
 The receiving phase-5 commit is `5f622c094f0a023a0cbcfc0f39850f9866621b78`.
 Resolve current local HEAD with `git rev-parse HEAD`. Delivery manifests identify
-specific snapshots, not subsequent commits. No upload is established by this guide.
+specific snapshots, not subsequent commits. The user authorized the Phase 6 push
+on 2026-10-07, and GitHub's branch ref was verified against the implementation SHA.
 
 ## Read these files first
 
@@ -68,8 +70,8 @@ Phase 6 passed **137 tests, one configuration-specific skip** on each database
 configuration with real kernel tests explicitly enabled in the fresh workflow
 dependency environment. Lint/format/types, package builds and real HTTP smoke
 passed. Authorized upstream regression passed 6,472 tests with 108 skips and
-seven existing DNS failures; there were no new failure identifiers. Phase 6 is
-local, so these are not remote CI results.
+seven existing DNS failures; there were no new failure identifiers. These measured
+results are local; check the branch's GitHub Actions for remote verification.
 
 The entire JARVIS specification is not complete. Engineer scope/limits are in
 docs/jarvis/ENGINEER.md. Dedicated Tutor and Game Master workflows, Command Center,

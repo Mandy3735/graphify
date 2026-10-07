@@ -1,9 +1,11 @@
 # JARVIS progress — 2026-10-07
 
-Repository `/workspace/graphify`; active **local** branch `jarvis/phase-6-engineer`;
+Repository `/workspace/graphify`; active published branch `jarvis/phase-6-engineer`;
 receiving checkpoint `5f622c094f0a023a0cbcfc0f39850f9866621b78` on the published
 `jarvis/phase-5-memory` branch. Original Graphify parent remains
-`5c7b84792f453582676548185aaec3824d51dfe2`. Phase 6 is not pushed, merged or deployed.
+`5c7b84792f453582676548185aaec3824d51dfe2`. The user authorized the Phase 6 push
+on 2026-10-07. GitHub's branch ref matched implementation commit
+`dd69e080b8bd4b7aed72b2df07c54a8c879c5f93`. No merge or deployment was performed.
 Resolve the exact local checkpoint with `git rev-parse HEAD` or its delivery manifest.
 
 ## GitHub check configuration verification — 2026-10-07
@@ -141,9 +143,9 @@ remain in ignored work/. Graph synchronization is recorded there as well.
 
 The kernel suite is opt-in; these runs explicitly enabled it and did not skip
 unavailable OS isolation. The single skip in each full run covers the opposite
-vector configuration. No paid provider call, source apply, external write, push,
-merge or deployment was performed. Updated CI is configured but has not run
-remotely for this unpushed checkpoint. Recorded snapshots are in
+vector configuration. No paid provider call, source apply, merge or deployment
+was performed. The subsequently authorized GitHub push is recorded above;
+inspect GitHub Actions for remote results. Recorded local snapshots are in
 `docs/jarvis/verification/phase6-*`; full logs/builds stay in ignored work/.
 
 ## Not done

@@ -1,8 +1,9 @@
 # Copy this prompt into the next Codex task
 
-Continue Graphify → JARVIS from the local branch `jarvis/phase-6-engineer`, its
-verified Git bundle checkout, or that same branch after explicitly authorized
-publication. It is not currently pushed. The published `jarvis/phase-5-memory`
+Continue Graphify → JARVIS from the published branch
+`Mandy3735/graphify:jarvis/phase-6-engineer` or its verified Git bundle checkout.
+The implementation commit is `dd69e080b8bd4b7aed72b2df07c54a8c879c5f93`;
+later handoff commits may follow it. The published `jarvis/phase-5-memory`
 branch is the preceding memory checkpoint. Check branch, HEAD, working tree and
 source before implementing; do not regenerate the project.
 

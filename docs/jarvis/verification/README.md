@@ -32,5 +32,7 @@ manifest. No remote CI or paid live-model result is claimed.
 - `phase6-http-smoke.json`: real migrated loopback Engineer workflow, kernel
   readiness, source preservation and authenticated artifact retrieval.
 
-Phase 6 is not pushed, merged or deployed; no remote CI or paid provider claim.
+These snapshots record local verification. The Phase 6 branch was subsequently
+pushed with user authorization; inspect GitHub Actions for remote results.
+No merge, deployment or paid provider claim.
 The private delivery manifest and Git HEAD identify the exact local checkpoint.
