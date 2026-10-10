@@ -1,10 +1,11 @@
 # Copy this prompt into the next Codex task
 
-Continue Graphify → JARVIS from the local branch `jarvis/phase-7-tutor`, based on
-published Phase 6 tip `b5c613ffae1163b30e5b8c9897afec6abce175ea`. Phase 7 is not
-currently pushed. Check branch, HEAD, working tree and source before implementation;
-do not regenerate the project. If this branch is later published with explicit user
-authorization, use that exact remote branch and verify its HEAD first.
+Continue Graphify → JARVIS from the published branch `jarvis/phase-7-tutor` in
+`Mandy3735/graphify`. Phase 7 implementation commit
+`6d35a7bf22b17b299150ae8731082ac19c41f90d` is present on that branch, based on
+published Phase 6 tip `b5c613ffae1163b30e5b8c9897afec6abce175ea`.
+Fetch the current remote branch, then check its HEAD, working tree and source before
+implementation. Do not regenerate the project.
 
 Read AGENTS.md, CODEX_HANDOFF.md, JARVIS_PROGRESS.md, JARVIS_PLAN.md,
 docs/jarvis/MASTER_SPEC.md, JARVIS_REVIEW.md, THREAT_MODEL.md,

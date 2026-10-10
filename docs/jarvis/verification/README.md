@@ -48,5 +48,6 @@ The private delivery manifest and Git HEAD identify the exact local checkpoint.
   does not change the upstream surface; the Phase 6 full regression remains the
   latest full reference.
 
-The local Phase 7 branch was not pushed, merged or deployed. Graphify update and
-scoped TutorService navigation succeeded; full scratch logs remain in `work/`.
+The Phase 7 branch was subsequently pushed with user authorization. It was not
+merged or deployed. Graphify update and scoped TutorService navigation succeeded;
+full scratch logs remain in `work/`.

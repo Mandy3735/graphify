@@ -4,12 +4,13 @@ A runnable **Tutor checkpoint** is implemented in the existing Graphify
 repository. It completes the bounded phases 0–7 scope in JARVIS_PLAN.md. The full
 personal AI operating system specification is not complete.
 
-Repository: `/workspace/graphify`; active local branch `jarvis/phase-7-tutor`;
+Repository: `/workspace/graphify`; active published branch `jarvis/phase-7-tutor`;
 receiving checkpoint `b5c613ffae1163b30e5b8c9897afec6abce175ea`, the published
 Phase 6 tip. Original Graphify parent `5c7b84792f453582676548185aaec3824d51dfe2`,
-release 0.9.77, is preserved. Phase 7 is local; no push, merge or deployment
-occurred. Resolve its exact checkpoint with `git rev-parse HEAD` after the local
-commit. The published Phase 6 history remains documented below.
+release 0.9.77, is preserved. The user authorized the Phase 7 push on 2026-10-10;
+implementation commit `6d35a7bf22b17b299150ae8731082ac19c41f90d` is on the remote
+branch. No merge or deployment occurred. The published Phase 6 history remains
+documented below.
 The adjacent empty My-JARVIS-AI- repository was left untouched.
 
 ## What works
@@ -496,7 +497,8 @@ Ruff/format/Pyright passed for 41 Python files with zero type errors/warnings.
 The 0.4.0 wheel/sdist, migrated PostgreSQL API smoke, relevant upstream architecture
 tests, preserved-boundary diff and scoped Graphify query/explain all passed. The
 graph contains 19,425 nodes, 40,630 edges and 1,041 communities. No paid provider,
-push, merge, deployment or outbound communication was used.
+merge, deployment or outbound communication was used. The checkpoint was later
+pushed to its dedicated GitHub branch with user authorization.
 
 Next: phase 8 Game Master canonical campaign state, visibility-before-context,
 ScenePacketBuilder, rules/dice and roll authority. Chief of Staff/watchers,

@@ -2,7 +2,7 @@
 
 This repository contains the original Graphify project and the JARVIS foundation
 created from [the full supplied specification](docs/jarvis/MASTER_SPEC.md).
-The current local checkpoint branch is `jarvis/phase-7-tutor`, based on published
+The current published checkpoint branch is `jarvis/phase-7-tutor`, based on published
 Phase 6 tip `b5c613ffae1163b30e5b8c9897afec6abce175ea`, preserving
 Graphify 0.9.77 at
 `5c7b84792f453582676548185aaec3824d51dfe2`. The foundation was published on
@@ -14,19 +14,20 @@ Graphify 0.9.77 at
 The preceding complete Phase 6 handoff is
 [`Mandy3735/graphify:jarvis/phase-6-engineer`](https://github.com/Mandy3735/graphify/tree/jarvis/phase-6-engineer).
 Its implementation commit is `dd69e080b8bd4b7aed72b2df07c54a8c879c5f93`.
-The local `jarvis/phase-7-tutor` branch adds the Tutor implementation and is not
-published. The older `jarvis/phase-5-memory` branch does not contain Engineer or Tutor.
+The complete Tutor handoff is
+[`Mandy3735/graphify:jarvis/phase-7-tutor`](https://github.com/Mandy3735/graphify/tree/jarvis/phase-7-tutor).
+Its implementation commit is `6d35a7bf22b17b299150ae8731082ac19c41f90d`.
+The older `jarvis/phase-5-memory` branch does not contain Engineer or Tutor.
 
 For local Codex, open this repository and select `jarvis/phase-7-tutor`. Another
-cloud session can use published `jarvis/phase-6-engineer`, but it will not contain
-Phase 7 unless the user later authorizes publication. The older verified Phase 6
-bundle remains in `work/phase6-delivery`; it is not a Phase 7 handoff. Use the
-continuation prompt for Phase 8 in this checkout.
+cloud session should use the published Phase 7 branch and verify its HEAD before
+continuing. The older verified Phase 6 bundle remains in `work/phase6-delivery`;
+it is not a Phase 7 handoff. Use the continuation prompt for Phase 8.
 
 The receiving Phase 6 commit is `b5c613ffae1163b30e5b8c9897afec6abce175ea`.
 Resolve current local HEAD with `git rev-parse HEAD`. Existing delivery manifests
-identify older snapshots. The user authorized the Phase 6 push on 2026-10-07;
-no Phase 7 push, merge or deployment is authorized or claimed.
+identify older snapshots. The user authorized the Phase 6 push on 2026-10-07 and
+the Phase 7 push on 2026-10-10. No merge or deployment is authorized or claimed.
 
 ## Read these files first
 
@@ -78,8 +79,8 @@ results are local; check the branch's GitHub Actions for remote verification.
 Phase 7 passed **152 tests, one configuration-specific skip** on each of ordinary
 PostgreSQL and PostgreSQL/pgvector with real kernel tests enabled. Ruff, format and
 Pyright, the 0.4.0 package build, migrated PostgreSQL API smoke, relevant upstream
-checks and Graphify synchronization/query/explain passed. These are local results;
-the Phase 7 branch is not published.
+checks and Graphify synchronization/query/explain passed. These are local results
+published with the Phase 7 source; remote CI status must be checked separately.
 
 The entire JARVIS specification is not complete. Engineer scope/limits are in
 docs/jarvis/ENGINEER.md; Tutor scope/limits are in docs/jarvis/TUTOR.md. Game Master,
