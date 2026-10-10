@@ -4,10 +4,12 @@ from uuid import uuid4
 
 from sqlalchemy import (
     JSON,
+    Boolean,
     CheckConstraint,
     DateTime,
     ForeignKey,
     Index,
+    Integer,
     String,
     Text,
     UniqueConstraint,
@@ -134,6 +136,141 @@ class MemoryProposal(Base):
     payload: Mapped[dict[str, Any]] = mapped_column(JSON)
     memory_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class LearningObjective(Base):
+    __tablename__ = "learning_objectives"
+    __table_args__ = (
+        Index("ix_learning_objective_owner_status", "owner_id", "status", "updated_at"),
+        CheckConstraint(
+            "status IN ('ACTIVE','MASTERED','ARCHIVED')", name="ck_learning_objective_status"
+        ),
+        CheckConstraint(
+            "mastery_required_quizzes >= 1 AND mastery_required_quizzes <= 10",
+            name="ck_learning_objective_required_quizzes",
+        ),
+        CheckConstraint(
+            "mastery_min_score >= 50 AND mastery_min_score <= 100",
+            name="ck_learning_objective_min_score",
+        ),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    owner_id: Mapped[str] = mapped_column(String(36), index=True)
+    title: Mapped[str] = mapped_column(String(200))
+    description: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(16), default="ACTIVE")
+    mastery_required_quizzes: Mapped[int] = mapped_column(Integer, default=2)
+    mastery_min_score: Mapped[int] = mapped_column(Integer, default=80)
+    mastery_evidence_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    mastered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class LearningSource(Base):
+    __tablename__ = "learning_sources"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    objective_id: Mapped[str] = mapped_column(
+        ForeignKey("learning_objectives.id", ondelete="CASCADE"), index=True
+    )
+    owner_id: Mapped[str] = mapped_column(String(36), index=True)
+    kind: Mapped[str] = mapped_column(String(24))
+    locator: Mapped[str] = mapped_column(String(300))
+    quote: Mapped[str] = mapped_column(Text)
+    content_hash: Mapped[str] = mapped_column(String(64))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class TutorLesson(Base):
+    __tablename__ = "tutor_lessons"
+    __table_args__ = (
+        CheckConstraint(
+            "kind IN ('EXPLANATION','WORKED_EXAMPLE','SOCRATIC')", name="ck_tutor_lesson_kind"
+        ),
+        CheckConstraint("origin IN ('HUMAN_API','MODEL_TOOL')", name="ck_tutor_lesson_origin"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    objective_id: Mapped[str] = mapped_column(
+        ForeignKey("learning_objectives.id", ondelete="CASCADE"), index=True
+    )
+    owner_id: Mapped[str] = mapped_column(String(36), index=True)
+    kind: Mapped[str] = mapped_column(String(24))
+    title: Mapped[str] = mapped_column(String(200))
+    content: Mapped[str] = mapped_column(Text)
+    source_ids: Mapped[list[str]] = mapped_column(JSON)
+    origin: Mapped[str] = mapped_column(String(16))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class TutorQuiz(Base):
+    __tablename__ = "tutor_quizzes"
+    __table_args__ = (
+        CheckConstraint("origin IN ('HUMAN_API','MODEL_TOOL')", name="ck_tutor_quiz_origin"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    objective_id: Mapped[str] = mapped_column(
+        ForeignKey("learning_objectives.id", ondelete="CASCADE"), index=True
+    )
+    owner_id: Mapped[str] = mapped_column(String(36), index=True)
+    prompt: Mapped[str] = mapped_column(Text)
+    answer_hashes: Mapped[list[str]] = mapped_column(JSON)
+    source_ids: Mapped[list[str]] = mapped_column(JSON)
+    origin: Mapped[str] = mapped_column(String(16))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class TutorAttempt(Base):
+    __tablename__ = "tutor_attempts"
+    __table_args__ = (
+        UniqueConstraint("owner_id", "quiz_id", "submission_id"),
+        CheckConstraint("origin = 'HUMAN_API'", name="ck_tutor_attempt_origin"),
+        CheckConstraint("score IN (0,100)", name="ck_tutor_attempt_score"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    quiz_id: Mapped[str] = mapped_column(ForeignKey("tutor_quizzes.id"), index=True)
+    objective_id: Mapped[str] = mapped_column(ForeignKey("learning_objectives.id"), index=True)
+    owner_id: Mapped[str] = mapped_column(String(36), index=True)
+    submission_id: Mapped[str] = mapped_column(String(80))
+    answer_hash: Mapped[str] = mapped_column(String(64))
+    correct: Mapped[bool] = mapped_column(Boolean)
+    score: Mapped[int] = mapped_column(Integer)
+    evaluator: Mapped[str] = mapped_column(String(32), default="DETERMINISTIC_V1")
+    origin: Mapped[str] = mapped_column(String(16), default="HUMAN_API")
+    attempt_number: Mapped[int] = mapped_column(Integer)
+    evaluated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class MasteryEvidence(Base):
+    __tablename__ = "mastery_evidence"
+    __table_args__ = (UniqueConstraint("objective_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    objective_id: Mapped[str] = mapped_column(ForeignKey("learning_objectives.id"), index=True)
+    owner_id: Mapped[str] = mapped_column(String(36), index=True)
+    attempt_ids: Mapped[list[str]] = mapped_column(JSON)
+    distinct_quizzes: Mapped[int] = mapped_column(Integer)
+    score: Mapped[int] = mapped_column(Integer)
+    evaluator: Mapped[str] = mapped_column(String(32), default="DETERMINISTIC_V1")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class ReviewTask(Base):
+    __tablename__ = "review_tasks"
+    __table_args__ = (
+        UniqueConstraint("objective_id", "sequence"),
+        CheckConstraint("status IN ('SCHEDULED','COMPLETED')", name="ck_review_task_status"),
+        CheckConstraint("sequence >= 1", name="ck_review_task_sequence"),
+        CheckConstraint("interval_days >= 1", name="ck_review_task_interval"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    objective_id: Mapped[str] = mapped_column(ForeignKey("learning_objectives.id"), index=True)
+    owner_id: Mapped[str] = mapped_column(String(36), index=True)
+    sequence: Mapped[int] = mapped_column(Integer)
+    interval_days: Mapped[int] = mapped_column(Integer)
+    due_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    status: Mapped[str] = mapped_column(String(16), default="SCHEDULED")
+    evidence_attempt_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class Database:

@@ -36,3 +36,17 @@ These snapshots record local verification. The Phase 6 branch was subsequently
 pushed with user authorization; inspect GitHub Actions for remote results.
 No merge, deployment or paid provider claim.
 The private delivery manifest and Git HEAD identify the exact local checkpoint.
+
+## Phase 7 local checkpoint
+
+- `phase7-postgres-tests.txt` and `phase7-pgvector-tests.txt`: each 152 passes and
+  one opposite-configuration skip, with real Bubblewrap tests explicitly enabled.
+- `phase7-http-smoke.json`: authenticated Tutor workflow on a freshly migrated
+  PostgreSQL database, including evidence-backed mastery and the model boundary.
+- `phase7-upstream-comparison.json`: relevant architecture regression and exact
+  preserved-path comparison. A full upstream rerun was not repeated because Phase 7
+  does not change the upstream surface; the Phase 6 full regression remains the
+  latest full reference.
+
+The local Phase 7 branch was not pushed, merged or deployed. Graphify update and
+scoped TutorService navigation succeeded; full scratch logs remain in `work/`.

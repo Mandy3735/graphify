@@ -43,7 +43,16 @@ class Settings(BaseSettings):
     sandbox_processes: int = Field(default=24, ge=8, le=48)
     sandbox_output_bytes: int = Field(default=8192, ge=1024, le=16384)
     capabilities: frozenset[str] = frozenset(
-        {"graph.read", "workspace.read", "memory.read", "memory.write", "memory.propose"}
+        {
+            "graph.read",
+            "workspace.read",
+            "memory.read",
+            "memory.write",
+            "memory.propose",
+            "tutor.read",
+            "tutor.write",
+            "tutor.attempt",
+        }
     )
     # Per million input/output tokens. Empty means cost is unknown, not zero.
     pricing: dict[str, tuple[float, float]] = Field(default_factory=dict)

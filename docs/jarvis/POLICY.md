@@ -30,3 +30,10 @@ private snapshots/worktrees. Kernel readiness is required before registration.
 No source apply, repository commit, push, merge, deployment or external-write
 adapter is registered. Declared command failure makes the run FAILED. See
 [ENGINEER.md](ENGINEER.md) for the enforced execution boundary.
+
+Phase 7 adds `tutor.read`, `tutor.write` and `tutor.attempt`. Tutor model tools are
+TUTOR-only and bound to the actual run/objective. They can inspect grounded context
+and create source-cited teaching material or quizzes. No attempt, grading, mastery
+or review-completion model tool exists. The authenticated human endpoint creates
+server-stamped attempts; deterministic service code alone evaluates them and
+derives mastery/review state. See [TUTOR.md](TUTOR.md).

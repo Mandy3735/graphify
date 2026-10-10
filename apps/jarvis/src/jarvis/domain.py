@@ -67,6 +67,7 @@ class ChatRequest(StrictModel):
     project_id: str | None = Field(default=None, max_length=80)
     campaign_id: str | None = Field(default=None, pattern=r"^[a-zA-Z0-9_-]{1,80}$")
     session_id: str | None = Field(default=None, pattern=r"^[a-zA-Z0-9_-]{1,80}$")
+    learning_objective_id: str | None = Field(default=None, max_length=36)
     context_token_budget: int | None = Field(default=None, ge=256, le=64000)
     allow_fallback: bool = False
     high_stakes: bool = False

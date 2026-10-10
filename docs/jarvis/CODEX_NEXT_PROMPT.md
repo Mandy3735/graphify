@@ -1,53 +1,51 @@
 # Copy this prompt into the next Codex task
 
-Continue Graphify → JARVIS from the published branch
-`Mandy3735/graphify:jarvis/phase-6-engineer` or its verified Git bundle checkout.
-The implementation commit is `dd69e080b8bd4b7aed72b2df07c54a8c879c5f93`;
-later handoff commits may follow it. The published `jarvis/phase-5-memory`
-branch is the preceding memory checkpoint. Check branch, HEAD, working tree and
-source before implementing; do not regenerate the project.
+Continue Graphify → JARVIS from the local branch `jarvis/phase-7-tutor`, based on
+published Phase 6 tip `b5c613ffae1163b30e5b8c9897afec6abce175ea`. Phase 7 is not
+currently pushed. Check branch, HEAD, working tree and source before implementation;
+do not regenerate the project. If this branch is later published with explicit user
+authorization, use that exact remote branch and verify its HEAD first.
 
 Read AGENTS.md, CODEX_HANDOFF.md, JARVIS_PROGRESS.md, JARVIS_PLAN.md,
 docs/jarvis/MASTER_SPEC.md, JARVIS_REVIEW.md, THREAT_MODEL.md,
 docs/jarvis/UPSTREAM_BOUNDARY.md, docs/jarvis/LOCAL_DEVELOPMENT.md,
-docs/jarvis/MEMORY.md and docs/jarvis/ENGINEER.md. MASTER_SPEC.md remains the full
-original specification. Phase 6 delivers a bounded Linux/system-Python workflow,
-not unrestricted project execution or a full personal operating system.
+docs/jarvis/MEMORY.md, docs/jarvis/ENGINEER.md and docs/jarvis/TUTOR.md.
+MASTER_SPEC.md remains the complete product specification; progress is the truthful
+checkpoint, not a full-system completion claim.
 
-Preserve original Graphify source, CLI, root metadata/lock, licenses and skill
-generation. Preserve the separate JARVIS application's exact one-use approvals,
-owner/mode/namespace/visibility filtering before context, human memory acceptance,
-race-safe correction/deletion, durable cancellation/recovery and audit. Engineer
-execution is disabled by default, verified by a real kernel probe, uses a private
-snapshot/worktree and read-only offline worker, and has no host fallback. Preserve
-resource/time/output limits, failure status, source/diff/graph provenance and
-artifact owner checks. Migration 0002 remains current; use additive new migrations.
+Preserve original Graphify source, CLI, metadata/lock, licenses and skill generation.
+Preserve exact one-use approvals, audit, durable cancellation/recovery, owner/mode/
+namespace/visibility filtering before context, human memory acceptance, Engineer's
+kernel-verified no-host-fallback worker and source/diff/graph provenance. Preserve
+Tutor migration 0003, objective/source ownership, strict HUMAN_API attempt origin,
+idempotent submissions, evidence-backed mastery and due-time review evidence.
+Never add a model tool that fabricates attempts, mastery or review completion.
 
-Implement phase 7 next: a complete Tutor workflow with persisted learning
-objectives, source-grounded teaching/explanations/worked examples/Socratic prompts,
-quizzes, human learner attempts, answer evaluation, mastery evidence and scheduled
-spaced-review tasks. Mastery requires actual learner performance, never generated
-prose, a model's own answer, or an explanation alone. Keep canonical learning state
-separate from generic memory. Model proposals cannot fabricate human attempts or
-grant their own authority. Retain references to learning sources and attempt/
-evaluation evidence; apply owner/capability boundaries before reads and grading.
+Implement phase 8 next: canonical Game Master campaign state, campaign membership
+and visibility filtering before model context, ScenePacketBuilder, replaceable rules
+plugins, deterministic/random dice service, RollAuthorityPolicy, bounded delegation,
+session/event proposals and human approval before canonical state changes. Creative
+prose is not state authority. GM_SECRET data must never enter player-facing model
+context. User-controlled PC rolls remain human unless explicitly and temporarily
+delegated; NPC/enemy rolls use the dice service and retain verifiable evidence.
 
-First record the receiving checks. Add a meaningful offline Tutor E2E: objective,
-source-backed lesson, quiz, learner response, evaluation, evidence-backed mastery,
-and due review. Test incorrect answers, explanations without attempts, fabricated
-model mastery/attempts, retries and duplicate submissions, ownership, prompt
-injection, source provenance and review scheduling. Use fake providers by default.
-Run existing application suites with both disposable PostgreSQL configurations,
-JARVIS_TEST_SANDBOX=true on supported Linux, plus relevant upstream checks. Explicit
-kernel-test opt-in must fail when isolation is unavailable; do not hide that with
-a skip. Record unsupported environment constraints honestly. No paid-service test
-dependency or assumption that any configured live model exists.
+First record the receiving checks. Use additive migration 0004. Build a meaningful
+offline E2E covering campaign/scene/session, public and GM-secret lore, a player
+context proving secret exclusion, an NPC roll, a user roll request, bounded delegated
+roll authority, a proposed state change and explicit acceptance into canonical
+state. Add adversarial tests for filter-after-limit leaks, cross-campaign/owner
+access, prompt injection, forged membership/mode, dice-expression limits, entropy/
+seed provenance, delegation expiry/replay, proposal races and creative prose trying
+to mutate canonical state. Use fake providers and no paid service.
 
-Use scoped Graphify queries for navigation; source/tests remain ground truth.
-After source edits run graphify update . as AGENTS.md requires. Review permissions,
-learner-evidence integrity, persistence/races and retrieval boundaries; fix serious
-findings. Update progress/review/report/setup and the continuation prompt, then
-commit a reviewable local Tutor checkpoint. Do not publish, merge, deploy or send
-external communications without authorization. Chief of Staff/watchers,
-Game Master, frontend/PWA, voice/integrations and production hardening remain later
-work; do not imply their completion by adding labels or placeholders.
+Run existing application suites against disposable PostgreSQL and PostgreSQL/
+pgvector with `JARVIS_TEST_SANDBOX=true`, plus relevant upstream checks. Explicit
+kernel-test opt-in must fail when isolation is unavailable. Use scoped Graphify
+queries for navigation; source/tests remain ground truth. After source edits run
+`graphify update .`. Review secrecy, state authority, races, permissions and
+retrieval boundaries; fix serious findings. Update progress/review/report/setup and
+this continuation prompt, then commit a reviewable local Phase 8 checkpoint.
+
+Do not publish, merge, deploy or send external communications without authorization.
+Chief of Staff projects/watchers, frontend/PWA, voice/integrations and complete
+production hardening remain later work; do not imply their completion.

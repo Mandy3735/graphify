@@ -1,0 +1,15 @@
+{
+  "accepted_answers_exposed": false,
+  "attempt_statuses": [
+    "ACTIVE",
+    "MASTERED"
+  ],
+  "final_objective_status": "MASTERED",
+  "mastery_distinct_quizzes": 2,
+  "mastery_score": 100,
+  "model_attempt_tool_present": false,
+  "objective_create_status": 201,
+  "quiz_count": 2,
+  "review_sequence": 1,
+  "unauthenticated_status": 401
+}

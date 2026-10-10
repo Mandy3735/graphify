@@ -1,4 +1,4 @@
-# JARVIS architecture — Engineer checkpoint
+# JARVIS architecture — Tutor checkpoint
 
 This checkpoint is an authenticated, single-user API modular monolith.
 It is not a production personal operating system. See JARVIS_PROGRESS.md for
@@ -15,8 +15,8 @@ HTTP bearer identity → FastAPI → durable run engine → model gateway
                       PostgreSQL + transitions + audit
 ```
 
-PostgreSQL is authoritative for runs, transitions, approvals, audit and personal
-memory with source provenance. Alembic
+PostgreSQL is authoritative for runs, transitions, approvals, audit, personal
+memory and canonical Tutor learning state with source/attempt provenance. Alembic
 is the schema authority; startup never silently creates production tables. Tests
 may explicitly use SQLite for fast unit isolation, but PostgreSQL migration and
 transaction tests are mandatory. No Redis or agent framework is necessary here.
@@ -51,6 +51,13 @@ rechecks memory-search history before each model call. Models can propose inacti
 memory, but only explicit authenticated user acceptance makes it active. Optional
 pgvector computes distances for bounded authorized candidates. See MEMORY.md.
 
+Tutor objectives, sources, teaching artifacts, quizzes, learner attempts, mastery
+evidence and spaced-review tasks use dedicated migration-0003 tables. Tutor reads
+are owner/capability scoped. Model tools may read context and create source-cited
+lessons/quizzes, but only the authenticated learner endpoint can create a
+server-evaluated HUMAN_API attempt. Mastery and review completion derive from
+those attempts; generated explanations cannot establish performance. See TUTOR.md.
+
 Deploy this checkpoint as one backend process. Multi-worker coordination, tenant
 identity/OAuth, a production restricted DB role, production UI, complete campaign
-membership and later operating-mode workflows are subsequent milestones.
+membership and the remaining operating-mode workflows are subsequent milestones.

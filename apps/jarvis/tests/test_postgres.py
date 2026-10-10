@@ -15,13 +15,30 @@ from test_engine_api import drain, fake_external, pending_approval
 from test_memory import correction, record
 
 from jarvis.config import Settings
-from jarvis.db import AuditEvent, Base, Database, MemoryItem, MemoryProposal, audit
+from jarvis.db import (
+    AuditEvent,
+    Base,
+    Database,
+    MasteryEvidence,
+    MemoryItem,
+    MemoryProposal,
+    TutorAttempt,
+    audit,
+)
 from jarvis.domain import ChatRequest, Mode, RunState
 from jarvis.embeddings import FakeEmbeddingProvider
 from jarvis.engine import Conflict, Engine
 from jarvis.memory import MemoryConflict, MemoryScope, MemoryService
 from jarvis.models import FakeModelProvider, ModelRouter
 from jarvis.policy import Actor
+from jarvis.tutor import TutorScope, TutorService
+from jarvis.tutor_schema import (
+    LearnerAttemptCreate,
+    LearningObjectiveCreate,
+    LearningSourceInput,
+    LearningSourceKind,
+    QuizCreate,
+)
 
 TEST_URL = os.environ.get("JARVIS_TEST_DATABASE_URL", "")
 ALEMBIC_INI = Path(__file__).resolve().parents[1] / "alembic.ini"
@@ -210,6 +227,122 @@ async def test_postgres_memory_proposal_acceptance_is_atomic(postgres):
     assert (await memory.inspect(scope, accepted["memory_id"]))["sources"][0][
         "kind"
     ] == "MODEL_PROPOSAL"
+
+
+def pg_tutor(database):
+    cfg = pg_settings()
+    actor = Actor(str(cfg.actor_id), frozenset({"tutor.read", "tutor.write", "tutor.attempt"}))
+    return TutorService(database), TutorScope(actor)
+
+
+async def tutor_fixture(tutor, scope, *, required=1):
+    objective = await tutor.create_objective(
+        scope,
+        LearningObjectiveCreate(
+            title="PostgreSQL Tutor race",
+            description="Prove learner evidence remains atomic.",
+            mastery_required_quizzes=required,
+            mastery_min_score=80,
+            sources=[
+                LearningSourceInput(
+                    kind=LearningSourceKind.DOCUMENT,
+                    locator="test:postgres-tutor",
+                    quote="Evidence must come from a human learner attempt.",
+                )
+            ],
+        ),
+    )
+    source_id = objective["sources"][0]["id"]
+    quizzes = []
+    for number in range(required):
+        quizzes.append(
+            await tutor.create_quiz(
+                scope,
+                objective["id"],
+                QuizCreate(
+                    prompt=f"Answer quiz {number + 1}",
+                    accepted_answers=[f"answer {number + 1}"],
+                    source_ids=[source_id],
+                ),
+            )
+        )
+    return objective, quizzes
+
+
+async def test_phase7_migration_preserves_memory_and_audit(postgres):
+    memory, scope = pg_memory(postgres)
+    item = await memory.create(scope, record("survives the Tutor migration boundary"))
+    async with postgres.sessions.begin() as session:
+        audit(
+            session,
+            str(pg_settings().actor_id),
+            "phase7.migration_sentinel",
+            {"memory_id": item["id"]},
+        )
+    ini = ALEMBIC_INI
+    environment = {**os.environ, "JARVIS_DATABASE_URL": TEST_URL}
+    for operation in [("downgrade", "0002"), ("upgrade", "head")]:
+        await asyncio.to_thread(
+            subprocess.run,
+            [sys.executable, "-m", "alembic", "-c", str(ini), *operation],
+            env=environment,
+            check=True,
+            capture_output=True,
+            timeout=30,
+        )
+    assert (await memory.inspect(scope, item["id"]))["content"] == (
+        "survives the Tutor migration boundary"
+    )
+    async with postgres.sessions() as session:
+        sentinel = await session.scalar(
+            select(AuditEvent).where(AuditEvent.event == "phase7.migration_sentinel")
+        )
+        assert sentinel is not None
+
+
+async def test_postgres_duplicate_tutor_submission_and_mastery_are_atomic(postgres):
+    tutor, scope = pg_tutor(postgres)
+    objective, quizzes = await tutor_fixture(tutor, scope)
+    body = LearnerAttemptCreate(submission_id="same-http-retry", answer="answer 1")
+    results = await asyncio.gather(
+        tutor.submit_attempt(scope, quizzes[0]["id"], body),
+        tutor.submit_attempt(scope, quizzes[0]["id"], body),
+    )
+    assert results[0]["id"] == results[1]["id"]
+    assert sum(result["idempotent_replay"] for result in results) == 1
+    async with postgres.sessions() as session:
+        attempts = list(
+            await session.scalars(
+                select(TutorAttempt).where(TutorAttempt.objective_id == objective["id"])
+            )
+        )
+        evidence = list(
+            await session.scalars(
+                select(MasteryEvidence).where(MasteryEvidence.objective_id == objective["id"])
+            )
+        )
+    assert len(attempts) == 1 and len(evidence) == 1
+
+
+async def test_postgres_concurrent_distinct_quizzes_create_one_mastery_record(postgres):
+    tutor, scope = pg_tutor(postgres)
+    objective, quizzes = await tutor_fixture(tutor, scope, required=2)
+    results = await asyncio.gather(
+        tutor.submit_attempt(
+            scope,
+            quizzes[0]["id"],
+            LearnerAttemptCreate(submission_id="parallel-1", answer="answer 1"),
+        ),
+        tutor.submit_attempt(
+            scope,
+            quizzes[1]["id"],
+            LearnerAttemptCreate(submission_id="parallel-2", answer="answer 2"),
+        ),
+    )
+    assert all(result["correct"] for result in results)
+    state = await tutor.inspect_objective(scope, objective["id"])
+    assert state["status"] == "MASTERED"
+    assert state["mastery_evidence"]["distinct_quizzes"] == 2
 
 
 @pytest.mark.skipif(

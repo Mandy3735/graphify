@@ -92,12 +92,27 @@ external write, verifies no side effect before approval, approves exact normaliz
 arguments, resumes once and rejects replay. Other tests cover argument/target/run/
 expiry/tool-version mutation, revoked capability, races and concurrent PG claims.
 
-## DEMO C/D/E — Chief of Staff, Tutor, Game Master
+## DEMO C/E — Chief of Staff and Game Master
 
 These modes can start independent generic text runs with authorized personal
-memory. Dedicated project/task, learner mastery, campaign membership/state/dice
-workflows remain pending later milestones. Memory visibility is enforced, but campaign
+memory. Dedicated project/task and campaign membership/state/dice workflows remain
+pending later milestones. Memory visibility is enforced, but campaign
 membership and the complete GM secrecy system are not yet implemented.
+
+## DEMO D — Tutor (implemented)
+
+In `/docs`, create a source-backed objective with
+`POST /api/tutor/objectives`, then add a cited lesson and at least two quizzes.
+Submit answers only through `/api/tutor/quizzes/{id}/attempts`, using a distinct
+`submission_id` for each human response. Inspect the objective after correct
+answers to see the exact attempt IDs supporting mastery. Query `/api/tutor/reviews`
+with a timezone-aware `due_before`; after the due time, submit a fresh correct
+attempt and use it to complete the review. The response contains the next interval.
+
+For model-assisted teaching, start a TUTOR chat with `learning_objective_id` or
+execute `tutor.context`, `tutor.create_lesson` or `tutor.create_quiz` in TUTOR mode.
+No model tool can submit an answer or set mastery. A complete request sequence and
+the exact evaluation/review limits are in [TUTOR.md](TUTOR.md).
 
 ## DEMO F — Memory inspector and provenance (implemented)
 

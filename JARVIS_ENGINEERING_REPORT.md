@@ -1,17 +1,15 @@
-# JARVIS engineering report — 2026-10-07
+# JARVIS engineering report — 2026-10-10
 
-A runnable **Engineer checkpoint** is implemented in the existing Graphify
-repository. It completes the bounded phases 0–6 scope in JARVIS_PLAN.md. The full
+A runnable **Tutor checkpoint** is implemented in the existing Graphify
+repository. It completes the bounded phases 0–7 scope in JARVIS_PLAN.md. The full
 personal AI operating system specification is not complete.
 
-Repository: `/workspace/graphify`; active published branch `jarvis/phase-6-engineer`;
-receiving checkpoint `5f622c094f0a023a0cbcfc0f39850f9866621b78`, the published
-phase-5 handoff. Original Graphify parent `5c7b84792f453582676548185aaec3824d51dfe2`,
-release 0.9.77, is preserved. The user subsequently authorized publishing Phase 6
-on 2026-10-07. GitHub's branch ref was verified at implementation commit
-`dd69e080b8bd4b7aed72b2df07c54a8c879c5f93`; no merge or deployment occurred.
-Resolve its exact HEAD
-with Git or the phase-6 delivery manifest.
+Repository: `/workspace/graphify`; active local branch `jarvis/phase-7-tutor`;
+receiving checkpoint `b5c613ffae1163b30e5b8c9897afec6abce175ea`, the published
+Phase 6 tip. Original Graphify parent `5c7b84792f453582676548185aaec3824d51dfe2`,
+release 0.9.77, is preserved. Phase 7 is local; no push, merge or deployment
+occurred. Resolve its exact checkpoint with `git rev-parse HEAD` after the local
+commit. The published Phase 6 history remains documented below.
 The adjacent empty My-JARVIS-AI- repository was left untouched.
 
 ## What works
@@ -31,9 +29,11 @@ The adjacent empty My-JARVIS-AI- repository was left untouched.
 - Structured personal memory, provenance, scoped semantic/lexical retrieval,
   bounded explainable context, authenticated inspector/export/correction/deletion
   APIs, and human acceptance for inactive model proposals. See MEMORY.md.
+- Source-grounded Tutor objectives, cited lessons/quizzes, authenticated human
+  attempts, deterministic evidence-backed mastery and persisted spaced reviews.
 
 The four mode identifiers exist and keep independent run context. Dedicated
-Chief of Staff, Tutor and Game Master workflows are pending. Only opt-in kernel-isolated system-Python execution is registered when verified;
+Chief of Staff and Game Master workflows are pending. Only opt-in kernel-isolated system-Python execution is registered when verified;
 no host shell or real external-write integration is registered. Fake integration
 fixtures prove approval behavior without performing external communications.
 
@@ -230,13 +230,13 @@ Core Graphify changes: **none**. Small additive edits: `.gitignore`, `README.md`
 - `docs/jarvis/UPSTREAM_BOUNDARY.md`
 - `JARVIS_ENGINEERING_REPORT.md`
 
-## Deferred work and next task
+## Foundation-era deferred work and next task (historical)
 
-Phases 6–10 are pending: OS-isolated
+At the foundation checkpoint, phases 6–10 were pending: OS-isolated
 Engineer editing/testing/worktrees, Tutor evidence/mastery, canonical GM state/
 visibility/dice/rules/transcripts, responsive Command Center/PWA, optional voice.
-Watchers/integrations and full production hardening remain pending. Scope checks
-and adversarial review were applied to this checkpoint only.
+Phases 6 and 7 are now implemented in later sections. Game Master, Command Center,
+voice, watchers/integrations and full production hardening remain pending.
 
 Production still requires multi-user identity/session/OAuth, TLS and secret
 rotation, restricted DB role, deployment/worker coordination, request quotas,
@@ -260,7 +260,8 @@ Setup: `docs/jarvis/LOCAL_DEVELOPMENT.md` and `apps/jarvis/.env.example`.
   E2E was deferred at the foundation checkpoint; phase 6 below now covers it.
 - **C — Chief of Staff:** generic text runs and approval contract work; projects/
   checkpoints are pending; personal memory/context works. Fake external approval demo is tested.
-- **D — Tutor:** generic independent text mode only; quizzes/mastery pending phase 7.
+- **D — Tutor:** source-grounded objectives, cited material, quizzes, authenticated
+  human attempts, deterministic mastery evidence and spaced reviews are implemented.
 - **E — Game Master:** generic independent text mode only; campaign secrets,
   player/NPC dice and canonical event proposals pending phase 8.
 
@@ -455,3 +456,48 @@ Both full local suites passed after this adjustment: PostgreSQL **137 passed,
 1 skipped** (28.01 s), pgvector **137 passed, 1 skipped** (28.29 s). Ruff checks,
 format and Pyright passed, and Graphify was updated after the code edit. Remote
 verification is recorded by subsequent GitHub Actions runs on the branch.
+
+## Phase 7 Tutor implementation and review — 2026-10-10
+
+Phase 7 resumed from published Phase 6 tip
+`b5c613ffae1163b30e5b8c9897afec6abce175ea` on a new local
+`jarvis/phase-7-tutor` branch. The receiving source was clean. Its retained JARVIS
+environment passed Ruff/format/Pyright and 129 tests with nine database-specific
+skips before implementation. The fresh root environment lacked the prior editable
+JARVIS install; that setup error was recorded separately and was not a source failure.
+
+Application 0.4.0 adds dedicated Tutor schema/service/API/tools and additive
+migration 0003. Learning objectives require bounded source excerpts with locator,
+quote and hash. Explanations, worked examples, Socratic prompts and quizzes must
+cite sources owned by that objective. Accepted short answers are normalized and
+hashed; they are never returned by quiz or context APIs.
+
+Learner attempts enter only through the authenticated attempt endpoint and are
+server-stamped `HUMAN_API`. Strict inputs cannot supply correctness, score,
+evaluator, origin or mastery. Exact duplicate submissions are idempotent; mutated
+replays conflict. The latest attempt per distinct quiz drives a deterministic
+threshold. A one-time mastery record contains exact attempt IDs, score and
+evaluator. It schedules persisted 1/3/7/14/30-day reviews; completion requires a
+correct human attempt made at or after the due time.
+
+Tutor model tools are TUTOR/objective/capability bound and limited to context,
+lesson and quiz operations. There is no model tool for attempts, grading, mastery
+or reviews. Prompt-injected source text stays untrusted data. Canonical Tutor state
+is independent of personal memory.
+
+Hostile review found and fixed same-timestamp retry ordering and premature reuse
+of pre-due attempts for review evidence. PostgreSQL locks and unique constraints
+were exercised with concurrent duplicate and distinct-quiz attempts. Migration
+0002→0003 preserved existing memory and append-only audit records.
+
+Full local suites with real kernel tests passed **152 tests, 1 skipped** on
+ordinary PostgreSQL (31.70 s) and **152 tests, 1 skipped** on pgvector (31.38 s).
+Ruff/format/Pyright passed for 41 Python files with zero type errors/warnings.
+The 0.4.0 wheel/sdist, migrated PostgreSQL API smoke, relevant upstream architecture
+tests, preserved-boundary diff and scoped Graphify query/explain all passed. The
+graph contains 19,425 nodes, 40,630 edges and 1,041 communities. No paid provider,
+push, merge, deployment or outbound communication was used.
+
+Next: phase 8 Game Master canonical campaign state, visibility-before-context,
+ScenePacketBuilder, rules/dice and roll authority. Chief of Staff/watchers,
+frontend/PWA, voice/integrations and complete production hardening remain pending.

@@ -21,6 +21,9 @@ def settings(tmp_path: Path):
                 "memory.read",
                 "memory.write",
                 "memory.propose",
+                "tutor.read",
+                "tutor.write",
+                "tutor.attempt",
             }
         ),
         _env_file=None,

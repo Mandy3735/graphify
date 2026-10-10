@@ -49,4 +49,10 @@ The third checkpoint implements phase 6 within a bounded Linux/system-Python
 worker scope: graph-first private snapshot worktree, hash-bound edits, dry run,
 real offline tests, graph update/impact and owner/run-scoped patch artifacts.
 Source application/push/merge/deploy are separate authorities and not registered.
-Tutor remains the exact next milestone. See docs/jarvis/ENGINEER.md and current progress.
+See docs/jarvis/ENGINEER.md and current progress.
+
+The fourth checkpoint implements phase 7 in dedicated migration-0003 tables:
+owner-scoped objectives and sources, cited teaching/quiz artifacts, authenticated
+human attempts, deterministic evaluation, attempt-backed mastery and persisted
+spaced reviews. Models have no attempt/mastery authority. Game Master is the exact
+next milestone. See docs/jarvis/TUTOR.md and current progress.

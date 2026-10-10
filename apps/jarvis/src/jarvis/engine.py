@@ -422,6 +422,17 @@ class Engine:
                 }
                 if tool.name == "graph.update":
                     audit(session, self.actor.id, "graph.updated", arguments, run_id)
+            if tool.name.startswith("tutor."):
+                run.metadata_json = {
+                    **run.metadata_json,
+                    "tutor_evidence": [
+                        *run.metadata_json.get("tutor_evidence", []),
+                        {
+                            "tool": tool.name,
+                            "objective_id": arguments.get("objective_id"),
+                        },
+                    ],
+                }
             self._move(session, run, RunState.PLANNING, "Tool result available as untrusted data")
 
     async def approve(self, approval_id: str) -> str:

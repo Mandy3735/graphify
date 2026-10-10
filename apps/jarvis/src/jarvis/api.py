@@ -24,6 +24,9 @@ from jarvis.memory_tools import register_memory_tools
 from jarvis.models import FakeModelProvider, ModelRouter, OpenAIModelProvider, ProviderFailure
 from jarvis.sandbox import SandboxUnavailable
 from jarvis.tools import ToolRegistry, graph_tools
+from jarvis.tutor import TutorConflict, TutorDenied, TutorService
+from jarvis.tutor_api import tutor_router
+from jarvis.tutor_tools import register_tutor_tools
 
 
 class QueryBody(StrictModel):
@@ -66,11 +69,13 @@ def create_app(
         FakeModelProvider() if cfg.provider == "fake" else OpenAIModelProvider(cfg)
     )
     memory = MemoryService(db, cfg, embeddings or embedding_provider(cfg))
+    tutor = TutorService(db)
     engineer = EngineerService(cfg, graph) if cfg.engineer_enabled else None
     default_registry = registry is None
     if registry is None:
         registry = graph_tools(graph)
         register_memory_tools(registry, memory)
+        register_tutor_tools(registry, tutor)
     engine = Engine(cfg, db, ModelRouter(cfg, provider), registry, memory)
 
     @asynccontextmanager
@@ -92,9 +97,10 @@ def create_app(
             await provider.close()
         await db.dispose()
 
-    app = FastAPI(title="JARVIS", version="0.3.0", lifespan=lifespan)
+    app = FastAPI(title="JARVIS", version="0.4.0", lifespan=lifespan)
     app.state.engine, app.state.database, app.state.graph = engine, db, graph
     app.state.memory = memory
+    app.state.tutor = tutor
     app.state.engineer = engineer
 
     async def authenticate(authorization: Annotated[str | None, Header()] = None):
@@ -109,6 +115,7 @@ def create_app(
 
     auth = [Depends(authenticate)]
     app.include_router(memory_router(memory, engine.actor, auth))
+    app.include_router(tutor_router(tutor, engine.actor, auth))
 
     @app.exception_handler(MemoryDenied)
     async def memory_denied(request, exc):
@@ -118,6 +125,18 @@ def create_app(
 
     @app.exception_handler(MemoryConflict)
     async def memory_conflict(request, exc):
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(status_code=409, content={"detail": str(exc)})
+
+    @app.exception_handler(TutorDenied)
+    async def tutor_denied(request, exc):
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(status_code=403, content={"detail": str(exc)})
+
+    @app.exception_handler(TutorConflict)
+    async def tutor_conflict(request, exc):
         from fastapi.responses import JSONResponse
 
         return JSONResponse(status_code=409, content={"detail": str(exc)})
@@ -320,7 +339,7 @@ def create_app(
             "fallback_enabled": cfg.allow_fallback,
             "voice": "not_implemented",
             "modes": [mode.value for mode in Mode],
-            "checkpoint": "phase 5 memory; dedicated mode workflows pending",
+            "checkpoint": "phase 7 Tutor; Game Master and product UI pending",
             "memory": {
                 "embedding_provider": cfg.embedding_provider,
                 "pgvector": cfg.memory_pgvector,
@@ -355,6 +374,8 @@ def create_app(
             if ":" in namespace:
                 kind, value = namespace.split(":", 1)
                 scope_fields[f"{kind}_id"] = value
+        if proposal.name.startswith("tutor."):
+            scope_fields["learning_objective_id"] = proposal.arguments["objective_id"]
         return {
             "run_id": await engine.create(
                 ChatRequest(message=f"Execute {proposal.name}", mode=mode, **scope_fields),

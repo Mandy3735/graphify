@@ -1,4 +1,4 @@
-# Adversarial review — foundation, memory and Engineer checkpoint
+# Adversarial review — foundation, memory, Engineer and Tutor checkpoint
 
 Reviewed the delivered API/model/run/tool/Graphify/persistence boundary as a hostile
 reviewer. This is source/test review, not a third-party penetration test. Future
@@ -124,6 +124,45 @@ PostgreSQL/pgvector suite with real kernel tests enabled; lint/format/types,
 authorized upstream regression had 6,472 passes and seven existing DNS failures.
 No new upstream failure identifier. See progress for the restricted-run comparison.
 
+## Phase 7 hostile review and fixes
+
+- Tutor canonical state uses migration-0003 tables, separate from personal memory.
+  All objective/source/artifact/attempt/evidence/review queries bind the trusted
+  actor before returning or grading records. Foreign owners and missing grants are
+  tested before content is exposed.
+- Model tools are limited to objective-bound context and source-cited lesson/quiz
+  creation in TUTOR mode. There is no attempt, scoring, mastery or review-completion
+  tool. Attempts are strict authenticated inputs with server-owned origin, score,
+  correctness and evaluator fields; fabricated fields fail schema validation.
+- Source IDs must belong to the same owner/objective. Quotes and lessons remain
+  labeled untrusted, and injection text cannot add a capability or mutate mastery.
+  Accepted answers are persisted as hashes and never returned in Tutor views.
+- **Same-timestamp retries initially used UUID order when selecting the latest
+  answer.** Mastery evaluation now orders by explicit per-quiz attempt number.
+  The E2E covers wrong-answer then correct retry at an identical test timestamp.
+- Duplicate HTTP submission IDs replay only the identical hashed answer; changed
+  content conflicts. PostgreSQL objective locks serialize mastery recomputation,
+  and unique attempt/evidence/review constraints prevent duplicate canonical rows.
+  Concurrent duplicate and distinct-quiz tests exercise both paths.
+- **A review initially accepted any correct attempt created after its task.** It
+  now requires a correct HUMAN_API attempt evaluated at or after the task due time,
+  preventing early practice from being reused as spaced-review evidence.
+- Mastery uses latest human performance across distinct quizzes and retains exact
+  attempt IDs, score and evaluator version. Explanations, model-generated answers,
+  self-reports and quiz creation alone leave the objective ACTIVE.
+
+Current evaluation is exact normalized short-answer matching. It is deliberately
+less flexible than semantic grading and unsuitable for open-ended/rubric assessment.
+Bearer possession is the learner identity in this single-user checkpoint. Answer
+hashes are not confidential against low-entropy offline guessing by a trusted DB
+administrator. Notifications/watchers and a Tutor UI remain pending.
+
+Phase 7 full local suites passed **152 tests, 1 skipped** on PostgreSQL and
+**152 tests, 1 skipped** on PostgreSQL/pgvector with real kernel tests enabled.
+Ruff, format and Pyright passed. The migrated API smoke, 0.4.0 package build,
+relevant upstream architecture tests, preserved-boundary comparison and scoped
+Graphify TutorService query/explain also passed. See progress for exact results.
+
 ## Remaining limitations and release decision
 
 - Only single-user bearer identity, one API process, local POSIX deployment and a
@@ -137,7 +176,7 @@ No new upstream failure identifier. See progress for the restricted-run comparis
   Engineer execution is opt-in, kernel-verified and limited to system-Python commands.
 - Non-idempotent external effects need provider idempotency or human reconciliation
   after an interrupted attempt. No real external-write adapter is registered.
-- Campaign membership/state/visibility, Tutor mastery, dedicated Chief of Staff,
+- Campaign membership/state/visibility, dedicated Chief of Staff,
   frontend accessibility/PWA, voice, watchers and integrations are
   pending. They have no implemented security or functionality claim yet.
 - Memory is owner-scoped, including PUBLIC/PARTY. Its dedicated UI, automatic
@@ -150,5 +189,5 @@ No new upstream failure identifier. See progress for the restricted-run comparis
 
 No unresolved CRITICAL/HIGH issue is known within the bounded, single-process
 local checkpoint. This does not authorize public production release or imply the
-complete JARVIS definition of done has been met. Next: phase 7 evidence-backed
-Tutor workflow, following JARVIS_PLAN.md.
+complete JARVIS definition of done has been met. Next: phase 8 Game Master
+canonical state and secrecy, following JARVIS_PLAN.md.

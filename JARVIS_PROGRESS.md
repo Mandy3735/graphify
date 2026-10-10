@@ -1,12 +1,11 @@
-# JARVIS progress — 2026-10-07
+# JARVIS progress — 2026-10-10
 
-Repository `/workspace/graphify`; active published branch `jarvis/phase-6-engineer`;
-receiving checkpoint `5f622c094f0a023a0cbcfc0f39850f9866621b78` on the published
-`jarvis/phase-5-memory` branch. Original Graphify parent remains
-`5c7b84792f453582676548185aaec3824d51dfe2`. The user authorized the Phase 6 push
-on 2026-10-07. GitHub's branch ref matched implementation commit
-`dd69e080b8bd4b7aed72b2df07c54a8c879c5f93`. No merge or deployment was performed.
-Resolve the exact local checkpoint with `git rev-parse HEAD` or its delivery manifest.
+Repository `/workspace/graphify`; active local branch `jarvis/phase-7-tutor`;
+receiving checkpoint `b5c613ffae1163b30e5b8c9897afec6abce175ea` on the published
+`jarvis/phase-6-engineer` branch. Original Graphify parent remains
+`5c7b84792f453582676548185aaec3824d51dfe2`. Phase 7 is local and is not pushed,
+merged or deployed. Resolve the exact checkpoint with `git rev-parse HEAD` after
+the phase-7 commit.
 
 ## GitHub check configuration verification — 2026-10-07
 
@@ -24,7 +23,7 @@ skip (12.71 s). These are local results; inspect GitHub Actions for remote statu
 
 ## Delivered checkpoint
 
-Phases 0–6, bounded to the application scope defined in JARVIS_PLAN.md:
+Phases 0–7, bounded to the application scope defined in JARVIS_PLAN.md:
 
 - Upstream reconnaissance, complete baseline, boundary and milestone plan.
 - Independent application package/dependency lock; FastAPI/OpenAPI; authenticated
@@ -40,9 +39,9 @@ Phases 0–6, bounded to the application scope defined in JARVIS_PLAN.md:
   exact one-use approval, expiry/mutation/replay/revocation protection, PostgreSQL
   transaction tests and append-oriented audit with DB mutation guard.
 - Engineer text requests query Graphify before model analysis when project_id is
-  supplied. Four mode labels keep independent run context; dedicated mode workflows
-  remain incomplete apart from bounded Engineer work below. No host execution or
-  real external-write adapter is enabled.
+  supplied. Four mode labels keep independent run context; bounded Engineer and
+  Tutor workflows are implemented below. No unrestricted host execution or real
+  external-write adapter is enabled.
 - WORKING/EPISODIC/SEMANTIC/CANONICAL/PREFERENCE memory with required sources,
   owner-scoped namespaces, mode/visibility/expiry filtering before retrieval,
   linked revision corrections, eligible lineage deletion and append-only audit.
@@ -72,6 +71,13 @@ Phases 0–6, bounded to the application scope defined in JARVIS_PLAN.md:
 - No migration added: schema 0002 and all existing memory/approval/audit contracts
   remain intact. Worker supports system-Python standard-library commands only;
   see docs/jarvis/ENGINEER.md for precise limits and retained-artifact handling.
+- Dedicated migration 0003 and owner-scoped Tutor objectives/sources, cited
+  explanation/worked-example/Socratic artifacts, quizzes with hashed accepted
+  answers, authenticated human attempts and deterministic evaluation.
+- Mastery requires the latest correct HUMAN_API attempts across the configured
+  distinct-quiz threshold and retains exact evidence IDs. Models have no attempt,
+  mastery or review-completion tool. One-use submission IDs and objective locks
+  cover retries/races. Persisted reviews require a new correct attempt at/after due.
 
 ## Foundation verification history
 
@@ -163,13 +169,36 @@ After the fix, local full suites passed **137 tests, 1 skip** on PostgreSQL
 (28.01 s) and pgvector (28.29 s); Ruff lint/format and Pyright passed. The Graphify
 index was synchronized. Inspect subsequent GitHub runs for the remote verdict.
 
+## Phase 7 actual checks — local checkpoint
+
+| Check | Observed result |
+|---|---|
+| Receiving Phase 6 baseline | 129 passed, 9 database-specific skips (16.44 s); Ruff/format/Pyright passed |
+| PostgreSQL + real sandbox | **152 passed, 1 skipped** (31.70 s) |
+| PostgreSQL/pgvector + real sandbox | **152 passed, 1 skipped** (31.38 s) |
+| Tutor E2E/adversarial coverage | Objective, cited lesson/quizzes, wrong answer/retry, duplicate replay, human evidence mastery, due review, owner/grant/source/injection boundaries |
+| Migration/persistence/races | 0002 → 0003 preserves memory/audit; duplicate and concurrent distinct attempts produce one mastery record |
+| Ruff lint/format / Pyright | Passed; 41 Python files formatted; zero type errors/warnings |
+| Real migrated PostgreSQL API smoke | Unauthorized 401; objective 201; two HUMAN_API attempts changed ACTIVE → MASTERED; exact two-quiz/100% evidence; review 1 scheduled; no model attempt tool/answer exposure |
+| Application 0.4.0 wheel/sdist | Built successfully; migration, Tutor source and tests packaged |
+| Relevant upstream/preserved boundary | Architecture tests: 38 passed, 1 warning (0.31 s); no changes to Graphify core/tests, root metadata/lock/licenses, skill generation, application lock or migrations 0001/0002 |
+| Graph synchronization/navigation | 19,425 nodes, 40,630 edges, 1,041 communities; scoped TutorService query/explain succeeded |
+
+Both full runs explicitly enabled `JARVIS_TEST_SANDBOX=true`; real Engineer kernel
+tests were not skipped. The single skip in each run is the opposite pgvector
+configuration. No paid provider, live model, external write, push, merge or
+deployment was used. The unchanged upstream boundary made a second full Graphify
+regression unnecessary; the relevant architecture suite and exact preserved-path
+diff were run. Portable result snapshots are in `docs/jarvis/verification/`.
+
 ## Not done
 
-Phases 7–10 (Tutor, Game Master, Command Center/PWA, voice), watcher/transcript/integration
+Phases 8–10 (Game Master, Command Center/PWA, voice), Chief of Staff project/watcher,
+transcript/integration
 workflows, and complete production hardening/full-program adversarial acceptance
 remain pending. Phases 11–12 checks/review were applied only to delivered scope.
 No frontend build/tests or live paid model call is claimed. The full specification
-definition of done is not met by this Engineer checkpoint. Personal memory PUBLIC/
+definition of done is not met by this Tutor checkpoint. Personal memory PUBLIC/
 PARTY data remains owner-scoped; campaign membership/sharing is phase 8. The
 dedicated memory UI is phase 9. Expired memory is filtered but not background
 purged, and conversation/tool transcript retention is distinct from memory
@@ -177,16 +206,16 @@ deletion. See MEMORY.md for explicit lifecycle and retrieval limits.
 
 ## Exact next milestone
 
-Phase 7: persisted Tutor learning objectives, source-grounded lessons/quizzes,
-learner attempts, evidence-backed mastery and due spaced-review tasks. An
-explanation, model-generated answer or self-reported success must never establish
-mastery by itself. Keep owner/capability boundaries and all Phase 6 guarantees.
+Phase 8: structured canonical campaigns, membership/visibility enforcement before
+model context, ScenePacketBuilder, rules plugins, deterministic dice and bounded
+roll-authority delegation/state proposals. Preserve Tutor learner-evidence and all
+earlier authorization/sandbox/memory guarantees.
 
 Recommended next Codex instruction:
 
 > Read CODEX_HANDOFF.md and docs/jarvis/CODEX_NEXT_PROMPT.md, then implement phase
-> 7's Tutor workflow. Preserve Graphify, memory, approvals and the opt-in kernel
-> sandbox. Establish learner-performance evidence before recording mastery.
+> 8's Game Master workflow. Preserve Graphify, memory, approvals, Tutor evidence
+> and the opt-in kernel sandbox. Enforce GM visibility before model context.
 
-Setup/demonstrations: docs/jarvis/LOCAL_DEVELOPMENT.md and ENGINEER.md. Review:
+Setup/demonstrations: docs/jarvis/LOCAL_DEVELOPMENT.md, ENGINEER.md and TUTOR.md. Review:
 JARVIS_REVIEW.md. This checkpoint does not complete the full original specification.

@@ -1,4 +1,4 @@
-# JARVIS threat model (phases 0–6 checkpoint)
+# JARVIS threat model (phases 0–7 checkpoint)
 
 Existing Graphify controls remain documented in SECURITY.md. This document
 describes the added persistent application and must not be mistaken for future
@@ -23,6 +23,10 @@ features being implemented.
 | Audit rewrite | No API/tool mutation; PostgreSQL append-only trigger; privileged DB administrators remain trusted |
 | Poisoned personal memory / cross-owner leaks | SQL owner/namespace/mode/visibility/lifecycle filters before retrieval; untrusted data context; no permission grants; human acceptance for model proposals |
 | Stale/deleted memory → model context | Recheck live records after embedding awaits; rebuild context and refilter historical memory tools before each model call; purge eligible revision lineages |
+| Generated lesson/model answer → false mastery | No model attempt/mastery/review tool; server-stamped HUMAN_API attempts; deterministic grading; mastery retains exact attempt IDs |
+| Tutor source/prompt injection → authority | Source ownership validated before citation; content labeled untrusted; run/objective/capability bound before tool execution |
+| Duplicate/racing attempts → duplicate mastery | Objective row lock, unique submission/evidence/review constraints, idempotent exact replay and changed-answer conflict |
+| Premature spaced review → false retention | Review completion requires a correct human attempt made at or after the task due time |
 | GM secrets / voice spoof / device authority | GM/voice/device workflows pending; no placeholder claim of enforcement |
 | OAuth/MCP/plugins/supply chain | No integration authority enabled; dependency lock/checks; future integration-specific review |
 | Proactive automation | Watchers pending; no unrestricted polling or self-spawning agents |
@@ -45,3 +49,8 @@ Linux hosts permitting the required namespace/mount operations. Startup probes
 real isolation; unsupported hosts retain text/memory and register no execution
 tools. Shared-kernel risks, aggregate cgroup quotas and multi-worker support remain
 production-hardening work. See docs/jarvis/ENGINEER.md for precise guarantees.
+
+Tutor uses normalized exact-answer matching. Accepted-answer hashes reduce casual
+disclosure but are not secrets against an offline low-entropy dictionary attack;
+database administrators remain trusted. Semantic/open-ended grading, production
+learner identity and notification delivery remain future work. See TUTOR.md.
