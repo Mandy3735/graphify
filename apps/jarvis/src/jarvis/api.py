@@ -17,6 +17,9 @@ from jarvis.engine import Conflict, Engine
 from jarvis.engineer import EngineerService
 from jarvis.engineer_schema import ChangeRequest
 from jarvis.engineer_tools import register_engineer_tools
+from jarvis.game_master import GameMasterConflict, GameMasterDenied, GameMasterService
+from jarvis.game_master_api import game_master_router
+from jarvis.game_master_tools import register_game_master_tools
 from jarvis.graph import GraphifyKnowledgeProvider
 from jarvis.memory import MemoryConflict, MemoryDenied, MemoryService
 from jarvis.memory_api import memory_router
@@ -70,13 +73,15 @@ def create_app(
     )
     memory = MemoryService(db, cfg, embeddings or embedding_provider(cfg))
     tutor = TutorService(db)
+    game_master = GameMasterService(db)
     engineer = EngineerService(cfg, graph) if cfg.engineer_enabled else None
     default_registry = registry is None
     if registry is None:
         registry = graph_tools(graph)
         register_memory_tools(registry, memory)
         register_tutor_tools(registry, tutor)
-    engine = Engine(cfg, db, ModelRouter(cfg, provider), registry, memory)
+        register_game_master_tools(registry, game_master)
+    engine = Engine(cfg, db, ModelRouter(cfg, provider), registry, memory, game_master)
 
     @asynccontextmanager
     async def lifespan(app):
@@ -97,10 +102,11 @@ def create_app(
             await provider.close()
         await db.dispose()
 
-    app = FastAPI(title="JARVIS", version="0.4.0", lifespan=lifespan)
+    app = FastAPI(title="JARVIS", version="0.5.0", lifespan=lifespan)
     app.state.engine, app.state.database, app.state.graph = engine, db, graph
     app.state.memory = memory
     app.state.tutor = tutor
+    app.state.game_master = game_master
     app.state.engineer = engineer
 
     async def authenticate(authorization: Annotated[str | None, Header()] = None):
@@ -116,6 +122,7 @@ def create_app(
     auth = [Depends(authenticate)]
     app.include_router(memory_router(memory, engine.actor, auth))
     app.include_router(tutor_router(tutor, engine.actor, auth))
+    app.include_router(game_master_router(game_master, engine.actor, auth))
 
     @app.exception_handler(MemoryDenied)
     async def memory_denied(request, exc):
@@ -137,6 +144,18 @@ def create_app(
 
     @app.exception_handler(TutorConflict)
     async def tutor_conflict(request, exc):
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(status_code=409, content={"detail": str(exc)})
+
+    @app.exception_handler(GameMasterDenied)
+    async def game_master_denied(request, exc):
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(status_code=403, content={"detail": str(exc)})
+
+    @app.exception_handler(GameMasterConflict)
+    async def game_master_conflict(request, exc):
         from fastapi.responses import JSONResponse
 
         return JSONResponse(status_code=409, content={"detail": str(exc)})
@@ -339,7 +358,7 @@ def create_app(
             "fallback_enabled": cfg.allow_fallback,
             "voice": "not_implemented",
             "modes": [mode.value for mode in Mode],
-            "checkpoint": "phase 7 Tutor; Game Master and product UI pending",
+            "checkpoint": "phase 8 Game Master; product UI and voice pending",
             "memory": {
                 "embedding_provider": cfg.embedding_provider,
                 "pgvector": cfg.memory_pgvector,
@@ -376,6 +395,10 @@ def create_app(
                 scope_fields[f"{kind}_id"] = value
         if proposal.name.startswith("tutor."):
             scope_fields["learning_objective_id"] = proposal.arguments["objective_id"]
+        if proposal.name.startswith(("campaign.", "dice.")):
+            scope_fields["campaign_id"] = proposal.arguments["campaign_id"]
+            if proposal.arguments.get("session_id"):
+                scope_fields["session_id"] = proposal.arguments["session_id"]
         return {
             "run_id": await engine.create(
                 ChatRequest(message=f"Execute {proposal.name}", mode=mode, **scope_fields),

@@ -1,4 +1,4 @@
-# JARVIS architecture — Tutor checkpoint
+# JARVIS architecture — Game Master checkpoint
 
 This checkpoint is an authenticated, single-user API modular monolith.
 It is not a production personal operating system. See JARVIS_PROGRESS.md for
@@ -16,7 +16,7 @@ HTTP bearer identity → FastAPI → durable run engine → model gateway
 ```
 
 PostgreSQL is authoritative for runs, transitions, approvals, audit, personal
-memory and canonical Tutor learning state with source/attempt provenance. Alembic
+memory, canonical Tutor learning state and canonical campaign state. Alembic
 is the schema authority; startup never silently creates production tables. Tests
 may explicitly use SQLite for fast unit isolation, but PostgreSQL migration and
 transaction tests are mandatory. No Redis or agent framework is necessary here.
@@ -58,6 +58,14 @@ lessons/quizzes, but only the authenticated learner endpoint can create a
 server-evaluated HUMAN_API attempt. Mastery and review completion derive from
 those attempts; generated explanations cannot establish performance. See TUTOR.md.
 
+Migration 0004 adds campaigns, explicit memberships, canonical entries, sessions,
+visibility-scoped transcripts, one-use roll delegations, dice records, pending
+event proposals and approved events. ScenePacketBuilder applies membership and
+visibility predicates in SQL before limits and before model input. Creative text
+and transcripts cannot commit state. Model tools can read an authorized scene,
+request a policy-controlled roll and create a pending event proposal; only the
+authenticated GM decision endpoint applies an event. See GAME_MASTER.md.
+
 Deploy this checkpoint as one backend process. Multi-worker coordination, tenant
-identity/OAuth, a production restricted DB role, production UI, complete campaign
-membership and the remaining operating-mode workflows are subsequent milestones.
+identity/OAuth, a production restricted DB role, production UI and the remaining
+operating-mode workflows are subsequent milestones.

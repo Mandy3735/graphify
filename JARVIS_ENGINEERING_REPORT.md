@@ -1,16 +1,15 @@
 # JARVIS engineering report — 2026-10-10
 
-A runnable **Tutor checkpoint** is implemented in the existing Graphify
-repository. It completes the bounded phases 0–7 scope in JARVIS_PLAN.md. The full
+A runnable **Game Master checkpoint** is implemented in the existing Graphify
+repository. It completes the bounded phases 0–8 scope in JARVIS_PLAN.md. The full
 personal AI operating system specification is not complete.
 
-Repository: `/workspace/graphify`; active published branch `jarvis/phase-7-tutor`;
-receiving checkpoint `b5c613ffae1163b30e5b8c9897afec6abce175ea`, the published
-Phase 6 tip. Original Graphify parent `5c7b84792f453582676548185aaec3824d51dfe2`,
-release 0.9.77, is preserved. The user authorized the Phase 7 push on 2026-10-10;
-implementation commit `6d35a7bf22b17b299150ae8731082ac19c41f90d` is on the remote
-branch. No merge or deployment occurred. The published Phase 6 history remains
-documented below.
+Repository: `/workspace/graphify`; active local branch
+`jarvis/phase-8-game-master`; receiving checkpoint
+`d90bec5d9c255d922af3105d6974ca74eaf58271`, the clean published Phase 7 tip.
+Original Graphify parent `5c7b84792f453582676548185aaec3824d51dfe2`, release 0.9.77,
+is preserved. The Phase 8 checkpoint is local and has not been pushed, merged or
+deployed. The published Phase 6 and Phase 7 history remains documented below.
 The adjacent empty My-JARVIS-AI- repository was left untouched.
 
 ## What works
@@ -32,9 +31,12 @@ The adjacent empty My-JARVIS-AI- repository was left untouched.
   APIs, and human acceptance for inactive model proposals. See MEMORY.md.
 - Source-grounded Tutor objectives, cited lessons/quizzes, authenticated human
   attempts, deterministic evidence-backed mastery and persisted spaced reviews.
+- Membership-filtered Game Master campaigns, bounded scene packets, noncanonical
+  transcripts, rules plugins, policy-controlled dice/delegation and human-approved
+  canonical event proposals with provenance.
 
 The four mode identifiers exist and keep independent run context. Dedicated
-Chief of Staff and Game Master workflows are pending. Only opt-in kernel-isolated system-Python execution is registered when verified;
+Chief of Staff workflow is pending. Only opt-in kernel-isolated system-Python execution is registered when verified;
 no host shell or real external-write integration is registered. Fake integration
 fixtures prove approval behavior without performing external communications.
 
@@ -236,7 +238,7 @@ Core Graphify changes: **none**. Small additive edits: `.gitignore`, `README.md`
 At the foundation checkpoint, phases 6–10 were pending: OS-isolated
 Engineer editing/testing/worktrees, Tutor evidence/mastery, canonical GM state/
 visibility/dice/rules/transcripts, responsive Command Center/PWA, optional voice.
-Phases 6 and 7 are now implemented in later sections. Game Master, Command Center,
+Phases 6, 7 and 8 are now implemented in later sections. Command Center,
 voice, watchers/integrations and full production hardening remain pending.
 
 Production still requires multi-user identity/session/OAuth, TLS and secret
@@ -263,8 +265,9 @@ Setup: `docs/jarvis/LOCAL_DEVELOPMENT.md` and `apps/jarvis/.env.example`.
   checkpoints are pending; personal memory/context works. Fake external approval demo is tested.
 - **D — Tutor:** source-grounded objectives, cited material, quizzes, authenticated
   human attempts, deterministic mastery evidence and spaced reviews are implemented.
-- **E — Game Master:** generic independent text mode only; campaign secrets,
-  player/NPC dice and canonical event proposals pending phase 8.
+- **E — Game Master:** campaigns, GM/player visibility, bounded scene packets,
+  human transcripts, NPC and delegated PC dice, and approved canonical event
+  proposals are implemented and exercised against a migrated PostgreSQL database.
 
 The handoff in `CODEX_HANDOFF.md` provides a dedicated GitHub branch workflow and
 a self-contained Git bundle preserving source and upstream history. The delivery
@@ -503,3 +506,57 @@ pushed to its dedicated GitHub branch with user authorization.
 Next: phase 8 Game Master canonical campaign state, visibility-before-context,
 ScenePacketBuilder, rules/dice and roll authority. Chief of Staff/watchers,
 frontend/PWA, voice/integrations and complete production hardening remain pending.
+
+## Phase 8 Game Master implementation and review — 2026-10-10
+
+Phase 8 started from the clean published Phase 7 tip
+`d90bec5d9c255d922af3105d6974ca74eaf58271` on the new local
+`jarvis/phase-8-game-master` branch. Application 0.5.0 adds dedicated campaign,
+membership, entry, session, transcript, roll delegation, dice-roll, proposal and
+canonical-event records through additive migration 0004. It does not alter the
+original Graphify source surface or earlier migrations.
+
+Campaign membership and role are loaded from trusted database state before any
+campaign content. The bounded ScenePacketBuilder applies campaign, membership and
+visibility predicates in SQL before ordering and limiting candidates. GM-secret,
+retired and another player's private material cannot enter a player model call.
+Transcript lines are authenticated `HUMAN_API` observations and remain
+noncanonical; model prose cannot mutate campaign state.
+
+The replaceable rules-plugin boundary parses bounded dice expressions. System
+entropy and seeded test entropy retain hashed provenance without persisting a raw
+seed. NPC rolls are JARVIS-authoritative. Player-character rolls remain human by
+default; only the character controller can report their outcome. A controller's
+short-lived, one-use delegation may authorize exactly one JARVIS roll, with
+PostgreSQL locking and replay/mutation checks. A GM may request a player roll but
+cannot report it for another controller.
+
+Models may read their bound scene, request policy-controlled dice and propose an
+event. They cannot manage members or delegations, report human rolls, approve
+events or commit canonical state. Event proposals remain inactive until an
+authenticated campaign GM with `campaign.approve` makes a one-use human decision.
+Approval races and delegated-roll races are covered on PostgreSQL.
+
+Hostile review found and fixed controller/requester confusion in player roll
+requests and delegations, direct dice access to a supplied secret-entry UUID,
+non-exact nonce/request replay and impossible human totals, plus campaign-path
+binding in report and decision APIs.
+The adversarial suite covers visibility-before-limit, cross-role access, prompt
+injection, forged authority, dice bounds, deterministic seeded provenance,
+delegation expiry/replay/mutation and creative prose without state authority.
+
+Final local suites with all real kernel tests passed **173 tests, 1 skipped** on
+ordinary PostgreSQL (28.59 s) and **173 tests, 1 skipped** on pgvector (28.07 s).
+Ruff/format/Pyright passed for 46 Python files with zero type errors or warnings.
+The 0.5.0 wheel/sdist, migration upgrade, real PostgreSQL HTTP/API workflow,
+38 upstream architecture tests, preserved-path diff and scoped Graphify
+query/explain all passed. Graph synchronization produced 19,591 nodes, 41,291
+edges and 1,066 communities. Bubblewrap could not create its UID map inside the
+command sandbox and failed closed; the authoritative host-isolated suites above
+then exercised all 13 real sandbox tests. No paid provider or real external effect
+was used.
+
+Next: phase 9 Command Center/PWA with responsive, accessible mode surfaces and
+safe rendering over the existing authenticated APIs. Chief of Staff/watchers,
+optional voice/integrations and complete production hardening remain pending.
+This Phase 8 checkpoint is local; no push, merge or deployment is claimed.

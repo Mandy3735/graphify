@@ -51,3 +51,19 @@ The private delivery manifest and Git HEAD identify the exact local checkpoint.
 The Phase 7 branch was subsequently pushed with user authorization. It was not
 merged or deployed. Graphify update and scoped TutorService navigation succeeded;
 full scratch logs remain in `work/`.
+
+## Phase 8 local checkpoint
+
+- `phase8-postgres-tests.txt` and `phase8-pgvector-tests.txt`: each 173 passes and
+  one opposite-configuration skip, with all 13 real Bubblewrap tests enabled.
+- `phase8-http-smoke.json`: authenticated Game Master workflow on a freshly
+  migrated PostgreSQL database, including scene visibility, NPC/human/delegated
+  roll authority, proposal approval and model-tool authority checks.
+- `phase8-upstream-comparison.json`: relevant architecture regression and exact
+  preserved-path comparison. A full upstream rerun was not repeated because Phase 8
+  does not change the upstream surface; the Phase 6 full regression remains the
+  latest full reference.
+
+The Phase 8 checkpoint is local and has not been pushed, merged or deployed.
+Graphify update and scoped GameMasterService query/explain succeeded; full scratch
+logs remain in `work/`. No paid provider or live external effect was used.

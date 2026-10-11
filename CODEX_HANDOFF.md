@@ -2,8 +2,8 @@
 
 This repository contains the original Graphify project and the JARVIS foundation
 created from [the full supplied specification](docs/jarvis/MASTER_SPEC.md).
-The current published checkpoint branch is `jarvis/phase-7-tutor`, based on published
-Phase 6 tip `b5c613ffae1163b30e5b8c9897afec6abce175ea`, preserving
+The current local checkpoint branch is `jarvis/phase-8-game-master`, based on the
+clean published Phase 7 tip `d90bec5d9c255d922af3105d6974ca74eaf58271`, preserving
 Graphify 0.9.77 at
 `5c7b84792f453582676548185aaec3824d51dfe2`. The foundation was published on
 `jarvis/foundation`; the published phase-5 handoff branch is
@@ -14,17 +14,20 @@ Graphify 0.9.77 at
 The preceding complete Phase 6 handoff is
 [`Mandy3735/graphify:jarvis/phase-6-engineer`](https://github.com/Mandy3735/graphify/tree/jarvis/phase-6-engineer).
 Its implementation commit is `dd69e080b8bd4b7aed72b2df07c54a8c879c5f93`.
-The complete Tutor handoff is
+The latest published handoff is
 [`Mandy3735/graphify:jarvis/phase-7-tutor`](https://github.com/Mandy3735/graphify/tree/jarvis/phase-7-tutor).
 Its implementation commit is `6d35a7bf22b17b299150ae8731082ac19c41f90d`.
-The older `jarvis/phase-5-memory` branch does not contain Engineer or Tutor.
+The older `jarvis/phase-5-memory` branch does not contain Engineer, Tutor or Game
+Master. Phase 8 is only in this local checkout until the user separately authorizes
+a push.
 
-For local Codex, open this repository and select `jarvis/phase-7-tutor`. Another
-cloud session should use the published Phase 7 branch and verify its HEAD before
-continuing. The older verified Phase 6 bundle remains in `work/phase6-delivery`;
-it is not a Phase 7 handoff. Use the continuation prompt for Phase 8.
+For local Codex, open this repository and select `jarvis/phase-8-game-master`.
+Another cloud session cannot receive Phase 8 from GitHub until it is published;
+until then, it should use this checkout or start from the published Phase 7 branch.
+The older verified Phase 6 bundle remains in `work/phase6-delivery`; it is not a
+Phase 8 handoff. Use the continuation prompt for Phase 9.
 
-The receiving Phase 6 commit is `b5c613ffae1163b30e5b8c9897afec6abce175ea`.
+The receiving Phase 8 commit is `d90bec5d9c255d922af3105d6974ca74eaf58271`.
 Resolve current local HEAD with `git rev-parse HEAD`. Existing delivery manifests
 identify older snapshots. The user authorized the Phase 6 push on 2026-10-07 and
 the Phase 7 push on 2026-10-10. No merge or deployment is authorized or claimed.
@@ -36,7 +39,8 @@ the Phase 7 push on 2026-10-10. No merge or deployment is authorized or claimed.
 3. `JARVIS_PLAN.md`: phases and acceptance criteria.
 4. `docs/jarvis/MASTER_SPEC.md`: the complete original product specification.
 5. `docs/jarvis/LOCAL_DEVELOPMENT.md`: install, migrate, run, and test commands.
-6. `docs/jarvis/ENGINEER.md`, `docs/jarvis/TUTOR.md`, `JARVIS_REVIEW.md`, `THREAT_MODEL.md`, and
+6. `docs/jarvis/ENGINEER.md`, `docs/jarvis/TUTOR.md`, `docs/jarvis/GAME_MASTER.md`,
+   `JARVIS_REVIEW.md`, `THREAT_MODEL.md`, and
    `docs/jarvis/UPSTREAM_BOUNDARY.md`.
 
 `JARVIS_ENGINEERING_REPORT.md` contains the detailed engineering record. The
@@ -45,7 +49,7 @@ and the upstream failure comparison; full session logs remain scratch files.
 
 ## What has been delivered
 
-Phases 0–7 are implemented in the independent `apps/jarvis` Python package:
+Phases 0–8 are implemented in the independent `apps/jarvis` Python package:
 authenticated FastAPI, PostgreSQL/Alembic, Graphify adapter, fake and official
 OpenAI Responses providers, durable bounded runs, typed tools, deterministic
 policy, exact one-use approvals, cancellation, audit records, and structured
@@ -53,7 +57,9 @@ personal memory with provenance, filtered retrieval, ContextBuilder and inspecto
 APIs, plus kernel-isolated small Engineer changes, tests, actual Git patches,
 graph update/impact and owner/run-scoped artifacts, plus canonical source-grounded
 Tutor objectives, teaching artifacts, quizzes, human attempts, evidence-backed
-mastery and spaced reviews. Optional pgvector and
+mastery and spaced reviews, plus membership-filtered Game Master campaigns, scene
+packets, transcripts, dice authority/delegation and approved canonical events.
+Optional pgvector and
 deterministic fake embeddings are verified.
 
 The receiving foundation suite passed **59 tests including real PostgreSQL**.
@@ -82,10 +88,16 @@ Pyright, the 0.4.0 package build, migrated PostgreSQL API smoke, relevant upstre
 checks and Graphify synchronization/query/explain passed. These are local results
 published with the Phase 7 source; remote CI status must be checked separately.
 
+Phase 8 passed **173 tests, one configuration-specific skip** on each of ordinary
+PostgreSQL and PostgreSQL/pgvector with all real kernel tests enabled. Ruff,
+format, Pyright, the 0.5.0 package build, migrated PostgreSQL API smoke, relevant
+upstream checks and Graphify synchronization/query/explain passed. These results
+are local; there is no remote Phase 8 CI result or published Phase 8 source.
+
 The entire JARVIS specification is not complete. Engineer scope/limits are in
-docs/jarvis/ENGINEER.md; Tutor scope/limits are in docs/jarvis/TUTOR.md. Game Master,
-Command Center and voice remain pending. Dedicated inspector UI and campaign
-membership/sharing remain later phases. The next implementation milestone is **phase 8**.
+docs/jarvis/ENGINEER.md; Tutor scope/limits are in docs/jarvis/TUTOR.md; Game
+Master scope/limits are in docs/jarvis/GAME_MASTER.md. Command Center, Chief of
+Staff and voice remain pending. The next implementation milestone is **phase 9**.
 
 ## Portable offline transfer
 

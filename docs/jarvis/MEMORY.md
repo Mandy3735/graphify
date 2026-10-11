@@ -16,8 +16,9 @@ The migration does not alter foundation tables, approvals or append-only audit.
 | PREFERENCE | Explicit inspectable personalization | Allowed |
 
 Canonical memory records do not administer application capabilities, approvals,
-campaigns, inventory, or Tutor mastery. Those domain services remain separate
-milestones. A memory containing permission text never grants that permission.
+campaigns, inventory, or Tutor mastery. Implemented domain services remain
+separate authoritative stores. A memory containing permission text never grants
+that permission.
 
 Corrections use an expected revision and create a new linked record; the prior
 record and its sources remain inspectable but leave retrieval. At most 32
@@ -53,8 +54,9 @@ mode does not grant a capability. RETIRED never enters retrieval. Inspect/list/
 export/history endpoints apply the same owner and visibility checks.
 
 The backend still uses one configured bearer identity. Independent configured
-actors are isolated in tests; this does not create multi-user login, party
-membership, or the phase-8 campaign secrecy system.
+actors are isolated in tests. Phase 8 adds explicit campaign membership and
+secrecy in its separate domain service; it does not add multi-user login or make
+personal-memory visibility a campaign authorization source.
 
 ## Retrieval and context
 

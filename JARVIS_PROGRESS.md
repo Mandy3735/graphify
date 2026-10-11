@@ -1,12 +1,11 @@
 # JARVIS progress — 2026-10-10
 
-Repository `/workspace/graphify`; active published branch `jarvis/phase-7-tutor`;
-receiving checkpoint `b5c613ffae1163b30e5b8c9897afec6abce175ea` on the published
-`jarvis/phase-6-engineer` branch. Original Graphify parent remains
-`5c7b84792f453582676548185aaec3824d51dfe2`. The user authorized and completed the
-Phase 7 push on 2026-10-10; implementation commit
-`6d35a7bf22b17b299150ae8731082ac19c41f90d` is present on the remote branch. No
-merge or deployment occurred. Verify the current branch HEAD before continuation.
+Repository `/workspace/graphify`; active local branch `jarvis/phase-8-game-master`;
+receiving checkpoint `d90bec5d9c255d922af3105d6974ca74eaf58271` on the published
+`jarvis/phase-7-tutor` branch. Original Graphify parent remains
+`5c7b84792f453582676548185aaec3824d51dfe2`. Phase 8 is local and is not pushed,
+merged or deployed. Resolve the exact Phase 8 checkpoint with `git rev-parse HEAD`
+after the local commit.
 
 ## GitHub check configuration verification — 2026-10-07
 
@@ -24,7 +23,7 @@ skip (12.71 s). These are local results; inspect GitHub Actions for remote statu
 
 ## Delivered checkpoint
 
-Phases 0–7, bounded to the application scope defined in JARVIS_PLAN.md:
+Phases 0–8, bounded to the application scope defined in JARVIS_PLAN.md:
 
 - Upstream reconnaissance, complete baseline, boundary and milestone plan.
 - Independent application package/dependency lock; FastAPI/OpenAPI; authenticated
@@ -79,6 +78,19 @@ Phases 0–7, bounded to the application scope defined in JARVIS_PLAN.md:
   distinct-quiz threshold and retains exact evidence IDs. Models have no attempt,
   mastery or review-completion tool. One-use submission IDs and objective locks
   cover retries/races. Persisted reviews require a new correct attempt at/after due.
+- Additive migration 0004 and canonical campaigns, explicit GM/player memberships,
+  structured entries/sessions, visibility-scoped transcripts and immutable events.
+- ScenePacketBuilder resolves membership then filters visibility in SQL before
+  limits/budgets/model input. Player packets exclude GM secrets and other players'
+  private state; content remains untrusted data rather than policy authority.
+- Replaceable rules and per-campaign roll-policy registries; bounded deterministic/
+  random dice service with actor/reason/visibility, raw/kept/discarded rolls, total,
+  authority, timestamps and entropy-reference provenance.
+- NPC electronic rolls, human-first PC roll requests, controller-only reports and
+  expiring atomic one-use delegation. Exact request replay cannot re-roll.
+- Model tools can read scenes, request policy-controlled rolls and create pending
+  proposals. Only an authenticated GM role/capability decision transaction applies
+  canonical CREATE/RETIRE changes; prose/transcripts cannot commit state.
 
 ## Foundation verification history
 
@@ -193,31 +205,54 @@ unchanged upstream boundary made a second full Graphify
 regression unnecessary; the relevant architecture suite and exact preserved-path
 diff were run. Portable result snapshots are in `docs/jarvis/verification/`.
 
+## Phase 8 actual checks — local checkpoint
+
+| Check | Observed result |
+|---|---|
+| Receiving Phase 7 source | Clean published tip `d90bec5`; Ruff/format/Pyright passed; initial SQLite diagnostic hit the documented command-sandbox async-worker stall |
+| PostgreSQL + real sandbox | **173 passed, 1 skipped** (28.59 s) |
+| PostgreSQL/pgvector + real sandbox | **173 passed, 1 skipped** (28.07 s) |
+| Dedicated GM E2E/adversarial suite | 18 passed: secrecy, filter-before-limit, membership/mode, rolls/delegation, proposals, prompt injection, model context and rules replacement |
+| Migration/persistence/races | 0003 → 0004 preserves Tutor/audit; metadata parity; competing event decisions commit once; concurrent PC rolls consume one delegation once |
+| Real migrated PostgreSQL API smoke | Unauthorized 401; campaign/scene; NPC system roll; PC human then delegated roll; pending proposal absent before approval and canonical afterward; no model commit/delegation tool |
+| Ruff lint/format / Pyright | Passed; 46 Python files formatted; zero type errors/warnings |
+| Application 0.5.0 wheel/sdist | Built offline successfully; migration, GM modules and tests packaged; wheel module parity checked |
+| Graph synchronization/navigation | 19,591 nodes, 41,291 edges, 1,066 communities; scoped GameMasterService query/explain succeeded |
+| Relevant upstream/preserved boundary | Architecture tests: 38 passed, 1 warning (0.29 s); no changes to Graphify core/tests, root metadata/lock/licenses, skill generation, application lock or migrations 0001–0003 |
+
+Both authoritative suites explicitly enabled `JARVIS_TEST_SANDBOX=true` and all
+13 real kernel isolation tests ran. A command-sandbox attempt failed closed with a
+read-only UID-map error; the permitted host test path established the required
+namespace boundary and passed. The one skip in each final run is the opposite
+pgvector configuration. No paid provider, external write, push, merge or deployment
+was used. Relevant upstream/preserved-boundary checks are recorded with this checkpoint.
+
 ## Not done
 
-Phases 8–10 (Game Master, Command Center/PWA, voice), Chief of Staff project/watcher,
-transcript/integration
-workflows, and complete production hardening/full-program adversarial acceptance
+Phases 9–10 (Command Center/PWA, voice), Chief of Staff project/watcher,
+integration workflows, richer campaign recap/import/initiative features, and
+complete production hardening/full-program adversarial acceptance
 remain pending. Phases 11–12 checks/review were applied only to delivered scope.
 No frontend build/tests or live paid model call is claimed. The full specification
-definition of done is not met by this Tutor checkpoint. Personal memory PUBLIC/
-PARTY data remains owner-scoped; campaign membership/sharing is phase 8. The
+definition of done is not met by this Game Master checkpoint. Personal memory
+PUBLIC/PARTY data remains owner-scoped and separate from campaign sharing. The
 dedicated memory UI is phase 9. Expired memory is filtered but not background
 purged, and conversation/tool transcript retention is distinct from memory
 deletion. See MEMORY.md for explicit lifecycle and retrieval limits.
 
 ## Exact next milestone
 
-Phase 8: structured canonical campaigns, membership/visibility enforcement before
-model context, ScenePacketBuilder, rules plugins, deterministic dice and bounded
-roll-authority delegation/state proposals. Preserve Tutor learner-evidence and all
-earlier authorization/sandbox/memory guarantees.
+Phase 9: responsive Command Center/PWA with mode-specific surfaces, approvals,
+memory inspector, Graphify/Engineer/Tutor/Game Master workflows, safe text rendering,
+accessibility basics and production frontend tests. Preserve every backend authority
+and secrecy boundary.
 
 Recommended next Codex instruction:
 
 > Read CODEX_HANDOFF.md and docs/jarvis/CODEX_NEXT_PROMPT.md, then implement phase
-> 8's Game Master workflow. Preserve Graphify, memory, approvals, Tutor evidence
-> and the opt-in kernel sandbox. Enforce GM visibility before model context.
+> 9's Command Center/PWA. Preserve Graphify, memory, approvals, Tutor evidence,
+> Game Master secrecy/roll authority and the opt-in kernel sandbox.
 
-Setup/demonstrations: docs/jarvis/LOCAL_DEVELOPMENT.md, ENGINEER.md and TUTOR.md. Review:
-JARVIS_REVIEW.md. This checkpoint does not complete the full original specification.
+Setup/demonstrations: docs/jarvis/LOCAL_DEVELOPMENT.md, ENGINEER.md, TUTOR.md and
+GAME_MASTER.md. Review: JARVIS_REVIEW.md. This checkpoint does not complete the
+full original specification.

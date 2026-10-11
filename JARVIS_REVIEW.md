@@ -1,4 +1,4 @@
-# Adversarial review — foundation, memory, Engineer and Tutor checkpoint
+# Adversarial review — foundation through Game Master checkpoint
 
 Reviewed the delivered API/model/run/tool/Graphify/persistence boundary as a hostile
 reviewer. This is source/test review, not a third-party penetration test. Future
@@ -163,6 +163,47 @@ Ruff, format and Pyright passed. The migrated API smoke, 0.4.0 package build,
 relevant upstream architecture tests, preserved-boundary comparison and scoped
 Graphify TutorService query/explain also passed. See progress for exact results.
 
+## Phase 8 hostile review and fixes
+
+- Campaign membership is resolved before reading campaign metadata or content.
+  Scene entries and transcript lines use role/player visibility predicates in SQL
+  before ordering, candidate limits, byte budgets and model input. A test places
+  129 newer GM secrets ahead of an older allowed marker and still retrieves only
+  the marker for the player.
+- Scene packets are bounded to current campaign/session data, label every content
+  field untrusted and retain only IDs/visibilities in run metadata. Player-facing
+  provider capture proves secret text and IDs never reach the model.
+- Model tools are limited to scene read, policy-controlled roll and pending event
+  proposal. Membership, human transcript, delegation, human roll report, decision
+  and canonical commit have no model tool. Prompt-injected lore cannot change role,
+  reveal a secret or gain roll authority.
+- **The initial roll policy allowed only a PC controller to request its roll.** It
+  now permits a GM to create an awaiting-human request while only the controller
+  can report it. A personal-play GM may control a PC because controllers need to be
+  campaign members, not necessarily PLAYER-role members.
+- **Delegation lookup initially followed the requester.** It now follows the PC's
+  controller, so a GM request can consume only that controller's explicit active
+  delegation. PostgreSQL locking, expiry, max-use and status make it one-use under
+  concurrent requests; the other request immediately returns to human authority.
+- **Direct dice requests initially trusted possession of an entry UUID after only
+  checking campaign membership.** Subject visibility is now checked independently;
+  GM-secret, another player's private and retired entities return the same not-found
+  boundary before roll authority is evaluated.
+- Electronic rolls use strict expression caps and an injected RNG. Records retain
+  requesting actor, reason, visibility, raw/kept/discarded dice, modifier, total,
+  authority, provenance and a hashed entropy reference. Exact request and delegation
+  nonce replays reject changed data; reported human totals must fit the expression.
+  Campaigns select a named operator-registered roll policy.
+- Creative prose and transcripts never change canonical entries. Pending structured
+  CREATE/RETIRE proposals require authenticated GM role/capability. A row lock and
+  unique event/proposal constraint make competing decisions commit exactly once.
+  Rejection is final. Audit data omits secret prose.
+
+Phase 8 full local suites passed **173 tests, 1 skipped** on PostgreSQL and
+**173 tests, 1 skipped** on PostgreSQL/pgvector with all real kernel tests enabled.
+Ruff, format and Pyright passed. The 0.5.0 package build, migrated API smoke,
+Graphify synchronization/query/explain and preserved upstream boundary passed.
+
 ## Remaining limitations and release decision
 
 - Only single-user bearer identity, one API process, local POSIX deployment and a
@@ -176,9 +217,9 @@ Graphify TutorService query/explain also passed. See progress for exact results.
   Engineer execution is opt-in, kernel-verified and limited to system-Python commands.
 - Non-idempotent external effects need provider idempotency or human reconciliation
   after an interrupted attempt. No real external-write adapter is registered.
-- Campaign membership/state/visibility, dedicated Chief of Staff,
-  frontend accessibility/PWA, voice, watchers and integrations are
-  pending. They have no implemented security or functionality claim yet.
+- Dedicated Chief of Staff projects/watchers, frontend accessibility/PWA, voice
+  and integrations are pending. Rich campaign imports/maps/initiative/recap and
+  production identity remain outside the current Game Master checkpoint.
 - Memory is owner-scoped, including PUBLIC/PARTY. Its dedicated UI, automatic
   expiry purge, comprehensive conversation retention and large-archive ANN indexing
   remain outside this checkpoint. Candidate windows and byte budgets are explicit.
@@ -189,5 +230,5 @@ Graphify TutorService query/explain also passed. See progress for exact results.
 
 No unresolved CRITICAL/HIGH issue is known within the bounded, single-process
 local checkpoint. This does not authorize public production release or imply the
-complete JARVIS definition of done has been met. Next: phase 8 Game Master
-canonical state and secrecy, following JARVIS_PLAN.md.
+complete JARVIS definition of done has been met. Next: phase 9 Command Center/PWA,
+following JARVIS_PLAN.md.

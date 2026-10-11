@@ -10,6 +10,7 @@ from jarvis.context import ContextBuilder
 from jarvis.db import AgentRun, AgentStep, ApprovalRequest, Database, audit, now
 from jarvis.domain import TERMINAL, TRANSITIONS, ChatRequest, Message, RunState, ToolProposal
 from jarvis.embeddings import OpenAIEmbeddingProvider, embedding_provider
+from jarvis.game_master import GameMasterService
 from jarvis.memory import MemoryService
 from jarvis.models import ModelRouter, ProviderFailure
 from jarvis.policy import Actor, Decision, PolicyEngine, operation_for, operation_hash
@@ -38,12 +39,13 @@ class Engine:
         router: ModelRouter,
         registry: ToolRegistry,
         memory: MemoryService | None = None,
+        game_master: GameMasterService | None = None,
     ):
         self.settings, self.db, self.router, self.registry = settings, database, router, registry
         self.policy = PolicyEngine()
         self.actor = Actor(str(settings.actor_id), settings.capabilities)
         self.memory = memory or MemoryService(database, settings, embedding_provider(settings))
-        self.context = ContextBuilder(settings, self.memory)
+        self.context = ContextBuilder(settings, self.memory, game_master)
         self.tasks: dict[str, asyncio.Task] = {}
         self.admission = asyncio.Lock()
 
@@ -188,6 +190,22 @@ class Engine:
                             "retrieved_memory_ids": [record["id"] for record in built.records],
                             "context_tokens_upper_bound": built.estimated_tokens_upper_bound,
                             "memory_omitted_for_budget": built.omitted_for_budget,
+                            "scene_packet": (
+                                {
+                                    "campaign_id": built.scene_packet["campaign"]["id"],
+                                    "session_id": (
+                                        built.scene_packet["session"]["id"]
+                                        if built.scene_packet["session"]
+                                        else None
+                                    ),
+                                    "entry_ids": [
+                                        entry["id"] for entry in built.scene_packet["entries"]
+                                    ],
+                                    "visibilities": built.scene_packet["authorized_visibilities"],
+                                }
+                                if built.scene_packet
+                                else None
+                            ),
                         }
                         audit(
                             session,
@@ -195,6 +213,11 @@ class Engine:
                             "context.built",
                             {
                                 "memory_ids": [record["id"] for record in built.records],
+                                "campaign_entry_ids": (
+                                    [entry["id"] for entry in built.scene_packet["entries"]]
+                                    if built.scene_packet
+                                    else []
+                                ),
                                 "tokens_upper_bound": built.estimated_tokens_upper_bound,
                             },
                             run_id,
@@ -430,6 +453,24 @@ class Engine:
                         {
                             "tool": tool.name,
                             "objective_id": arguments.get("objective_id"),
+                        },
+                    ],
+                }
+            if tool.name.startswith(("campaign.", "dice.")):
+                run.metadata_json = {
+                    **run.metadata_json,
+                    "game_master_evidence": [
+                        *run.metadata_json.get("game_master_evidence", []),
+                        {
+                            "tool": tool.name,
+                            "campaign_id": arguments.get("campaign_id"),
+                            "session_id": arguments.get("session_id"),
+                            "roll_id": output.data.get("id") if tool.name == "dice.roll" else None,
+                            "proposal_id": (
+                                output.data.get("id")
+                                if tool.name == "campaign.propose_event"
+                                else None
+                            ),
                         },
                     ],
                 }

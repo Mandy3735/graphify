@@ -56,3 +56,10 @@ owner-scoped objectives and sources, cited teaching/quiz artifacts, authenticate
 human attempts, deterministic evaluation, attempt-backed mastery and persisted
 spaced reviews. Models have no attempt/mastery authority. Game Master is the exact
 next milestone. See docs/jarvis/TUTOR.md and current progress.
+
+The fifth checkpoint implements phase 8 in additive migration-0004 tables:
+explicit campaign memberships, visibility-first bounded scene packets, canonical
+entries/sessions, non-canonical transcripts, replaceable rules plugins, auditable
+dice, human-first PC roll authority, one-use delegation and GM-approved structured
+events. Models cannot commit canonical state. Command Center/PWA is the exact next
+milestone. See docs/jarvis/GAME_MASTER.md and current progress.

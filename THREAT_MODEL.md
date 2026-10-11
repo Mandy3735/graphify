@@ -1,4 +1,4 @@
-# JARVIS threat model (phases 0–7 checkpoint)
+# JARVIS threat model (phases 0–8 checkpoint)
 
 Existing Graphify controls remain documented in SECURITY.md. This document
 describes the added persistent application and must not be mistaken for future
@@ -27,7 +27,14 @@ features being implemented.
 | Tutor source/prompt injection → authority | Source ownership validated before citation; content labeled untrusted; run/objective/capability bound before tool execution |
 | Duplicate/racing attempts → duplicate mastery | Objective row lock, unique submission/evidence/review constraints, idempotent exact replay and changed-answer conflict |
 | Premature spaced review → false retention | Review completion requires a correct human attempt made at or after the task due time |
-| GM secrets / voice spoof / device authority | GM/voice/device workflows pending; no placeholder claim of enforcement |
+| GM secret / private player leak | Explicit membership plus SQL visibility predicates before limits/model input; adversarial player-context tests include filter-after-limit |
+| Creative prose/transcript → canonical state | Structured proposal tables are non-canonical; authenticated GM role/capability and row-locked decision transaction required |
+| Forged membership/mode/campaign | Actor comes from authentication/configuration; service membership lookup and tool run campaign/session binding precede reads/effects |
+| PC authority theft / delegation replay | Human by default; controller-only reporting/delegation; delegation expires and is atomically one-use; nonce TTL and all meaningful request fields must replay exactly |
+| Secret entity ID → dice side channel | Subject visibility is independently checked before roll authority; unauthorized/retired UUIDs return the same not-found boundary |
+| Fabricated or abusive randomness | Strict bounded parser and plausible human totals; injected system/seeded RNG; rolls retain actor, reason, visibility, raw/kept/discarded dice, total, authority and entropy reference |
+| Secret transcript injection | Transcript visibility filtered before scene limit; players cannot author GM-secret or another player's private line; transcripts remain untrusted/non-canonical |
+| Voice spoof / device authority | Voice/device workflows pending; no placeholder claim of enforcement |
 | OAuth/MCP/plugins/supply chain | No integration authority enabled; dependency lock/checks; future integration-specific review |
 | Proactive automation | Watchers pending; no unrestricted polling or self-spawning agents |
 
@@ -37,8 +44,10 @@ graph text, remote integration responses. Server secrets never enter model input
 or worker environment. Production needs TLS, secret management, a non-owner DB
 role, token rotation, identity/session hardening and admission/rate limits.
 
-Phase 5 keeps PUBLIC/PARTY owner-scoped. GM-secret personal memory needs trusted
-capability plus GM mode; campaign membership/sharing remains phase 8. Canonical
+Phase 5 personal memory remains owner-scoped, including PUBLIC/PARTY. GM-secret
+personal memory needs trusted capability plus GM mode. Phase 8 campaign state uses
+separate explicit membership and sharing rather than changing personal-memory
+ownership. Canonical
 memory cannot edit application authorization state. Source locators are asserted
 data and never fetched/executed. Inspector exports are scoped bounded pages.
 Conversation/model/tool transcripts have separate retention from eligible memory
@@ -54,3 +63,9 @@ Tutor uses normalized exact-answer matching. Accepted-answer hashes reduce casua
 disclosure but are not secrets against an offline low-entropy dictionary attack;
 database administrators remain trusted. Semantic/open-ended grading, production
 learner identity and notification delivery remain future work. See TUTOR.md.
+
+Game Master membership is application-level, not production account/session
+identity. The default rules plugin is system-neutral. Scene relevance uses bounded
+current campaign/session candidates rather than semantic ranking, and transcripts
+have no automated recap pipeline yet. Database administrators remain trusted.
+See GAME_MASTER.md.

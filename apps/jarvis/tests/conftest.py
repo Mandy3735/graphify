@@ -24,6 +24,13 @@ def settings(tmp_path: Path):
                 "tutor.read",
                 "tutor.write",
                 "tutor.attempt",
+                "campaign.read",
+                "campaign.write",
+                "campaign.dice",
+                "campaign.delegate",
+                "campaign.propose",
+                "campaign.approve",
+                "campaign.transcript",
             }
         ),
         _env_file=None,

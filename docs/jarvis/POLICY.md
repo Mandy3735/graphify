@@ -37,3 +37,11 @@ and create source-cited teaching material or quizzes. No attempt, grading, maste
 or review-completion model tool exists. The authenticated human endpoint creates
 server-stamped attempts; deterministic service code alone evaluates them and
 derives mastery/review state. See [TUTOR.md](TUTOR.md).
+
+Phase 8 adds campaign read/write/dice/delegate/propose/approve/transcript grants.
+Every operation is also membership scoped. GAME_MASTER tools bind the trusted run
+campaign/session and expose only `campaign.get_scene`, `dice.roll` and
+`campaign.propose_event`. Models cannot add members, delegate PC roll authority,
+report a human roll, append a transcript as a human, decide a proposal or commit
+canonical state. GM membership and an authenticated `campaign.approve` request are
+required for event application. See [GAME_MASTER.md](GAME_MASTER.md).

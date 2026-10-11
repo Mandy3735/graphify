@@ -1,0 +1,16 @@
+{
+  "campaign_create_status": 201,
+  "canonical_after_approval": true,
+  "canonical_before_approval": false,
+  "delegation_consumed": true,
+  "model_commit_tool_present": false,
+  "model_delegation_tool_present": false,
+  "npc_roll_authority": "JARVIS_NPC",
+  "npc_roll_provenance": "SYSTEM_ENTROPY",
+  "pc_delegated_authority": "JARVIS_DELEGATED",
+  "pc_initial_authority": "HUMAN",
+  "proposal_status_after": "APPROVED",
+  "proposal_status_before": "PENDING",
+  "scene_entry_count": 4,
+  "unauthenticated_status": 401
+}

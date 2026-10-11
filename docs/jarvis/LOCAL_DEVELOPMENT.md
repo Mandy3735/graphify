@@ -92,12 +92,25 @@ external write, verifies no side effect before approval, approves exact normaliz
 arguments, resumes once and rejects replay. Other tests cover argument/target/run/
 expiry/tool-version mutation, revoked capability, races and concurrent PG claims.
 
-## DEMO C/E — Chief of Staff and Game Master
+## DEMO C — Chief of Staff
 
-These modes can start independent generic text runs with authorized personal
-memory. Dedicated project/task and campaign membership/state/dice workflows remain
-pending later milestones. Memory visibility is enforced, but campaign
-membership and the complete GM secrecy system are not yet implemented.
+Chief of Staff can start independent text runs with authorized personal memory.
+Dedicated project/task/checkpoint/watcher workflows remain a later milestone.
+
+## DEMO E — Game Master (implemented)
+
+In `/docs`, create a campaign with `POST /api/campaigns`, add explicit members,
+then add public/party/player-private/GM-secret entries and an active session. Fetch
+`/api/campaigns/{id}/scene?session_id=...`; the response is the same bounded,
+membership-filtered packet used for GAME_MASTER model context.
+
+Use `/dice` with a client-generated `request_id`. NPC rolls execute through the
+dice service. A PC roll returns `AWAITING_HUMAN` unless its controller created an
+unexpired one-use delegation. Report human results through the roll `/report`
+endpoint. Propose structured changes through `/events/propose`; inspect the scene
+before and after an authenticated GM `/decide` request to see that pending prose is
+not canonical. Session transcript lines have their own visibility and remain
+non-canonical. Exact payloads and limits are in [GAME_MASTER.md](GAME_MASTER.md).
 
 ## DEMO D — Tutor (implemented)
 

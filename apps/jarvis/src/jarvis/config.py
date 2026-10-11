@@ -52,6 +52,13 @@ class Settings(BaseSettings):
             "tutor.read",
             "tutor.write",
             "tutor.attempt",
+            "campaign.read",
+            "campaign.write",
+            "campaign.dice",
+            "campaign.delegate",
+            "campaign.propose",
+            "campaign.approve",
+            "campaign.transcript",
         }
     )
     # Per million input/output tokens. Empty means cost is unknown, not zero.

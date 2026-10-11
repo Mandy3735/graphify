@@ -18,6 +18,9 @@ from jarvis.config import Settings
 from jarvis.db import (
     AuditEvent,
     Base,
+    CampaignEntry,
+    CampaignEvent,
+    CampaignEventProposal,
     Database,
     MasteryEvidence,
     MemoryItem,
@@ -28,6 +31,25 @@ from jarvis.db import (
 from jarvis.domain import ChatRequest, Mode, RunState
 from jarvis.embeddings import FakeEmbeddingProvider
 from jarvis.engine import Conflict, Engine
+from jarvis.game_master import (
+    GameMasterConflict,
+    GameMasterScope,
+    GameMasterService,
+    SeededDiceEntropy,
+)
+from jarvis.game_master_schema import (
+    CampaignChange,
+    CampaignChangeAction,
+    CampaignCreate,
+    CampaignEntryCreate,
+    CampaignEntryKind,
+    CampaignMemberCreate,
+    CampaignProposalCreate,
+    CampaignRole,
+    CampaignVisibility,
+    DelegationCreate,
+    DiceRequest,
+)
 from jarvis.memory import MemoryConflict, MemoryScope, MemoryService
 from jarvis.models import FakeModelProvider, ModelRouter
 from jarvis.policy import Actor
@@ -343,6 +365,166 @@ async def test_postgres_concurrent_distinct_quizzes_create_one_mastery_record(po
     state = await tutor.inspect_objective(scope, objective["id"])
     assert state["status"] == "MASTERED"
     assert state["mastery_evidence"]["distinct_quizzes"] == 2
+
+
+def pg_game(database):
+    cfg = pg_settings()
+    actor = Actor(
+        str(cfg.actor_id),
+        frozenset(
+            {
+                "campaign.read",
+                "campaign.write",
+                "campaign.dice",
+                "campaign.delegate",
+                "campaign.propose",
+                "campaign.approve",
+                "campaign.transcript",
+            }
+        ),
+    )
+    return GameMasterService(database, entropy=SeededDiceEntropy("postgres-phase8")), (
+        GameMasterScope(actor)
+    )
+
+
+async def pg_campaign(database):
+    service, gm = pg_game(database)
+    campaign = await service.create_campaign(gm, CampaignCreate(name="PostgreSQL campaign"))
+    player_id = "57ecb6a8-acde-47aa-993b-ece0551e0b8b"
+    await service.add_member(
+        gm,
+        campaign["id"],
+        CampaignMemberCreate(
+            actor_id=player_id,
+            role=CampaignRole.PLAYER,
+            display_name="PostgreSQL player",
+        ),
+    )
+    player = GameMasterScope(Actor(player_id, gm.actor.capabilities))
+    pc = await service.create_entry(
+        gm,
+        campaign["id"],
+        CampaignEntryCreate(
+            kind=CampaignEntryKind.PC,
+            name="Player",
+            content="A controlled player character.",
+            visibility=CampaignVisibility.PLAYER_PRIVATE,
+            player_actor_id=player_id,
+        ),
+    )
+    return service, gm, player, campaign, pc
+
+
+async def test_phase8_migration_preserves_tutor_and_audit(postgres):
+    tutor, scope = pg_tutor(postgres)
+    objective, _ = await tutor_fixture(tutor, scope)
+    async with postgres.sessions.begin() as session:
+        audit(
+            session,
+            str(pg_settings().actor_id),
+            "phase8.migration_sentinel",
+            {"objective_id": objective["id"]},
+        )
+    environment = {**os.environ, "JARVIS_DATABASE_URL": TEST_URL}
+    for operation in [("downgrade", "0003"), ("upgrade", "head")]:
+        await asyncio.to_thread(
+            subprocess.run,
+            [sys.executable, "-m", "alembic", "-c", str(ALEMBIC_INI), *operation],
+            env=environment,
+            check=True,
+            capture_output=True,
+            timeout=30,
+        )
+    assert (await tutor.inspect_objective(scope, objective["id"]))["title"] == (
+        "PostgreSQL Tutor race"
+    )
+    async with postgres.sessions() as session:
+        sentinel = await session.scalar(
+            select(AuditEvent).where(AuditEvent.event == "phase8.migration_sentinel")
+        )
+        assert sentinel is not None
+
+
+async def test_postgres_campaign_proposal_decision_is_atomic(postgres):
+    service, gm, _, campaign, _ = await pg_campaign(postgres)
+    proposal = await service.propose_event(
+        gm,
+        CampaignProposalCreate(
+            campaign_id=campaign["id"],
+            summary="Atomic canonical event",
+            changes=[
+                CampaignChange(
+                    action=CampaignChangeAction.CREATE,
+                    entry=CampaignEntryCreate(
+                        kind=CampaignEntryKind.STATE,
+                        name="Atomic state",
+                        content="Committed once.",
+                        visibility=CampaignVisibility.PARTY,
+                    ),
+                )
+            ],
+        ),
+    )
+    results = await asyncio.gather(
+        service.decide_proposal(gm, campaign["id"], proposal["id"], approve=True),
+        service.decide_proposal(gm, campaign["id"], proposal["id"], approve=True),
+        return_exceptions=True,
+    )
+    assert sum(isinstance(result, dict) for result in results) == 1
+    assert sum(isinstance(result, GameMasterConflict) for result in results) == 1
+    async with postgres.sessions() as session:
+        proposals = list(
+            await session.scalars(
+                select(CampaignEventProposal).where(
+                    CampaignEventProposal.campaign_id == campaign["id"]
+                )
+            )
+        )
+        events = list(
+            await session.scalars(
+                select(CampaignEvent).where(CampaignEvent.campaign_id == campaign["id"])
+            )
+        )
+        entries = list(
+            await session.scalars(
+                select(CampaignEntry).where(
+                    CampaignEntry.campaign_id == campaign["id"],
+                    CampaignEntry.content == "Committed once.",
+                )
+            )
+        )
+    assert len(proposals) == len(events) == len(entries) == 1
+
+
+async def test_postgres_one_use_roll_delegation_is_atomic(postgres):
+    service, _, player, campaign, pc = await pg_campaign(postgres)
+    await service.delegate_roll(
+        player,
+        campaign["id"],
+        DelegationCreate(subject_entry_id=pc["id"], nonce="postgres-one-use"),
+    )
+    results = await asyncio.gather(
+        service.roll(
+            player,
+            DiceRequest(
+                campaign_id=campaign["id"],
+                request_id="parallel-roll-1",
+                subject_entry_id=pc["id"],
+                expression="1d20",
+            ),
+        ),
+        service.roll(
+            player,
+            DiceRequest(
+                campaign_id=campaign["id"],
+                request_id="parallel-roll-2",
+                subject_entry_id=pc["id"],
+                expression="1d20",
+            ),
+        ),
+    )
+    assert sorted(result["authority"] for result in results) == ["HUMAN", "JARVIS_DELEGATED"]
 
 
 @pytest.mark.skipif(

@@ -273,6 +273,215 @@ class ReviewTask(Base):
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+class Campaign(Base):
+    __tablename__ = "campaigns"
+    __table_args__ = (
+        CheckConstraint("status IN ('ACTIVE','ARCHIVED')", name="ck_campaign_status"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    owner_id: Mapped[str] = mapped_column(String(36), index=True)
+    name: Mapped[str] = mapped_column(String(200))
+    game_system: Mapped[str] = mapped_column(String(80))
+    rules_plugin: Mapped[str] = mapped_column(String(80), default="basic")
+    roll_policy: Mapped[str] = mapped_column(String(80), default="personal_play")
+    status: Mapped[str] = mapped_column(String(16), default="ACTIVE")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class CampaignMember(Base):
+    __tablename__ = "campaign_members"
+    __table_args__ = (
+        UniqueConstraint("campaign_id", "actor_id"),
+        CheckConstraint("role IN ('GM','PLAYER')", name="ck_campaign_member_role"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    campaign_id: Mapped[str] = mapped_column(
+        ForeignKey("campaigns.id", ondelete="CASCADE"), index=True
+    )
+    actor_id: Mapped[str] = mapped_column(String(36), index=True)
+    role: Mapped[str] = mapped_column(String(16))
+    display_name: Mapped[str] = mapped_column(String(120))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class CampaignEntry(Base):
+    __tablename__ = "campaign_entries"
+    __table_args__ = (
+        Index("ix_campaign_entry_visibility", "campaign_id", "visibility", "created_at"),
+        CheckConstraint(
+            "kind IN ('LOCATION','PC','NPC','LORE','FACTION','ITEM','HOOK','STATE')",
+            name="ck_campaign_entry_kind",
+        ),
+        CheckConstraint(
+            "visibility IN ('PUBLIC','PARTY','PLAYER_PRIVATE','GM_SECRET',"
+            "'INFERRED','RUMOR','RETIRED')",
+            name="ck_campaign_entry_visibility",
+        ),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    campaign_id: Mapped[str] = mapped_column(
+        ForeignKey("campaigns.id", ondelete="CASCADE"), index=True
+    )
+    created_by: Mapped[str] = mapped_column(String(36))
+    kind: Mapped[str] = mapped_column(String(20))
+    name: Mapped[str] = mapped_column(String(200))
+    content: Mapped[str] = mapped_column(Text)
+    data_json: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    visibility: Mapped[str] = mapped_column(String(20))
+    player_actor_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    source_proposal_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class CampaignSession(Base):
+    __tablename__ = "campaign_sessions"
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('PLANNED','ACTIVE','CLOSED')", name="ck_campaign_session_status"
+        ),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    campaign_id: Mapped[str] = mapped_column(
+        ForeignKey("campaigns.id", ondelete="CASCADE"), index=True
+    )
+    created_by: Mapped[str] = mapped_column(String(36))
+    title: Mapped[str] = mapped_column(String(200))
+    status: Mapped[str] = mapped_column(String(16), default="ACTIVE")
+    active_location_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class CampaignTranscript(Base):
+    __tablename__ = "campaign_transcripts"
+    __table_args__ = (
+        Index("ix_campaign_transcript_scope", "campaign_id", "session_id", "created_at"),
+        CheckConstraint(
+            "visibility IN ('PUBLIC','PARTY','PLAYER_PRIVATE','GM_SECRET')",
+            name="ck_campaign_transcript_visibility",
+        ),
+        CheckConstraint("origin = 'HUMAN_API'", name="ck_campaign_transcript_origin"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    campaign_id: Mapped[str] = mapped_column(
+        ForeignKey("campaigns.id", ondelete="CASCADE"), index=True
+    )
+    session_id: Mapped[str] = mapped_column(
+        ForeignKey("campaign_sessions.id", ondelete="CASCADE"), index=True
+    )
+    actor_id: Mapped[str] = mapped_column(String(36), index=True)
+    speaker: Mapped[str] = mapped_column(String(120))
+    content: Mapped[str] = mapped_column(Text)
+    visibility: Mapped[str] = mapped_column(String(20))
+    player_actor_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    origin: Mapped[str] = mapped_column(String(16), default="HUMAN_API")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class RollDelegation(Base):
+    __tablename__ = "roll_delegations"
+    __table_args__ = (
+        UniqueConstraint("campaign_id", "actor_id", "nonce"),
+        CheckConstraint(
+            "status IN ('ACTIVE','CONSUMED','REVOKED')", name="ck_roll_delegation_status"
+        ),
+        CheckConstraint("uses <= max_uses", name="ck_roll_delegation_uses"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    campaign_id: Mapped[str] = mapped_column(
+        ForeignKey("campaigns.id", ondelete="CASCADE"), index=True
+    )
+    actor_id: Mapped[str] = mapped_column(String(36), index=True)
+    subject_entry_id: Mapped[str] = mapped_column(ForeignKey("campaign_entries.id"), index=True)
+    nonce: Mapped[str] = mapped_column(String(80))
+    status: Mapped[str] = mapped_column(String(16), default="ACTIVE")
+    max_uses: Mapped[int] = mapped_column(Integer, default=1)
+    uses: Mapped[int] = mapped_column(Integer, default=0)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    consumed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class DiceRoll(Base):
+    __tablename__ = "dice_rolls"
+    __table_args__ = (
+        UniqueConstraint("campaign_id", "requested_by", "request_id"),
+        CheckConstraint("status IN ('AWAITING_HUMAN','ROLLED')", name="ck_dice_roll_status"),
+        CheckConstraint(
+            "authority IN ('HUMAN','JARVIS_NPC','JARVIS_DELEGATED')",
+            name="ck_dice_roll_authority",
+        ),
+        CheckConstraint(
+            "visibility IN ('PUBLIC','PARTY','PLAYER_PRIVATE','GM_SECRET','INFERRED','RUMOR')",
+            name="ck_dice_roll_visibility",
+        ),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    campaign_id: Mapped[str] = mapped_column(
+        ForeignKey("campaigns.id", ondelete="CASCADE"), index=True
+    )
+    session_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    requested_by: Mapped[str] = mapped_column(String(36), index=True)
+    request_id: Mapped[str] = mapped_column(String(80))
+    subject_entry_id: Mapped[str] = mapped_column(ForeignKey("campaign_entries.id"), index=True)
+    expression: Mapped[str] = mapped_column(String(32))
+    purpose: Mapped[str] = mapped_column(String(200))
+    authority: Mapped[str] = mapped_column(String(24))
+    status: Mapped[str] = mapped_column(String(20))
+    rolls: Mapped[list[int]] = mapped_column(JSON, default=list)
+    kept: Mapped[list[int]] = mapped_column(JSON, default=list)
+    discarded: Mapped[list[int]] = mapped_column(JSON, default=list)
+    modifier: Mapped[int] = mapped_column(Integer, default=0)
+    total: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    provenance: Mapped[str] = mapped_column(String(32))
+    visibility: Mapped[str] = mapped_column(String(20))
+    entropy_ref: Mapped[str] = mapped_column(String(64), default="")
+    delegation_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class CampaignEventProposal(Base):
+    __tablename__ = "campaign_event_proposals"
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('PENDING','APPROVED','REJECTED')",
+            name="ck_campaign_proposal_status",
+        ),
+        CheckConstraint("origin IN ('HUMAN_API','MODEL_TOOL')", name="ck_campaign_proposal_origin"),
+    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    campaign_id: Mapped[str] = mapped_column(
+        ForeignKey("campaigns.id", ondelete="CASCADE"), index=True
+    )
+    session_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    proposed_by: Mapped[str] = mapped_column(String(36), index=True)
+    summary: Mapped[str] = mapped_column(String(500))
+    changes: Mapped[list[dict[str, Any]]] = mapped_column(JSON)
+    status: Mapped[str] = mapped_column(String(16), default="PENDING")
+    origin: Mapped[str] = mapped_column(String(16))
+    decided_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class CampaignEvent(Base):
+    __tablename__ = "campaign_events"
+    __table_args__ = (UniqueConstraint("proposal_id"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    campaign_id: Mapped[str] = mapped_column(
+        ForeignKey("campaigns.id", ondelete="CASCADE"), index=True
+    )
+    session_id: Mapped[str | None] = mapped_column(String(36), nullable=True, index=True)
+    proposal_id: Mapped[str] = mapped_column(ForeignKey("campaign_event_proposals.id"), index=True)
+    approved_by: Mapped[str] = mapped_column(String(36))
+    summary: Mapped[str] = mapped_column(String(500))
+    applied_changes: Mapped[list[dict[str, Any]]] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
 class Database:
     def __init__(self, url: str):
         self.engine = create_async_engine(url, pool_pre_ping=True)

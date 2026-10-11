@@ -1,0 +1,18 @@
+{
+  "receiving_full_regression": "7 failed, 6472 passed, 108 skipped in 146.91s; all seven failures were existing DNS-dependent tests",
+  "phase8_relevant_architecture_check": "38 passed, 1 warning in 0.29s",
+  "preserved_paths_changed": [],
+  "preserved_paths": [
+    "graphify/",
+    "tests/",
+    "tools/skillgen/",
+    "scripts/",
+    "pyproject.toml",
+    "uv.lock",
+    "licenses and notices",
+    "apps/jarvis/requirements.lock",
+    "migrations 0001 through 0003"
+  ],
+  "full_upstream_rerun": false,
+  "reason": "Phase 8 changes only the additive apps/jarvis Game Master boundary and JARVIS documentation; the upstream code, tests, metadata, lock, licenses and skill generator are byte-unchanged from the receiving Phase 7 checkpoint."
+}
