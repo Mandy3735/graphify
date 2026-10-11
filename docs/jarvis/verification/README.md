@@ -52,7 +52,7 @@ The Phase 7 branch was subsequently pushed with user authorization. It was not
 merged or deployed. Graphify update and scoped TutorService navigation succeeded;
 full scratch logs remain in `work/`.
 
-## Phase 8 local checkpoint
+## Phase 8 published checkpoint
 
 - `phase8-postgres-tests.txt` and `phase8-pgvector-tests.txt`: each 173 passes and
   one opposite-configuration skip, with all 13 real Bubblewrap tests enabled.
@@ -64,6 +64,7 @@ full scratch logs remain in `work/`.
   does not change the upstream surface; the Phase 6 full regression remains the
   latest full reference.
 
-The Phase 8 checkpoint is local and has not been pushed, merged or deployed.
-Graphify update and scoped GameMasterService query/explain succeeded; full scratch
-logs remain in `work/`. No paid provider or live external effect was used.
+The Phase 8 branch was subsequently pushed with user authorization. It was not
+merged or deployed. Graphify update and scoped GameMasterService query/explain
+succeeded; full scratch logs remain in `work/`. No paid provider or live external
+effect was used.

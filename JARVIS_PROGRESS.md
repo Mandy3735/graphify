@@ -1,11 +1,12 @@
 # JARVIS progress — 2026-10-10
 
-Repository `/workspace/graphify`; active local branch `jarvis/phase-8-game-master`;
+Repository `/workspace/graphify`; active published branch `jarvis/phase-8-game-master`;
 receiving checkpoint `d90bec5d9c255d922af3105d6974ca74eaf58271` on the published
 `jarvis/phase-7-tutor` branch. Original Graphify parent remains
-`5c7b84792f453582676548185aaec3824d51dfe2`. Phase 8 is local and is not pushed,
-merged or deployed. Resolve the exact Phase 8 checkpoint with `git rev-parse HEAD`
-after the local commit.
+`5c7b84792f453582676548185aaec3824d51dfe2`. The user authorized the Phase 8 push
+on 2026-10-11; published implementation commit
+`84172d3de1fe2a6c5271718c81feab0f8a994dd4` contains the reviewed source tree. No
+merge or deployment occurred.
 
 ## GitHub check configuration verification — 2026-10-07
 
@@ -205,7 +206,7 @@ unchanged upstream boundary made a second full Graphify
 regression unnecessary; the relevant architecture suite and exact preserved-path
 diff were run. Portable result snapshots are in `docs/jarvis/verification/`.
 
-## Phase 8 actual checks — local checkpoint
+## Phase 8 actual checks — published checkpoint
 
 | Check | Observed result |
 |---|---|
@@ -224,8 +225,9 @@ Both authoritative suites explicitly enabled `JARVIS_TEST_SANDBOX=true` and all
 13 real kernel isolation tests ran. A command-sandbox attempt failed closed with a
 read-only UID-map error; the permitted host test path established the required
 namespace boundary and passed. The one skip in each final run is the opposite
-pgvector configuration. No paid provider, external write, push, merge or deployment
-was used. Relevant upstream/preserved-boundary checks are recorded with this checkpoint.
+pgvector configuration. No paid provider, external write, merge or deployment was
+used. The checkpoint was subsequently pushed with user authorization. Relevant
+upstream/preserved-boundary checks are recorded with this checkpoint.
 
 ## Not done
 

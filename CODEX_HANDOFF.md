@@ -2,7 +2,7 @@
 
 This repository contains the original Graphify project and the JARVIS foundation
 created from [the full supplied specification](docs/jarvis/MASTER_SPEC.md).
-The current local checkpoint branch is `jarvis/phase-8-game-master`, based on the
+The current published checkpoint branch is `jarvis/phase-8-game-master`, based on the
 clean published Phase 7 tip `d90bec5d9c255d922af3105d6974ca74eaf58271`, preserving
 Graphify 0.9.77 at
 `5c7b84792f453582676548185aaec3824d51dfe2`. The foundation was published on
@@ -14,23 +14,26 @@ Graphify 0.9.77 at
 The preceding complete Phase 6 handoff is
 [`Mandy3735/graphify:jarvis/phase-6-engineer`](https://github.com/Mandy3735/graphify/tree/jarvis/phase-6-engineer).
 Its implementation commit is `dd69e080b8bd4b7aed72b2df07c54a8c879c5f93`.
-The latest published handoff is
+The preceding published Tutor handoff is
 [`Mandy3735/graphify:jarvis/phase-7-tutor`](https://github.com/Mandy3735/graphify/tree/jarvis/phase-7-tutor).
 Its implementation commit is `6d35a7bf22b17b299150ae8731082ac19c41f90d`.
+The complete Game Master handoff is
+[`Mandy3735/graphify:jarvis/phase-8-game-master`](https://github.com/Mandy3735/graphify/tree/jarvis/phase-8-game-master).
+Its published implementation commit is `84172d3de1fe2a6c5271718c81feab0f8a994dd4`.
 The older `jarvis/phase-5-memory` branch does not contain Engineer, Tutor or Game
-Master. Phase 8 is only in this local checkout until the user separately authorizes
-a push.
+Master.
 
 For local Codex, open this repository and select `jarvis/phase-8-game-master`.
-Another cloud session cannot receive Phase 8 from GitHub until it is published;
-until then, it should use this checkout or start from the published Phase 7 branch.
+Another cloud session should use the published Phase 8 branch and verify its HEAD
+before continuing.
 The older verified Phase 6 bundle remains in `work/phase6-delivery`; it is not a
 Phase 8 handoff. Use the continuation prompt for Phase 9.
 
-The receiving Phase 8 commit is `d90bec5d9c255d922af3105d6974ca74eaf58271`.
+The receiving Phase 7 commit is `d90bec5d9c255d922af3105d6974ca74eaf58271`.
 Resolve current local HEAD with `git rev-parse HEAD`. Existing delivery manifests
-identify older snapshots. The user authorized the Phase 6 push on 2026-10-07 and
-the Phase 7 push on 2026-10-10. No merge or deployment is authorized or claimed.
+identify older snapshots. The user authorized the Phase 6 push on 2026-10-07, the
+Phase 7 push on 2026-10-10 and the Phase 8 push on 2026-10-11. No merge or
+deployment is authorized or claimed.
 
 ## Read these files first
 
@@ -91,8 +94,9 @@ published with the Phase 7 source; remote CI status must be checked separately.
 Phase 8 passed **173 tests, one configuration-specific skip** on each of ordinary
 PostgreSQL and PostgreSQL/pgvector with all real kernel tests enabled. Ruff,
 format, Pyright, the 0.5.0 package build, migrated PostgreSQL API smoke, relevant
-upstream checks and Graphify synchronization/query/explain passed. These results
-are local; there is no remote Phase 8 CI result or published Phase 8 source.
+upstream checks and Graphify synchronization/query/explain passed. These local
+results are published with the Phase 8 source; remote CI status must be checked
+separately.
 
 The entire JARVIS specification is not complete. Engineer scope/limits are in
 docs/jarvis/ENGINEER.md; Tutor scope/limits are in docs/jarvis/TUTOR.md; Game

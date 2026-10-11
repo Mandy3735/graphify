@@ -4,12 +4,13 @@ A runnable **Game Master checkpoint** is implemented in the existing Graphify
 repository. It completes the bounded phases 0–8 scope in JARVIS_PLAN.md. The full
 personal AI operating system specification is not complete.
 
-Repository: `/workspace/graphify`; active local branch
+Repository: `/workspace/graphify`; active published branch
 `jarvis/phase-8-game-master`; receiving checkpoint
 `d90bec5d9c255d922af3105d6974ca74eaf58271`, the clean published Phase 7 tip.
 Original Graphify parent `5c7b84792f453582676548185aaec3824d51dfe2`, release 0.9.77,
-is preserved. The Phase 8 checkpoint is local and has not been pushed, merged or
-deployed. The published Phase 6 and Phase 7 history remains documented below.
+is preserved. The user authorized the Phase 8 push on 2026-10-11; published
+implementation commit `84172d3de1fe2a6c5271718c81feab0f8a994dd4` has the exact
+reviewed Phase 8 tree. No merge or deployment occurred.
 The adjacent empty My-JARVIS-AI- repository was left untouched.
 
 ## What works
@@ -559,4 +560,5 @@ was used.
 Next: phase 9 Command Center/PWA with responsive, accessible mode surfaces and
 safe rendering over the existing authenticated APIs. Chief of Staff/watchers,
 optional voice/integrations and complete production hardening remain pending.
-This Phase 8 checkpoint is local; no push, merge or deployment is claimed.
+The checkpoint was subsequently pushed to its dedicated GitHub branch with user
+authorization. No merge or deployment is claimed.

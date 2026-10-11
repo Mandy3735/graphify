@@ -1,11 +1,11 @@
 # Copy this prompt into the next Codex task
 
-Continue Graphify → JARVIS from the local branch
-`jarvis/phase-8-game-master`. It was created from the clean published Phase 7 tip
-`d90bec5d9c255d922af3105d6974ca74eaf58271` in `Mandy3735/graphify`.
-Phase 8 has not been pushed; use this checkout or an explicitly prepared transfer,
-then check HEAD, the working tree and source before implementation. Do not
-regenerate the project or silently fall back to the older published branch.
+Continue Graphify → JARVIS from the published branch
+`Mandy3735/graphify:jarvis/phase-8-game-master`. Published Phase 8 implementation
+commit `84172d3de1fe2a6c5271718c81feab0f8a994dd4` is based on the clean published
+Phase 7 tip `d90bec5d9c255d922af3105d6974ca74eaf58271`. Fetch the branch, then check
+HEAD, the working tree and source before implementation. Do not regenerate the
+project or silently fall back to the older published branch.
 
 Read AGENTS.md, CODEX_HANDOFF.md, JARVIS_PROGRESS.md, JARVIS_PLAN.md,
 docs/jarvis/MASTER_SPEC.md, JARVIS_REVIEW.md, THREAT_MODEL.md,
