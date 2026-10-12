@@ -1,4 +1,4 @@
-# JARVIS threat model (phases 0–8 checkpoint)
+# JARVIS threat model (phases 0–9 checkpoint)
 
 Existing Graphify controls remain documented in SECURITY.md. This document
 describes the added persistent application and must not be mistaken for future
@@ -16,7 +16,7 @@ features being implemented.
 | Sandbox → runaway resources | Wall/CPU/address-space/process/file/descriptor/output/tmpfs bounds; terminate process sessions/PID namespaces on cancellation; aggregate cgroup memory quotas remain future hardening |
 | Artifact → another actor / disk growth | Actor/run provenance and owner checks; private directory; bounded reports and 128-job admission cap; operator retention/orphan cleanup |
 | Graph → answer | Source locations/confidence retained; content labeled untrusted; cannot grant permissions |
-| Tool output → UI/model | Capped validated output; tool results data; future UI must use text/escaped rendering |
+| Tool output → UI/model | Capped validated output; tool results data; Phase 9 UI uses literal bounded text |
 | Model outage/retirement/downgrade | Configurable IDs; typed errors; no auth fallback; explicit non-high-stakes fallback policy; visible metadata |
 | Excessive cost / loops | Run/model/tool deadlines, fixed max tool calls, bounded model outputs; production request rate limits pending |
 | Crash → duplicate effect | Durable transitions; no replay of executing runs after restart; external idempotency integration pending |
@@ -69,3 +69,23 @@ identity. The default rules plugin is system-neutral. Scene relevance uses bound
 current campaign/session candidates rather than semantic ranking, and transcripts
 have no automated recap pipeline yet. Database administrators remain trusted.
 See GAME_MASTER.md.
+
+## Phase 9 browser boundary
+
+Untrusted API/model/graph/memory/campaign text is rendered literally with bounds;
+no HTML/Markdown execution, external links or iframe graph is enabled. Bearer
+credentials are held only in tab memory, cleared/aborted on sign-out, navigation
+away or 401; old-client responses cannot act on a new identity. Scoped UI remounts
+and obsolete-response guards separate modes, campaigns, sessions and namespaces.
+Private root content is hidden on pagehide and persisted history reloads.
+
+The same-origin host adds restrictive CSP, no-store/no-referrer/nosniff/frame
+protection and disabled device permissions. A generated finite service-worker
+allowlist caches only public application assets, never API data, authenticated
+requests, writes, query URLs or other origins. Offline offers an unauthenticated
+shell and queues no effects. Session-list reads require campaign membership;
+proposal-history reads additionally require GM role before returning changes.
+Browser E2E checks identity changes and GM-secret exclusion; authority remains in
+existing server policy/services. Session titles are campaign-visible metadata and
+must not be used as a secret field. Production account/session/TLS hardening and
+optional voice still remain later work.

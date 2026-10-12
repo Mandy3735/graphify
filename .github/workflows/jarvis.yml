@@ -61,5 +61,41 @@ jobs:
       - name: Offline unit, security, Graphify fixture and PostgreSQL integration tests
         working-directory: apps/jarvis
         run: ../../.venv/bin/python -m pytest -q
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - name: Build packaged Command Center
+        working-directory: apps/jarvis/frontend
+        run: |
+          npm ci
+          npm run build
       - name: Build application wheel
         run: .venv/bin/python -m build --no-isolation apps/jarvis
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/jarvis/frontend/package-lock.json
+      - uses: astral-sh/setup-uv@v8.1.0
+        with:
+          python-version: "3.12"
+      - name: Install fake-provider browser backend
+        run: |
+          uv sync --frozen
+          uv pip install --python .venv/bin/python --require-hashes -r apps/jarvis/requirements.lock
+          uv pip install --python .venv/bin/python --no-deps --no-build-isolation -e apps/jarvis
+      - name: Frontend checks and production browser acceptance
+        working-directory: apps/jarvis/frontend
+        run: |
+          npm ci
+          npm run check
+          npm run format:check
+          npm run build
+          npm run test
+          npm audit --audit-level=high
+          npx playwright install --with-deps chromium
+          npm run e2e

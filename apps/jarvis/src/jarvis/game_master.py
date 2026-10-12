@@ -963,6 +963,32 @@ class GameMasterService:
             "decided_at": utc(proposal.decided_at).isoformat() if proposal.decided_at else None,
         }
 
+    async def list_sessions(self, scope: GameMasterScope, campaign_id: str) -> list[dict]:
+        scope.require("campaign.read")
+        async with self.db.sessions() as session:
+            await self._member(session, scope, campaign_id)
+            rows = await session.scalars(
+                select(CampaignSession)
+                .where(CampaignSession.campaign_id == campaign_id)
+                .order_by(CampaignSession.created_at.desc())
+                .limit(100)
+            )
+            return [view for row in rows if (view := self._session_view(row)) is not None]
+
+    async def list_proposals(self, scope: GameMasterScope, campaign_id: str) -> list[dict]:
+        """The cockpit needs durable proposal history; full changes are GM-only."""
+        scope.require("campaign.read")
+        async with self.db.sessions() as session:
+            member = await self._member(session, scope, campaign_id)
+            self._require_gm(member)
+            rows = await session.scalars(
+                select(CampaignEventProposal)
+                .where(CampaignEventProposal.campaign_id == campaign_id)
+                .order_by(CampaignEventProposal.created_at.desc())
+                .limit(100)
+            )
+            return [self._proposal_view(row) for row in rows]
+
     async def decide_proposal(
         self,
         scope: GameMasterScope,

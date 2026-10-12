@@ -682,3 +682,35 @@ async def test_authenticated_campaign_api_and_no_model_commit_tool(settings):
             assert "campaign.commit_approved_event" not in names
             assert "campaign.delegate_roll" not in names
             assert "campaign.append_transcript" not in names
+
+
+async def test_cockpit_proposal_history_is_gm_only(database, settings):
+    service, gm, player, _, campaign, *_ = await campaign_fixture(database, settings)
+    proposal = await service.propose_event(
+        gm,
+        CampaignProposalCreate(
+            campaign_id=campaign["id"],
+            summary="GM_SECRET_PROPOSAL",
+            changes=[
+                CampaignChange(
+                    action=CampaignChangeAction.CREATE,
+                    entry=CampaignEntryCreate(
+                        kind=CampaignEntryKind.LORE,
+                        name="Hidden",
+                        content="GM_SECRET_PROPOSED_CONTENT",
+                        visibility=CampaignVisibility.GM_SECRET,
+                    ),
+                )
+            ],
+        ),
+    )
+    assert await service.list_sessions(player, campaign["id"])
+    history = await service.list_proposals(gm, campaign["id"])
+    assert [item["id"] for item in history] == [proposal["id"]]
+    with pytest.raises(GameMasterDenied):
+        await service.list_proposals(player, campaign["id"])
+    stranger = GameMasterScope(Actor(STRANGER_ID, capabilities(settings)))
+    with pytest.raises(KeyError):
+        await service.list_proposals(stranger, campaign["id"])
+    with pytest.raises(KeyError):
+        await service.list_sessions(stranger, campaign["id"])

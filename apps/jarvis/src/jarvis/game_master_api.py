@@ -42,6 +42,10 @@ def game_master_router(
     async def create_entry(campaign_id: str, body: CampaignEntryCreate):
         return await game_master.create_entry(scope(), campaign_id, body)
 
+    @router.get("/{campaign_id}/sessions")
+    async def list_sessions(campaign_id: str):
+        return await game_master.list_sessions(scope(), campaign_id)
+
     @router.post("/{campaign_id}/sessions", status_code=201)
     async def create_session(campaign_id: str, body: CampaignSessionCreate):
         return await game_master.create_session(scope(), campaign_id, body)
@@ -69,6 +73,10 @@ def game_master_router(
     @router.post("/{campaign_id}/rolls/{roll_id}/report")
     async def report(campaign_id: str, roll_id: str, body: HumanRollReport):
         return await game_master.report_human_roll(scope(), campaign_id, roll_id, body.total)
+
+    @router.get("/{campaign_id}/events")
+    async def list_proposals(campaign_id: str):
+        return await game_master.list_proposals(scope(), campaign_id)
 
     @router.post("/{campaign_id}/events/propose", status_code=201)
     async def propose(campaign_id: str, body: CampaignProposalCreate):

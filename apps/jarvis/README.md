@@ -20,3 +20,7 @@ The application has its own hashed requirements lock and wheel. Graphify is
 installed from this repository alongside it; this wheel does not vendor Graphify.
 Start a single backend process using `uvicorn jarvis.api:create_app --factory`.
 Apply Alembic migrations before startup. Interactive API documentation is `/docs`.
+
+The Phase 9 Command Center/PWA is in `frontend/`. Run `npm ci` and
+`npm run build` there before starting the API or packaging a wheel.
+See [user experience setup](../../docs/jarvis/USER_EXPERIENCE.md).

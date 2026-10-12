@@ -68,3 +68,8 @@ The Phase 8 branch was subsequently pushed with user authorization. It was not
 merged or deployed. Graphify update and scoped GameMasterService query/explain
 succeeded; full scratch logs remain in `work/`. No paid provider or live external
 effect was used.
+
+Phase 9 snapshots record the local Command Center build/browser/security checks,
+both disposable PostgreSQL configurations with real kernel tests, safe packaged
+assets and preserved upstream boundary. Commands/results are in
+`phase9-verification.json`; these do not claim remote CI or production deployment.

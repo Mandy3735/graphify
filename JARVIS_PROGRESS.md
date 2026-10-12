@@ -1,12 +1,13 @@
-# JARVIS progress — 2026-10-10
+# JARVIS progress — 2026-10-12
 
-Repository `/workspace/graphify`; active published branch `jarvis/phase-8-game-master`;
-receiving checkpoint `d90bec5d9c255d922af3105d6974ca74eaf58271` on the published
-`jarvis/phase-7-tutor` branch. Original Graphify parent remains
-`5c7b84792f453582676548185aaec3824d51dfe2`. The user authorized the Phase 8 push
-on 2026-10-11; published implementation commit
-`84172d3de1fe2a6c5271718c81feab0f8a994dd4` contains the reviewed source tree. No
-merge or deployment occurred.
+Local Phase 9 branch `jarvis/phase-9-user-experience` in `/workspace/graphify`,
+based on the clean published Phase 8 tip
+`6aa47924e5f93e0337a0deb6e9af96f55c9685fe`. The receiving implementation is
+`84172d3de1fe2a6c5271718c81feab0f8a994dd4`; original Graphify parent remains
+`5c7b84792f453582676548185aaec3824d51dfe2`. Resolve the local checkpoint with
+`git rev-parse HEAD`. This Phase 9 task creates a reviewable local commit; no
+push, merge or deployment is authorized or claimed. Earlier authorized
+publication history remains recorded below.
 
 ## GitHub check configuration verification — 2026-10-07
 
@@ -24,7 +25,7 @@ skip (12.71 s). These are local results; inspect GitHub Actions for remote statu
 
 ## Delivered checkpoint
 
-Phases 0–8, bounded to the application scope defined in JARVIS_PLAN.md:
+Phases 0–9, bounded to the application scope defined in JARVIS_PLAN.md:
 
 - Upstream reconnaissance, complete baseline, boundary and milestone plan.
 - Independent application package/dependency lock; FastAPI/OpenAPI; authenticated
@@ -229,32 +230,71 @@ pgvector configuration. No paid provider, external write, merge or deployment wa
 used. The checkpoint was subsequently pushed with user authorization. Relevant
 upstream/preserved-boundary checks are recorded with this checkpoint.
 
+## Phase 9 delivered scope and actual checks
+
+Responsive runnable React/TypeScript Command Center/PWA; all specified routes,
+mode switching, text conversation, durable missions/steps/tool/evidence/usage,
+exact approvals, scoped memory inspector/search/correction/delete/proposals/export,
+Graphify queries/path/impact/health/update, Engineer status/change/artifacts, Tutor
+objective/lesson/quiz/human/mastery/review surfaces, membership-filtered campaign
+cockpit/session/transcript/dice/delegation and human canonical event decisions.
+Settings expose safe model/grant/actor metadata. Voice, integrations and dedicated
+Chief of Staff tasks/watchers are clearly pending.
+
+Same-origin production assets are packaged in JARVIS 0.6.0. Tokens remain in tab
+memory; sign-out/pagehide aborts requests and clears private state. Literal bounded
+text, strict CSP/device policy/no-store headers and a finite static-only PWA cache
+preserve prior API authority and GM secrecy. Two bounded read endpoints add
+campaign sessions and GM-only proposal history, with no migration or model tools.
+
+| Check | Observed result |
+|---|---|
+| Receiving Phase 8 checkout | Clean remote tip `6aa4792`; 146 passed, 28 DB/kernel skips (16.98 s); Ruff lint/format passed; initial type errors were missing uninstalled JARVIS dependencies |
+| PostgreSQL + real sandbox | **176 passed, 1 skipped**; includes all kernel isolation tests |
+| PostgreSQL/pgvector + real sandbox | **176 passed, 1 skipped**; opposite vector-configuration skip |
+| Frontend component/security/worker suite | **24 passed**; exact approvals, cancellation/reconnect, stale identity/scope, byte/text bounds, storage and actual generated worker policy |
+| Production Chromium E2E | **4 passed**; authentication/navigation/durable fake run/offline, human Tutor mastery, GM session/dice/proposal/player secrecy, memory correction/deletion/text injection and mobile axe |
+| Frontend TypeScript/ESLint/Prettier/build | Passed; pinned lock, no runtime CDN/paid service |
+| npm audit | Zero reported vulnerabilities after vulnerable initial dev tooling was upgraded |
+| Final static-host regression | 2 passed, including preserved interactive developer docs after scoping CSP to the product |
+| Backend Ruff/format/Pyright | Passed; zero type errors/warnings |
+| Wheel and sdist | 0.6.0 built with public frontend assets; bundle contains no test credentials or paid provider keys |
+| Relevant upstream | Architecture documentation: 38 passed; preserved upstream source/tests/root dependencies/locks/licenses unchanged |
+| Graph synchronization | AST update succeeded; scoped JARVIS query/explain recorded; optional upstream extractor warnings remain |
+
+A first command-sandbox attempt failed all 13 Bubblewrap probes while passing 160
+other tests. A later ordinary-configuration rerun reused a database where the
+pgvector suite had installed its extension; its missing-extension assertion failed.
+The ordinary configuration was rerun in a separate fresh disposable database.
+The permitted host execution path passed the real probes on both DB
+configurations without weakening the sandbox or skipping unavailable isolation.
+Browser tests initially found a service-worker template escaping issue and a
+Tutor authoring form that closed during refresh; both were fixed. Full raw logs
+are in ignored `work/phase9`; portable snapshots live in
+`docs/jarvis/verification/phase9-*`. These are local results, not remote CI results.
+
 ## Not done
 
-Phases 9–10 (Command Center/PWA, voice), Chief of Staff project/watcher,
-integration workflows, richer campaign recap/import/initiative features, and
-complete production hardening/full-program adversarial acceptance
-remain pending. Phases 11–12 checks/review were applied only to delivered scope.
-No frontend build/tests or live paid model call is claimed. The full specification
-definition of done is not met by this Game Master checkpoint. Personal memory
-PUBLIC/PARTY data remains owner-scoped and separate from campaign sharing. The
-dedicated memory UI is phase 9. Expired memory is filtered but not background
-purged, and conversation/tool transcript retention is distinct from memory
-deletion. See MEMORY.md for explicit lifecycle and retrieval limits.
+Phase 10 optional voice; dedicated Chief of Staff projects/tasks/checkpoints/
+watchers, integration workflows and complete production hardening/adversarial
+full-program acceptance remain pending. Phase 11–12 checks/review were applied
+only to delivered scope. No live paid model call is claimed. The full original
+definition of done is not met by this checkpoint. Personal memory PUBLIC/PARTY
+remains owner-scoped, separate from campaign sharing; automatic expiry purge,
+conversation retention and large-archive retrieval remain as previously scoped.
+Engineer execution retains its bounded opt-in kernel worker. Rich campaign
+maps/import/initiative/recaps, advanced graph canvas and intermediate token deltas
+remain outside this checkpoint. Browser automation does not constitute a complete
+manual accessibility audit. Production still requires TLS, identity/session,
+restricted DB role, request rate/admission and multi-worker lifecycle hardening.
 
 ## Exact next milestone
 
-Phase 9: responsive Command Center/PWA with mode-specific surfaces, approvals,
-memory inspector, Graphify/Engineer/Tutor/Game Master workflows, safe text rendering,
-accessibility basics and production frontend tests. Preserve every backend authority
-and secrecy boundary.
+Phase 10: optional voice/transcription on top of the stable text/tool/state/UI
+interfaces. Keep microphone opt-in, stop immediate, credentials ephemeral and
+server-held, transcripts untrusted/noncanonical, and voice failure independent of
+text. See CODEX_HANDOFF.md and docs/jarvis/CODEX_NEXT_PROMPT.md.
 
-Recommended next Codex instruction:
-
-> Read CODEX_HANDOFF.md and docs/jarvis/CODEX_NEXT_PROMPT.md, then implement phase
-> 9's Command Center/PWA. Preserve Graphify, memory, approvals, Tutor evidence,
-> Game Master secrecy/roll authority and the opt-in kernel sandbox.
-
-Setup/demonstrations: docs/jarvis/LOCAL_DEVELOPMENT.md, ENGINEER.md, TUTOR.md and
-GAME_MASTER.md. Review: JARVIS_REVIEW.md. This checkpoint does not complete the
-full original specification.
+Setup: docs/jarvis/LOCAL_DEVELOPMENT.md and USER_EXPERIENCE.md; review:
+JARVIS_REVIEW.md. Continue from the local Phase 9 commit or publish it only with
+user authorization.

@@ -562,3 +562,45 @@ safe rendering over the existing authenticated APIs. Chief of Staff/watchers,
 optional voice/integrations and complete production hardening remain pending.
 The checkpoint was subsequently pushed to its dedicated GitHub branch with user
 authorization. No merge or deployment is claimed.
+
+
+## Phase 9 — Command Center/PWA local checkpoint (2026-10-12)
+
+Fetched the clean published Phase 8 tip `6aa47924e5f93e0337a0deb6e9af96f55c9685fe`
+and created local branch `jarvis/phase-9-user-experience`. The separate
+My-JARVIS-AI- repository remains its original README; the implementation extends
+Graphify's established independent `apps/jarvis` boundary.
+
+Implemented a runnable pinned React/TypeScript same-origin UI, all specified
+routes and useful mode-specific workflows. Preserved exact approvals, owner
+memory/provenance, the kernel-isolated Engineer, human Tutor mastery and campaign
+membership/visibility/roll/canonical decisions. Added only session-summary and
+GM-only proposal-history reads; no migration, new model authority, root dependency
+change or upstream source rewrite. The production frontend builds into the
+Python package and ships in the 0.6.0 wheel/sdist. CI adds frontend checks and
+fake-provider browser acceptance; each application wheel job builds assets first.
+
+The trust-boundary review fixed initial toolchain advisories, stale-client 401
+handling, persisted history content and the production worker template. Tokens
+stay in memory, leaving/sign-out aborts requests synchronously, private state
+remounts on scope changes, untrusted content is literal bounded text, CSP/device
+policy/no-store is restrictive, and cache storage is a finite public-static
+allowlist. No API, token or GM secret is cached. Source/test browser hosts explicitly
+force fake providers independent of the operator environment.
+
+Observed checks: 176 passed/one opposite-vector skip on both disposable PostgreSQL
+configurations with real kernel checks; 24 component/security/production-worker
+tests; four real Chromium acceptance scenarios; mobile axe no violations;
+lint/format/types/build; zero npm audit findings; asset/credential parity in the
+packaged wheel; 38 relevant upstream architecture tests; AST graph update and
+scoped query/explain. Earlier diagnostic failures are documented in progress,
+including command-sandbox UID-map denial and ordinary-database extension
+contamination corrected by separate disposable databases. Portable verification
+is in `docs/jarvis/verification/phase9-*`; raw logs/build output remain in ignored
+`work/phase9` and `apps/jarvis/dist`.
+
+The UI is a bounded local prototype. Chief of Staff watchers, optional voice,
+integrations, richer graph/campaign workflows and complete production hardening
+remain pending. No paid provider call, external write, push, merge or deployment
+was performed. The next task is Phase 10 optional voice; updated handoff/setup/
+review/progress and the continuation prompt describe its constraints.

@@ -1,0 +1,67 @@
+{
+  "receiving_commit": "6aa47924e5f93e0337a0deb6e9af96f55c9685fe",
+  "branch": "jarvis/phase-9-user-experience",
+  "publication": "local only; no push/merge/deployment",
+  "commands": {
+    "ordinary_postgres": "JARVIS_TEST_DATABASE_URL=<disposable jarvis_plain_test> JARVIS_TEST_SANDBOX=true .venv/bin/python -m pytest apps/jarvis/tests -q",
+    "pgvector": "JARVIS_TEST_DATABASE_URL=<separate disposable jarvis_test> JARVIS_TEST_PGVECTOR=true JARVIS_TEST_SANDBOX=true .venv/bin/python -m pytest apps/jarvis/tests -q",
+    "frontend": [
+      "npm ci",
+      "npm run check",
+      "npm run format:check",
+      "npm run build",
+      "npm run test",
+      "JARVIS_CHROMIUM=/usr/bin/chromium npm run e2e",
+      "npm audit"
+    ],
+    "backend": [
+      "ruff check apps/jarvis",
+      "ruff format --check apps/jarvis",
+      "pyright -p apps/jarvis"
+    ],
+    "upstream": ".venv/bin/python -m pytest tests/test_architecture_doc.py -q",
+    "packaging": ".venv/bin/python -m build --no-isolation apps/jarvis",
+    "graph": [
+      "graphify update .",
+      "graphify query scoped GameMasterService/list_proposals",
+      "graphify explain apps/jarvis/src/jarvis/web_ui.py"
+    ]
+  },
+  "results": {
+    "ordinary_postgres": "176 passed, 1 skipped in 35.63s",
+    "pgvector": "176 passed, 1 skipped in 42.14s",
+    "frontend": "24 passed",
+    "browser": "4 passed in 12.2s; production Chromium; mobile axe no violations",
+    "upstream": "38 passed in 0.46s",
+    "npm_audit": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "package": "jarvis_graphify-0.6.0-py3-none-any.whl",
+    "web_assets": [
+      "jarvis/web/icon.svg",
+      "jarvis/web/index.html",
+      "jarvis/web/manifest.webmanifest",
+      "jarvis/web/sw.js",
+      "jarvis/web/assets/index-EU-voR6O.js",
+      "jarvis/web/assets/index-x5iDG4WD.css"
+    ],
+    "asset_parity": true,
+    "synthetic_credentials_absent": true,
+    "upstream_preserved_paths_changed": [],
+    "final_web_host": "2 passed in 0.55s; CSP and developer docs compatibility",
+    "packaged_python_source_parity": true,
+    "final_graph": "AST update and scoped source/provenance explanation; optional upstream language-extractor warnings are unchanged"
+  },
+  "limitations": [
+    "Single-user/single-worker local prototype; no production identity/TLS/rate hardening",
+    "No paid provider call",
+    "Optional voice/integrations/watchers pending",
+    "No full manual accessibility audit",
+    "Upstream optional extraction warnings; no new root source changes"
+  ]
+}

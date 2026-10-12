@@ -1,4 +1,7 @@
-# Adversarial review — foundation through Game Master checkpoint
+# Adversarial review — foundation through Command Center checkpoint
+
+Sections through Phase 8 retain the earlier review history; the Phase 9 section
+below is the current browser/API review and release decision.
 
 Reviewed the delivered API/model/run/tool/Graphify/persistence boundary as a hostile
 reviewer. This is source/test review, not a third-party penetration test. Future
@@ -232,3 +235,52 @@ No unresolved CRITICAL/HIGH issue is known within the bounded, single-process
 local checkpoint. This does not authorize public production release or imply the
 complete JARVIS definition of done has been met. Next: phase 9 Command Center/PWA,
 following JARVIS_PLAN.md.
+
+## Phase 9 browser/API review
+
+Reviewed the delivered frontend, static host, authentication lifecycle, build
+output, cache policy and two additive cockpit read endpoints. No canonical model
+write, policy bypass, grant change, upstream rewrite or migration was introduced.
+
+- **Initial pinned dev tooling had known high/critical advisories.** Updated Vite,
+  its React plugin and Vitest before delivery; regenerated the lock without forced
+  peer overrides. The final npm audit reports zero vulnerabilities. Production
+  dependencies are React/ReactDOM; test tooling is not shipped as a server.
+- **Late 401 from a closed client could clear a newer identity.** The client checks
+  closure/abort before processing responses; a regression test delivers a late
+  unauthorized response after closure and proves no logout callback runs.
+- **History restoration could retain private rendered state.** Pagehide closes
+  the active client synchronously, aborts requests and hides the root before a
+  browser snapshot; persisted pageshow forces reload/authentication. There is no
+  token/session/API data in persistent storage or service-worker caches.
+- Mode/path/session/namespace navigation remounts scoped surfaces; obsolete reads
+  and actions cannot write into a new scope. Refresh clears earlier scene data,
+  and 403/404 failures do not render server exception details or retain the scene.
+- The new proposal-history API checks membership and GM role before reading full
+  structured changes. A player and a nonmember cannot retrieve them. Session
+  summaries require membership and expose the same campaign-wide session metadata
+  already returned by authorized scene requests; titles are campaign-visible.
+- Every retrieved string is React text, including malicious HTML, source locators,
+  JSON, model results and transcript/campaign content. No dynamic hyperlinks,
+  HTML insertion, graph iframe or renderer with script execution exists. Response
+  bytes and displayed text are bounded. Approval buttons submit only the existing
+  exact approval ID; the full bound operation is visible and cannot be edited.
+- CSP denies inline/eval scripts, frames and unknown origins. API/auth/error HTTP
+  responses are no-store, with no-referrer/nosniff and disabled device permissions.
+  Existing optional FastAPI developer docs retain their original asset policy
+  rather than breaking Swagger with the product CSP; the UI has no CDN dependency.
+  The finite production worker allowlist caches only the public static shell and
+  build assets, never API/authenticated/write/query/cross-origin requests. Generated
+  worker tests and an actual offline browser navigation verify this boundary.
+- Browser E2E demonstrates fake durable runs, human Tutor mastery, canonical
+  proposal approval, session transcript, NPC dice, human-default PC rolls, and
+  GM-to-player secret exclusion after sign-out. Automated mobile axe has no
+  violations; keyboard/native-label/focus/reduced-motion rules are implemented.
+
+No unresolved CRITICAL/HIGH issue is known in this bounded Phase 9 checkpoint.
+The dependency audit is a point-in-time check, not an ongoing security guarantee.
+Production multi-user identity/TLS/rate limiting, aggregate worker quotas and a
+complete manual accessibility audit remain outstanding. Chief of Staff watchers,
+voice/integrations, rich graph canvas and richer campaign workflows are not
+implemented. Current verification is in JARVIS_PROGRESS.md and the Phase 9
+snapshots. No public deployment or publication is claimed.

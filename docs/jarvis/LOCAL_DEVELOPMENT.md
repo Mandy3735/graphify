@@ -35,8 +35,11 @@ PY
 ../../.venv/bin/uvicorn jarvis.api:create_app --factory --host 127.0.0.1 --port 8000
 ```
 
-Visit http://127.0.0.1:8000/docs for the interactive API. This is API documentation,
-not the future Command Center frontend. Models are server-only configuration.
+Build the Command Center with `npm ci && npm run build` from
+`apps/jarvis/frontend`, then visit http://127.0.0.1:8000 for the UI.
+The interactive API remains at `/docs`. See [USER_EXPERIENCE.md](USER_EXPERIENCE.md)
+for frontend development, packaging, PWA privacy and browser checks.
+Models are server-only configuration.
 Settings.from-env automatically reads `.env` in the current working directory.
 Keep the token private; `.env` and local state are ignored by Git.
 

@@ -1,3 +1,5 @@
 include alembic.ini compose.yaml requirements.lock .env.example
 recursive-include migrations *.py
 recursive-include tests *.py
+
+recursive-include src/jarvis/web *

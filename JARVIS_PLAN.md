@@ -63,3 +63,11 @@ entries/sessions, non-canonical transcripts, replaceable rules plugins, auditabl
 dice, human-first PC roll authority, one-use delegation and GM-approved structured
 events. Models cannot commit canonical state. Command Center/PWA is the exact next
 milestone. See docs/jarvis/GAME_MASTER.md and current progress.
+
+The sixth checkpoint implements Phase 9 inside `apps/jarvis/frontend` with a
+pinned React/TypeScript toolchain and bundled same-origin PWA. Existing APIs remain
+authoritative; only membership-filtered session summaries and GM-only proposal
+history are added. Static-only caching, in-memory authentication, bounded text
+rendering, scoped state resets, browser acceptance/security/accessibility tests
+and independent CI preserve prior authority and secrecy boundaries. See
+docs/jarvis/USER_EXPERIENCE.md and current progress. Optional voice is next.

@@ -1,0 +1,18 @@
+
+> jarvis-command-center@0.6.0 test
+> vitest run
+
+
+ RUN  v5.0.4 /workspace/graphify/apps/jarvis/frontend
+
+
+ Test Files  2 passed (2)
+      Tests  24 passed (24)
+   Start at  22:02:50
+   Duration  1.85s (environment 44%, tests 31%, setup 15%, import 5%, transform 5%, worker 1%)
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

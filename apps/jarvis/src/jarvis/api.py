@@ -30,6 +30,7 @@ from jarvis.tools import ToolRegistry, graph_tools
 from jarvis.tutor import TutorConflict, TutorDenied, TutorService
 from jarvis.tutor_api import tutor_router
 from jarvis.tutor_tools import register_tutor_tools
+from jarvis.web_ui import install_web_ui
 
 
 class QueryBody(StrictModel):
@@ -102,7 +103,7 @@ def create_app(
             await provider.close()
         await db.dispose()
 
-    app = FastAPI(title="JARVIS", version="0.5.0", lifespan=lifespan)
+    app = FastAPI(title="JARVIS", version="0.6.0", lifespan=lifespan)
     app.state.engine, app.state.database, app.state.graph = engine, db, graph
     app.state.memory = memory
     app.state.tutor = tutor
@@ -352,13 +353,15 @@ def create_app(
     async def settings_view():
         return {
             "provider": cfg.provider,
+            "actor_id": engine.actor.id,
+            "capabilities": sorted(engine.actor.capabilities),
             "primary_model": cfg.primary_reasoning_model,
             "fallback_model": cfg.fallback_reasoning_model,
             "utility_model": cfg.utility_model,
             "fallback_enabled": cfg.allow_fallback,
             "voice": "not_implemented",
             "modes": [mode.value for mode in Mode],
-            "checkpoint": "phase 8 Game Master; product UI and voice pending",
+            "checkpoint": "phase 9 Command Center; voice pending",
             "memory": {
                 "embedding_provider": cfg.embedding_provider,
                 "pgvector": cfg.memory_pgvector,
@@ -432,4 +435,5 @@ def create_app(
     async def graph_update(project_id: str):
         return await code_tool(project_id, "graph.update", {})
 
+    install_web_ui(app)
     return app
