@@ -61,7 +61,13 @@ export function VoicePanel({
             </p>
           )}
           <button
-            disabled={active || sending || state === 'Processing/delegating'}
+            disabled={
+              active ||
+              sending ||
+              state === 'Processing/delegating' ||
+              status.data.realtime_enabled === false ||
+              !!status.data.cleanup_pending?.length
+            }
             onClick={() => {
               setError('');
               void voice.current?.start(status.data!);
@@ -69,6 +75,9 @@ export function VoicePanel({
           >
             {status.data.provider === 'fake' ? 'Start fake voice preview' : 'Enable microphone'}
           </button>
+          {(status.data.realtime_enabled === false || !!status.data.cleanup_pending?.length) && (
+            <p>Live microphone is unavailable. Use text or reviewed input.</p>
+          )}
           <button onClick={() => voice.current?.stop()}>Stop / mute voice</button>
           {active && status.data.provider === 'openai' && (
             <button onClick={() => voice.current?.mute(state !== 'Muted')}>

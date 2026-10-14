@@ -139,3 +139,11 @@ Devices remain off by default. Live configuration permits only same-origin micro
 camera/geolocation stay denied. Blob audio playback is the only CSP addition.
 Scope changes/sign-out/offline/hidden tabs stop devices immediately. API/token/audio
 cache and storage boundaries remain unchanged. See [VOICE.md](VOICE.md).
+
+## Phase 11 update
+
+Settings now shows provider admission estimates and usage from authenticated /api/usage.
+Rate/budget errors are displayed as request limits. Voice controls show when capture
+is unavailable or waiting for remote cleanup, without prompting for the microphone.
+Production realtime capture remains disabled; reviewed input/text stay usable. Private
+API/audio/token data remains excluded from storage and service-worker caches.

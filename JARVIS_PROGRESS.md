@@ -1,3 +1,38 @@
+# JARVIS progress — Phase 11, 2026-10-14
+
+Continued from published Phase 10 `8aa688a450a4633f55ec677947f3393ee35774d0` on
+local `jarvis/phase-11-hardening`. Application **0.8.0**, additive migration **0005**:
+bounded ingress, production HTTPS/origin/bearer/restricted-role checks, PostgreSQL
+single-worker lease/health-on-loss, durable provider admission estimates/usage,
+voice creation/stop journals and human reconciliation, safe resource/error lifecycle,
+CI source/dependency scans and operator-reviewed deployment templates. Production
+live microphone stays unavailable until its remote cost boundary can be enforced;
+text/fake/reviewed input and bounded configured speech/transcription remain.
+
+Final ordinary PostgreSQL and pgvector suites each passed **217 tests, 1 skip**, with
+all 13 real kernel tests enabled. Targeted hardening/voice: **35 passed**; frontend:
+**35 passed**; production Chromium: **5 passed**. JARVIS lint/format/types/build/package
+and Python/npm dependency audits passed. Medium/high Bandit: zero; nine reviewed low
+findings and two documented private-tmpfs annotations. TLS template validated offline.
+Graph synchronized: 20,004 nodes / 42,350 edges / 1,054 communities; query/explain worked.
+
+Preserved upstream: **6,470 passed, 108 skipped, 9 baseline failure identifiers**;
+Ruff lint passed; existing formatter/type drift remains (explicit paths: 413 would
+reformat; explicit interpreter: 618 errors/4 warnings). No upstream source/tests/root
+lock/license or prior-migration change. No push/merge/deployment/certificate/paid call.
+See [PHASE11_REPORT.md](docs/jarvis/PHASE11_REPORT.md),
+[HARDENING.md](docs/jarvis/HARDENING.md) and verification/phase11-* for evidence/commands.
+
+Phases 0–11 are complete only within documented prototype scope. Full Phase 12 review,
+operational identity/TLS/backups/monitoring, provider invoice enforcement, multi-user/HA,
+retention/manual live testing and dedicated Chief of Staff/integrations remain pending.
+The full master definition of done is incomplete. Resolve checkpoint with git rev-parse HEAD.
+
+---
+
+The entries below are historical. Their Phase 10/earlier next-milestone and deferred
+hardening statements are superseded above.
+
 # JARVIS progress — Phase 10, 2026-10-14
 
 Verified the published Phase 9 branch at `2fd7cd17f3ab594c30bcb2f8239b8f0283d76dd4`

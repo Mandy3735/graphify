@@ -15,6 +15,7 @@ from sqlalchemy.exc import DBAPIError
 from test_engine_api import drain, fake_external, pending_approval
 from test_memory import correction, record
 
+from jarvis.budgets import BudgetExceeded, ProviderBudget
 from jarvis.config import Settings
 from jarvis.db import (
     AuditEvent,
@@ -54,6 +55,7 @@ from jarvis.game_master_schema import (
 from jarvis.memory import MemoryConflict, MemoryScope, MemoryService
 from jarvis.models import FakeModelProvider, ModelRouter
 from jarvis.policy import Actor
+from jarvis.runtime import RuntimeGuard
 from jarvis.tutor import TutorScope, TutorService
 from jarvis.tutor_schema import (
     LearnerAttemptCreate,
@@ -65,6 +67,7 @@ from jarvis.tutor_schema import (
 
 TEST_URL = os.environ.get("JARVIS_TEST_DATABASE_URL", "")
 ALEMBIC_INI = Path(__file__).resolve().parents[1] / "alembic.ini"
+RUNTIME_ROLE_SQL = Path(__file__).resolve().parents[1] / "deploy/runtime-role.sql"
 pytestmark = pytest.mark.skipif(not TEST_URL, reason="Set disposable JARVIS_TEST_DATABASE_URL")
 
 
@@ -591,3 +594,163 @@ async def test_postgres_voice_delegation_persists_and_audits_without_canonical_a
         )
         assert {e.event for e in events} == {"voice.started", "voice.stopped", "voice.delegated"}
         assert all("Voice fixture" not in str(e.details) for e in events)
+
+
+async def test_postgres_provider_budget_admission_is_atomic_and_restart_durable(postgres):
+    cfg = pg_settings().model_copy(update={"provider_daily_budget_usd": 0.01})
+    first, second = ProviderBudget(postgres, cfg), ProviderBudget(postgres, cfg)
+    values = await asyncio.gather(
+        first.reserve("reasoning", "test-model", 6000),
+        second.reserve("reasoning", "test-model", 6000),
+        return_exceptions=True,
+    )
+    assert sum(isinstance(v, BudgetExceeded) for v in values) == 1
+    key = next(v for v in values if isinstance(v, str))
+    await first.finish(key, 1000, {"input_tokens": 1000}, "SETTLED")
+    fresh = Database(TEST_URL)
+    try:
+        status = await ProviderBudget(fresh, cfg).status()
+        assert status["charged_estimate_usd"] == 0.001
+    finally:
+        await fresh.dispose()
+
+
+async def test_postgres_runtime_lease_rejects_second_process_and_recovers_after_release(postgres):
+    cfg = pg_settings()
+    first, second = RuntimeGuard(postgres, cfg), RuntimeGuard(postgres, cfg)
+
+    async def failed():
+        raise AssertionError("Lease unexpectedly lost")
+
+    await first.acquire(failed)
+    try:
+        with pytest.raises(RuntimeError, match="Another JARVIS"):
+            await second.acquire(failed)
+        assert first.healthy and not second.healthy
+    finally:
+        await first.close()
+    await second.acquire(failed)
+    assert second.healthy
+    await second.close()
+
+
+async def test_postgres_production_rejects_owner_credentials(postgres):
+    cfg = pg_settings().model_copy(update={"environment": "production"})
+    guard = RuntimeGuard(postgres, cfg)
+    async with postgres.engine.connect() as connection:
+        with pytest.raises(RuntimeError, match="restricted non-owner"):
+            await guard.check_role(connection)
+
+
+async def test_postgres_lost_lease_marks_runtime_unhealthy(postgres):
+    from jarvis.runtime import LOCK
+
+    cfg = pg_settings()
+    guard = RuntimeGuard(postgres, cfg)
+    failed = asyncio.Event()
+    await guard.acquire(_signal(failed))
+    try:
+        await guard.connection.execute(text("SELECT pg_advisory_unlock(:key)"), {"key": LOCK})
+        await guard.connection.commit()
+        await asyncio.wait_for(failed.wait(), 5)
+        assert not guard.healthy
+    finally:
+        await guard.close()
+
+
+def _signal(event):
+    async def callback():
+        event.set()
+
+    return callback
+
+
+async def test_postgres_restricted_role_can_run_but_cannot_change_audit_or_schema(
+    postgres,
+):
+    import httpx
+    from sqlalchemy.engine import make_url
+
+    from jarvis.api import create_app
+
+    url = make_url(TEST_URL)
+    role = "jarvis_runtime_" + uuid4().hex[:20]
+    script_text = await asyncio.to_thread(RUNTIME_ROLE_SQL.read_text)
+    result = await asyncio.to_thread(
+        subprocess.run,
+        [
+            os.getenv("JARVIS_TEST_PSQL", "psql"),
+            "-X",
+            "-h",
+            url.host,
+            "-p",
+            str(url.port or 5432),
+            "-U",
+            url.username,
+            "-d",
+            url.database,
+            "-v",
+            f"runtime_role={role}",
+        ],
+        input=script_text,
+        text=True,
+        capture_output=True,
+        check=True,
+        env={**os.environ, "PGPASSWORD": url.password or ""},
+        timeout=20,
+    )
+    assert "COMMIT" in result.stdout
+    restricted = None
+    try:
+        async with postgres.sessions.begin() as session:
+            await session.execute(text(f"ALTER ROLE {role} PASSWORD 'phase11-test-only'"))
+        restricted_url = url.set(username=role, password="phase11-test-only").render_as_string(
+            hide_password=False
+        )
+        cfg = Settings(
+            auth_token="x" * 48,
+            actor_id=uuid4(),
+            database_url=restricted_url,
+            environment="production",
+            public_origin="https://jarvis.example",
+            _env_file=None,
+        )
+        restricted = Database(restricted_url)
+        async with restricted.engine.connect() as connection:
+            await RuntimeGuard(restricted, cfg).check_role(connection)
+        for statement in [
+            "UPDATE audit_events SET event='forged'",
+            "DELETE FROM audit_events",
+            "TRUNCATE audit_events",
+            "CREATE TABLE escaped(id integer)",
+            "ALTER TABLE agent_runs ADD COLUMN escaped integer",
+            "DELETE FROM alembic_version",
+        ]:
+            with pytest.raises(DBAPIError, match="permission denied|must be owner"):
+                async with restricted.sessions.begin() as session:
+                    await session.execute(text(statement))
+        app = create_app(cfg)
+        async with (
+            app.router.lifespan_context(app),
+            httpx.AsyncClient(
+                transport=httpx.ASGITransport(app=app),
+                base_url="https://jarvis.example",
+                headers={"Authorization": "Bearer " + "x" * 48},
+            ) as client,
+        ):
+            assert (await client.get("/docs")).status_code == 404
+            assert (await client.get("/openapi.json")).status_code == 404
+            response = await client.post("/api/chat", json={"message": "restricted-role smoke"})
+            assert response.status_code == 202
+            await drain(app.state.engine)
+            run_id = response.json()["run_id"]
+            assert (await client.get(f"/api/runs/{run_id}")).json()["state"] == "COMPLETED"
+            assert (await client.get("/api/usage")).status_code == 200
+            assert response.headers["strict-transport-security"] == "max-age=31536000"
+            assert "microphone=()" in response.headers["permissions-policy"]
+    finally:
+        if restricted is not None:
+            await restricted.dispose()
+        async with postgres.sessions.begin() as session:
+            await session.execute(text(f"DROP OWNED BY {role}"))
+            await session.execute(text(f"DROP ROLE {role}"))

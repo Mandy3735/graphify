@@ -78,3 +78,14 @@ user-reviewed untrusted transcript → existing Engine. Read-aloud synthesizes a
 owned completed result separately. Keys remain server-held; live clients are lazy.
 No canonical, approval or model-tool authority is added. Session state is ephemeral
 and single-worker, with expiry/admission/cleanup. See [VOICE.md](VOICE.md).
+
+## Phase 11 runtime and admission
+
+Ingress bounds body/rate/concurrency/origin before DB/provider work. The PostgreSQL
+application acquires a monitored one-worker advisory lease before recovering runs.
+Production validates a non-owner runtime DB role and HTTPS/host configuration; startup
+never migrates or grants privileges. ExitStack closes resources even on failure.
+Migration 0005 adds durable UTC provider estimate totals/call journals and voice cleanup
+identifiers. SDK adapters reserve before live calls and settle known usage once;
+uncertain attempts remain charged. Voice restart cleanup never replays creation/audio.
+Existing state, tools and exact approvals remain unchanged. See HARDENING.md.

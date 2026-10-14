@@ -1,4 +1,9 @@
 name: JARVIS verification
+permissions:
+  contents: read
+concurrency:
+  group: jarvis-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 on:
   push:
     branches: [main, work, "jarvis/**"]
@@ -39,7 +44,7 @@ jobs:
       - name: Install Linux sandbox runtime
         run: |
           sudo apt-get update
-          sudo apt-get install --yes bubblewrap util-linux python3 apparmor-profiles apparmor-utils
+          sudo apt-get install --yes bubblewrap util-linux python3 postgresql-client apparmor-profiles apparmor-utils
           # Ubuntu 24.04 requires an explicit launcher profile for user namespaces.
           # Use the distribution's child-restricting profile; keep global protections on.
           if [ ! -f /etc/apparmor.d/bwrap-userns-restrict ]; then
@@ -58,6 +63,10 @@ jobs:
           ../../.venv/bin/ruff check .
           ../../.venv/bin/ruff format --check .
           ../../.venv/bin/pyright
+      - name: JARVIS source and dependency security checks
+        run: |
+          .venv/bin/bandit -r apps/jarvis/src -ll
+          .venv/bin/pip-audit --disable-pip --no-deps -r apps/jarvis/requirements.lock
       - name: Offline unit, security, Graphify fixture and PostgreSQL integration tests
         working-directory: apps/jarvis
         run: ../../.venv/bin/python -m pytest -q

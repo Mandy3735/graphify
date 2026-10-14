@@ -1,3 +1,8 @@
+# Current report — Phase 11
+
+Current results and limitations are in [PHASE11_REPORT.md](docs/jarvis/PHASE11_REPORT.md).
+The Phase 10/earlier entries below are historical.
+
 # Current report — Phase 10
 
 The earlier Phase 8 report below is historical. Current implementation, commands,

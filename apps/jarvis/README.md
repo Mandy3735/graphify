@@ -1,4 +1,4 @@
-# JARVIS Phase 10 checkpoint 0.7.0
+# JARVIS Phase 11 checkpoint 0.8.0
 
 Authenticated single-user FastAPI/PostgreSQL application around preserved Graphify,
 with memory, policy/exact approvals, bounded Engineer, human-evidence Tutor,
@@ -12,7 +12,11 @@ and [security](../../THREAT_MODEL.md). Fake text mode needs no API key; voice is
 independently disabled by default. Fake voice uses no microphone and silent test audio.
 
 The application has its own hashed dependency lock and wheel; Graphify is installed
-alongside, not vendored. Apply Alembic migrations before startup and use one backend
+alongside, not vendored. Apply Alembic migrations through 0005 before startup and use one backend
 worker. Build frontend with `npm ci && npm run build` before serving or packaging.
 Start `uvicorn jarvis.api:create_app --factory`. Interactive API docs are `/docs`.
 Live model identifiers come from trusted configuration, never browser inputs.
+
+See [hardening setup](../../docs/jarvis/HARDENING.md) for request/provider quotas,
+restricted runtime roles, HTTPS profile, worker lease and voice recovery. Live provider
+prices/estimates are required; fake mode remains offline. Phase 12 is next.

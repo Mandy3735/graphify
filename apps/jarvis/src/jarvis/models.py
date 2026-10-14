@@ -4,6 +4,7 @@ import re
 from dataclasses import dataclass
 from typing import Any, Protocol, cast
 
+from jarvis.budgets import BudgetExceeded, ProviderBudget
 from jarvis.config import Settings
 from jarvis.domain import Message, ModelResult, ToolProposal
 
@@ -42,11 +43,45 @@ class FakeModelProvider:
 
 
 class OpenAIModelProvider:
-    def __init__(self, settings: Settings, client=None):
+    def __init__(self, settings: Settings, client=None, budget: ProviderBudget | None = None):
         self.settings = settings
         self.client = client
+        self.budget = budget
 
     async def respond(self, model, messages, tools) -> ModelResult:
+        if self.budget is None:
+            return await self._respond(model, messages, tools)
+        upper_input = len(
+            json.dumps([m.model_dump() for m in messages], ensure_ascii=False).encode()
+        )
+        upper_input += len(json.dumps(tools, ensure_ascii=False).encode()) + 2048
+        reserved = self.budget.token_cost(model, upper_input, self.settings.max_output_tokens)
+        key = await self.budget.reserve("reasoning", model, reserved)
+        try:
+            result = await self._respond(model, messages, tools)
+            actual = (
+                self.budget.token_cost(model, result.input_tokens, result.output_tokens)
+                if result.input_tokens or result.output_tokens
+                else None
+            )
+            await self.budget.finish(
+                key,
+                actual,
+                {"input_tokens": result.input_tokens, "output_tokens": result.output_tokens},
+                "OVERRUN"
+                if actual is not None and actual > reserved
+                else "SETTLED"
+                if actual is not None
+                else "ESTIMATED",
+            )
+            if actual is not None and actual > reserved:
+                raise BudgetExceeded("Provider usage exceeded the reservation; result withheld")
+            return result
+        except BaseException:
+            await asyncio.shield(self.budget.finish(key, None, {}, "UNCERTAIN"))
+            raise
+
+    async def _respond(self, model, messages, tools) -> ModelResult:
         from openai import (
             APIConnectionError,
             APIStatusError,

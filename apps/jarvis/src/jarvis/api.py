@@ -1,14 +1,16 @@
 import asyncio
 import json
 import secrets
-from contextlib import asynccontextmanager
+from contextlib import AsyncExitStack, asynccontextmanager
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import StreamingResponse
 from pydantic import Field
 from sqlalchemy import select, text
 
+from jarvis.budgets import BudgetExceeded
 from jarvis.config import Settings
 from jarvis.db import AgentRun, AgentStep, ApprovalRequest, AuditEvent, Database, audit
 from jarvis.domain import TERMINAL, ChatRequest, Mode, StrictModel, ToolProposal
@@ -21,10 +23,12 @@ from jarvis.game_master import GameMasterConflict, GameMasterDenied, GameMasterS
 from jarvis.game_master_api import game_master_router
 from jarvis.game_master_tools import register_game_master_tools
 from jarvis.graph import GraphifyKnowledgeProvider
+from jarvis.ingress import Ingress
 from jarvis.memory import MemoryConflict, MemoryDenied, MemoryService
 from jarvis.memory_api import memory_router
 from jarvis.memory_tools import register_memory_tools
 from jarvis.models import FakeModelProvider, ModelRouter, OpenAIModelProvider, ProviderFailure
+from jarvis.runtime import RuntimeGuard
 from jarvis.sandbox import SandboxUnavailable
 from jarvis.tools import ToolRegistry, graph_tools
 from jarvis.tutor import TutorConflict, TutorDenied, TutorService
@@ -86,34 +90,53 @@ def create_app(
         register_game_master_tools(registry, game_master)
     engine = Engine(cfg, db, ModelRouter(cfg, provider), registry, memory, game_master)
     voice = VoiceService(cfg, engine)
+    runtime = RuntimeGuard(db, cfg)
+
+    async def lease_failed():
+        await engine.close()
+        await voice.close()
 
     @asynccontextmanager
     async def lifespan(app):
         # Requires an explicitly migrated database. Recovery never replays effects.
-        await memory.check_backend()
-        if engineer is not None and default_registry:
-            try:
-                await engineer.check_backend()
-            except SandboxUnavailable:
-                # Text/memory remain available; no execution tools are registered.
-                pass
-            else:
-                register_engineer_tools(registry, engineer)
-        await engine.recover()
-        yield
-        await voice.close()
-        await engine.close()
-        if isinstance(provider, OpenAIModelProvider):
-            await provider.close()
-        await db.dispose()
+        async with AsyncExitStack() as cleanup:
+            cleanup.push_async_callback(db.dispose)
+            cleanup.push_async_callback(runtime.close)
+            if isinstance(provider, OpenAIModelProvider):
+                cleanup.push_async_callback(provider.close)
+            cleanup.push_async_callback(engine.close)
+            cleanup.push_async_callback(voice.close)
+            await runtime.acquire(lease_failed)
+            await memory.check_backend()
+            if engineer is not None and default_registry:
+                try:
+                    await engineer.check_backend()
+                except SandboxUnavailable:
+                    pass
+                else:
+                    register_engineer_tools(registry, engineer)
+            await engine.recover()
+            if await voice.pending_cleanup():
+                voice.recovery_task = asyncio.create_task(voice.recover())
+            yield
 
-    app = FastAPI(title="JARVIS", version="0.7.0", lifespan=lifespan)
+    production = cfg.environment == "production"
+    app = FastAPI(
+        title="JARVIS",
+        version="0.8.0",
+        lifespan=lifespan,
+        docs_url=None if production else "/docs",
+        redoc_url=None if production else "/redoc",
+        openapi_url=None if production else "/openapi.json",
+    )
+    app.add_middleware(Ingress, cfg=cfg, runtime=runtime)
     app.state.engine, app.state.database, app.state.graph = engine, db, graph
     app.state.memory = memory
     app.state.tutor = tutor
     app.state.game_master = game_master
     app.state.engineer = engineer
     app.state.voice = voice
+    app.state.runtime = runtime
 
     async def authenticate(authorization: Annotated[str | None, Header()] = None):
         if not authorization or not authorization.startswith("Bearer "):
@@ -130,6 +153,33 @@ def create_app(
     app.include_router(tutor_router(tutor, engine.actor, auth))
     app.include_router(game_master_router(game_master, engine.actor, auth))
     app.include_router(voice_router(voice, auth))
+
+    @app.get("/api/usage", dependencies=auth)
+    async def provider_usage():
+        return await engine.budget.status()
+
+    @app.exception_handler(BudgetExceeded)
+    async def budget_exceeded(request, exc):
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(status_code=429, content={"detail": "Provider budget unavailable"})
+
+    @app.exception_handler(RequestValidationError)
+    async def invalid_request(request, exc):
+        from fastapi.responses import JSONResponse
+
+        # Never echo transcripts, uploaded audio or credential-like user fields in errors.
+        if production:
+            return JSONResponse(status_code=422, content={"detail": "Invalid request"})
+        return JSONResponse(
+            status_code=422,
+            content={
+                "detail": [
+                    {"type": error["type"], "loc": error["loc"], "msg": error["msg"][:300]}
+                    for error in exc.errors()[:10]
+                ]
+            },
+        )
 
     @app.exception_handler(VoiceUnavailable)
     async def voice_unavailable(request, exc):
@@ -195,6 +245,8 @@ def create_app(
 
     @app.get("/health")
     async def health():
+        if not runtime.healthy:
+            raise HTTPException(503, "Runtime lease unavailable")
         try:
             async with db.sessions() as session:
                 await session.execute(text("SELECT 1"))
@@ -373,9 +425,12 @@ def create_app(
             "fallback_model": cfg.fallback_reasoning_model,
             "utility_model": cfg.utility_model,
             "fallback_enabled": cfg.allow_fallback,
-            "voice": "not_implemented",
+            "voice": cfg.voice_provider,
             "modes": [mode.value for mode in Mode],
-            "checkpoint": "phase 9 Command Center; voice pending",
+            "checkpoint": "phase 11 hardening",
+            "environment": cfg.environment,
+            "request_rate_limit": cfg.api_requests_per_minute,
+            "provider_daily_budget_usd": cfg.provider_daily_budget_usd,
             "memory": {
                 "embedding_provider": cfg.embedding_provider,
                 "pgvector": cfg.memory_pgvector,

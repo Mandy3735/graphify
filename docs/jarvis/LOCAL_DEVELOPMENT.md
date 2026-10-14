@@ -250,3 +250,16 @@ tests. The application keeps execution disabled by default and text available.
 Voice defaults to disabled. See [VOICE.md](VOICE.md) for a no-key fake preview,
 explicit live configuration, microphone controls and limits. Text remains usable
 without voice. Configure model IDs from actual provider access.
+
+## Phase 11 hardening
+
+Upgrade to Alembic revision 0005 before using application 0.8.0. Fake mode remains
+key-free. Live providers now need configured pricing/operation estimates and durable
+admission; missing estimates deny calls before SDK work. See [HARDENING.md](HARDENING.md)
+for request limits, one-worker lease, restricted runtime role, TLS profile and recovery.
+PostgreSQL integration tests additionally require psql and a disposable local admin
+role able to create a temporary runtime role. CI explicitly installs postgresql-client.
+The test URL must still use localhost/127.0.0.1 and a database ending in _test.
+JARVIS_TEST_PSQL can select a trusted local psql wrapper for container-only tooling;
+it is test configuration, never an API/tool input. Both DB variants run the role
+script, migration parity, quota race, lease loss and all existing authority tests.

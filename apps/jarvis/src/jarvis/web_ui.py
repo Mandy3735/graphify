@@ -30,7 +30,15 @@ def install_web_ui(app: FastAPI, directory: Path | None = None) -> None:
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Referrer-Policy"] = "no-referrer"
         voice = getattr(app.state, "voice", None)
-        microphone = "(self)" if voice and voice.cfg.voice_provider == "openai" else "()"
+        microphone = (
+            "(self)"
+            if (
+                voice
+                and voice.cfg.voice_provider == "openai"
+                and voice.cfg.environment != "production"
+            )
+            else "()"
+        )
         response.headers["Permissions-Policy"] = (
             f"microphone={microphone}, camera=(), geolocation=()"
         )
@@ -38,6 +46,8 @@ def install_web_ui(app: FastAPI, directory: Path | None = None) -> None:
         # The service worker caches a finite build-generated static allowlist only.
         # All ordinary HTTP responses, including authentication errors, are no-store.
         response.headers["Cache-Control"] = "no-store"
+        if voice and voice.cfg.environment == "production" and request.url.scheme == "https":
+            response.headers["Strict-Transport-Security"] = "max-age=31536000"
         return response
 
     @app.get("/{web_path:path}", include_in_schema=False)

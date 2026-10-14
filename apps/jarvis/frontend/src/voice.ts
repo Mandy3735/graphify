@@ -8,7 +8,13 @@ export type VoiceState =
   | 'Processing/delegating'
   | 'Muted'
   | 'Stopped';
-export type VoiceStatus = { enabled: boolean; provider: string; speech_enabled: boolean };
+export type VoiceStatus = {
+  enabled: boolean;
+  provider: string;
+  speech_enabled: boolean;
+  realtime_enabled?: boolean;
+  cleanup_pending?: { id: string; state: string }[];
+};
 
 /** Device lifetime is independent of React render timing and provider availability. */
 export class VoiceController {

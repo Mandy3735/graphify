@@ -106,3 +106,26 @@ work temporarily alive. Voice transport has one-operation/session admission, 30/
 requests, bounded SDK deadlines/audio/text/session sizes and no retries. Provider
 data-channel mutation never grants backend authority; stronger provider-level cost
 quotas and crash reconciliation remain production work. See docs/jarvis/VOICE.md.
+
+## Phase 11 enforced boundaries
+
+Ingress applies authenticated/global/observed-peer rate, concurrency, slow-body and
+wire-byte limits before parser/audit/DB/provider work. Caller-forwarded headers do not
+choose peer identity or HTTPS. Production requires an exact HTTPS origin, strong
+single-principal bearer and a restricted non-owner PostgreSQL role; developer API docs
+are unavailable. Runtime role cannot alter audit/migration schema, create tables or
+inherit privileged owners. An application advisory lease rejects another process;
+lease loss disables API work and invokes shutdown. ASGI failures omit private exception
+parameters; resource cleanup still runs after startup/shutdown errors.
+
+Live official providers reserve configured estimates transactionally before calls;
+usage is settled once, uncertainty remains charged and restart cannot reset UTC-day
+admission. Estimates are not provider invoice guarantees. Live microphone is disabled
+in production because remote data-channel settings cannot enforce a generation-cost
+ceiling. Known voice IDs are journaled for stop recovery; unknown creation requires
+explicit human reconciliation and no automatic replay. No human-only decision,
+capability, canonical state or personal/campaign visibility boundary is weakened.
+
+Provider-side billing limits, operational TLS/backups/monitoring, multi-user identity,
+HA, retention and full Phase 12 acceptance remain out of scope. The new TLS/role
+files are reviewed templates, not deployed infrastructure. See HARDENING.md.

@@ -206,3 +206,31 @@ it('review is required and offline/unmount stop capture', async () => {
   expect(screen.getByRole('status')).toHaveTextContent('Stopped');
   unmount();
 });
+
+it('unavailable realtime capture preserves reviewed input and exposes no device prompt', async () => {
+  const d = devices();
+  const client = new Client('token');
+  vi.spyOn(client, 'request').mockResolvedValue({
+    ...live,
+    realtime_enabled: false,
+    cleanup_pending: [],
+  });
+  render(<VoicePanel client={client} mode="CHIEF_OF_STAFF" scope={{}} runId="" onRun={() => {}} />);
+  const enable = await screen.findByRole('button', { name: 'Enable microphone' });
+  expect(enable).toBeDisabled();
+  expect(screen.getByLabelText('Review voice transcript')).toBeEnabled();
+  expect(d.getUserMedia).not.toHaveBeenCalled();
+});
+
+it('unresolved remote cleanup blocks another microphone session', async () => {
+  const d = devices();
+  const client = new Client('token');
+  vi.spyOn(client, 'request').mockResolvedValue({
+    ...live,
+    realtime_enabled: true,
+    cleanup_pending: [{ id: 'orphan', state: 'UNRESOLVED' }],
+  });
+  render(<VoicePanel client={client} mode="CHIEF_OF_STAFF" scope={{}} runId="" onRun={() => {}} />);
+  expect(await screen.findByRole('button', { name: 'Enable microphone' })).toBeDisabled();
+  expect(d.getUserMedia).not.toHaveBeenCalled();
+});

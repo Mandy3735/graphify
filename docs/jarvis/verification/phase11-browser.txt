@@ -1,0 +1,21 @@
+
+> jarvis-command-center@0.8.0 e2e
+> playwright test
+
+
+Running 5 tests using 1 worker
+
+(node:28912) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/workflows.spec.ts:21:1 › optional fake voice: explicit start, reviewed delegation, stop and no private cache (2.2s)
+  ✓  2 tests/browser/workflows.spec.ts:64:1 › authentication, navigation, durable mission and offline shell (2.4s)
+  ✓  3 tests/browser/workflows.spec.ts:107:1 › Tutor: source, human attempts and evidence-backed mastery (1.9s)
+  ✓  4 tests/browser/workflows.spec.ts:135:1 › GM: canonical scene, session, dice, pending changes and cross-role secrets (2.7s)
+  ✓  5 tests/browser/workflows.spec.ts:225:1 › memory text safety, correction, deletion and accessibility on mobile (2.4s)
+
+  5 passed (15.4s)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

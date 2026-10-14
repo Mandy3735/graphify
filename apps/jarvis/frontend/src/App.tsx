@@ -300,6 +300,7 @@ function Projects({ client, go }: { client: Client; go: (p: string) => void }) {
 function Settings({ client }: { client: Client }) {
   const q = useLoad(client, '/api/settings');
   const tools = useLoad(client, '/api/tools');
+  const usage = useLoad(client, '/api/usage');
   return (
     <>
       <h2>Models and privacy</h2>
@@ -307,6 +308,8 @@ function Settings({ client }: { client: Client }) {
       {q.data && <Details label="Server model and memory configuration" value={q.data} />}
       <LoadState {...tools} retry={tools.refresh} />
       {tools.data && <Details label="Available tool contracts" value={tools.data} />}
+      <LoadState {...usage} retry={usage.refresh} />
+      {usage.data && <Details label="Provider admission estimates and usage" value={usage.data} />}
       <p>
         Settings are controlled by the operator. Tokens and private API responses are not saved to
         persistent browser storage. Only public static application assets are cached.

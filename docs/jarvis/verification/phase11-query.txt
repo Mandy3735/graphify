@@ -1,0 +1,32 @@
+Graph: graphify-out/graph.json (20004 nodes) | Traversal: BFS depth=2 | Start: ['RuntimeGuard', 'ProviderBudget', 'Ingress'] | 153 nodes found
+
+[!] TRUNCATED: showing 27 of 153 nodes (~900-token budget). The answer may be among the 126 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).
+
+NODE RuntimeGuard [src=apps/jarvis/src/jarvis/runtime.py loc=L13 community=Settings]
+NODE ProviderBudget [src=apps/jarvis/src/jarvis/budgets.py loc=L21 community=Settings]
+NODE Ingress [src=apps/jarvis/src/jarvis/ingress.py loc=L14 community=Settings]
+NODE create_app() [src=apps/jarvis/src/jarvis/api.py loc=L68 community=create_app]
+NODE jarvis/api.py [src=apps/jarvis/src/jarvis/api.py loc=L1 community=jarvis/api.py]
+NODE Engine [src=apps/jarvis/src/jarvis/engine.py loc=L35 community=Engine]
+NODE Settings [src=apps/jarvis/src/jarvis/config.py loc=L11 community=Settings]
+NODE jarvis/engine.py [src=apps/jarvis/src/jarvis/engine.py loc=L1 community=Engine]
+NODE jarvis/models.py [src=apps/jarvis/src/jarvis/models.py loc=L1 community=Settings]
+NODE Database [src=apps/jarvis/src/jarvis/db.py loc=L515 community=Settings]
+NODE budgets.py [src=apps/jarvis/src/jarvis/budgets.py loc=L1 community=Settings]
+NODE embeddings.py [src=apps/jarvis/src/jarvis/embeddings.py loc=L1 community=Settings]
+NODE OpenAIModelProvider [src=apps/jarvis/src/jarvis/models.py loc=L45 community=Settings]
+NODE ingress.py [src=apps/jarvis/src/jarvis/ingress.py loc=L1 community=Settings]
+NODE OpenAIEmbeddingProvider [src=apps/jarvis/src/jarvis/embeddings.py loc=L60 community=Settings]
+NODE .__init__() [src=apps/jarvis/src/jarvis/engine.py loc=L36 community=Settings]
+NODE runtime.py [src=apps/jarvis/src/jarvis/runtime.py loc=L1 community=Settings]
+NODE .reserve() [src=apps/jarvis/src/jarvis/budgets.py loc=L43 community=Settings]
+NODE test_production_errors_hide_exception_parameters() [src=apps/jarvis/tests/test_hardening.py loc=L304 community=Settings]
+NODE test_postgres_restricted_role_can_run_but_cannot_change_audit_or_schema() [src=apps/jarvis/tests/test_postgres.py loc=L668 community=Settings]
+NODE test_body_deadline_concurrency_and_duplicate_headers() [src=apps/jarvis/tests/test_hardening.py loc=L136 community=Settings]
+NODE test_budget_settlement_and_pre_call_denial() [src=apps/jarvis/tests/test_hardening.py loc=L188 community=Settings]
+NODE test_https_host_and_lease_fail_closed_without_trusting_forwarded_headers() [src=apps/jarvis/tests/test_hardening.py loc=L99 community=Settings]
+NODE test_provider_cancellation_retains_reservation_and_usage_settles() [src=apps/jarvis/tests/test_hardening.py loc=L201 community=Settings]
+NODE test_unexpected_provider_usage_is_accounted_and_result_withheld() [src=apps/jarvis/tests/test_hardening.py loc=L334 community=Settings]
+NODE ProviderCall [src=apps/jarvis/src/jarvis/db.py loc=L491 community=Settings]
+NODE .__call__() [src=apps/jarvis/src/jarvis/ingress.py loc=L43 community=Settings]
+... (truncated — 126 more nodes cut by ~900-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)

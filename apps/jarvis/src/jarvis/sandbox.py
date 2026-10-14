@@ -113,7 +113,7 @@ class BubblewrapSandbox:
                 "--size",
                 "16777216",
                 "--tmpfs",
-                "/tmp",
+                "/tmp",  # nosec B108: private kernel tmpfs, not a host temporary directory
                 "--ro-bind",
                 str(source),
                 "/workspace",
@@ -134,7 +134,7 @@ class BubblewrapSandbox:
                 "C.UTF-8",
                 "--setenv",
                 "HOME",
-                "/tmp",
+                "/tmp",  # nosec B108: worker home is the private kernel tmpfs
                 "--setenv",
                 "PYTHONDONTWRITEBYTECODE",
                 "1",

@@ -1,0 +1,7 @@
+# Operator-owned TLS terminator; keep the backend listener on loopback.
+{$JARVIS_PUBLIC_HOST} {
+	request_body {
+		max_size 3MB
+	}
+	reverse_proxy 127.0.0.1:8000
+}

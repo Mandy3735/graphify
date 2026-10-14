@@ -1,0 +1,73 @@
+{
+  "branch": "jarvis/phase-11-hardening",
+  "receiving_commit": "8aa688a450a4633f55ec677947f3393ee35774d0",
+  "application_version": "0.8.0",
+  "migration": "0005",
+  "scope": "single-principal/single-worker prototype hardening",
+  "receiving": {
+    "backend_passed": 163,
+    "backend_skipped": 29,
+    "frontend_passed": 33
+  },
+  "final": {
+    "postgres_passed": 217,
+    "postgres_skipped": 1,
+    "postgres_seconds": 47.53,
+    "pgvector_passed": 217,
+    "pgvector_skipped": 1,
+    "pgvector_seconds": 47.35,
+    "real_kernel_tests_each": 13,
+    "hardening_and_voice_targeted_passed": 35,
+    "frontend_passed": 35,
+    "browser_passed": 5,
+    "browser_seconds": 15.4,
+    "lint_format_types_build": "passed",
+    "pip_audit_known_vulnerabilities": 0,
+    "npm_audit_reported_vulnerabilities": 0,
+    "bandit_medium": 0,
+    "bandit_high": 0,
+    "bandit_low": 9,
+    "bandit_private_tmpfs_annotations": 2
+  },
+  "upstream": {
+    "passed": 6470,
+    "skipped": 108,
+    "failed": 9,
+    "seconds": 160.66,
+    "failures": [
+      "tests/test_detect.py::test_graphifyignore_hermetic_without_vcs",
+      "tests/test_hooks.py::test_no_git_repo_raises",
+      "tests/test_security.py::test_validate_url_accepts_http",
+      "tests/test_security.py::test_validate_url_accepts_https",
+      "tests/test_security.py::test_safe_fetch_returns_bytes",
+      "tests/test_security.py::test_safe_fetch_raises_on_non_2xx",
+      "tests/test_security.py::test_safe_fetch_raises_on_size_exceeded",
+      "tests/test_security.py::test_safe_fetch_text_decodes_utf8",
+      "tests/test_security.py::test_safe_fetch_text_replaces_bad_bytes"
+    ],
+    "lint": "passed",
+    "formatter_would_reformat": 413,
+    "formatter_already_formatted": 159,
+    "type_errors": 618,
+    "type_warnings": 4,
+    "source_changed": false
+  },
+  "graph": {
+    "nodes": 20004,
+    "edges": 42350,
+    "communities": 1054
+  },
+  "tls_proxy_template": "validated without network/deployment/certificate issuance",
+  "package": "wheel hardening modules/web assets; sdist immutable migrations plus 0005 and deploy templates",
+  "production_live_microphone_enabled": false,
+  "paid_provider_calls": false,
+  "published": false,
+  "remaining": [
+    "Phase 12 full adversarial review",
+    "Provider-side invoice ceiling",
+    "Operational TLS/backups/monitoring",
+    "Multi-user identity/HA",
+    "Manual live voice/hardware validation",
+    "Full master acceptance/deferred workflows"
+  ]
+}

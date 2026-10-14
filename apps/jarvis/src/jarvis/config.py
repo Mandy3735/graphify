@@ -1,5 +1,7 @@
+import math
 from pathlib import Path
 from typing import Literal
+from urllib.parse import urlsplit
 from uuid import UUID
 
 from pydantic import Field, SecretStr, field_validator, model_validator
@@ -12,6 +14,16 @@ class Settings(BaseSettings):
     auth_token: SecretStr
     actor_id: UUID = UUID("afce9806-1dc4-4376-982b-74480ae698aa")
     database_url: SecretStr
+    environment: Literal["local", "production"] = "local"
+    public_origin: str = ""
+    request_bytes: int = Field(default=262144, ge=16384, le=1048576)
+    request_body_timeout: float = Field(default=10, ge=1, le=30)
+    api_requests_per_minute: int = Field(default=600, ge=10, le=1200)
+    unauthenticated_requests_per_minute: int = Field(default=30, ge=5, le=120)
+    concurrent_http_requests: int = Field(default=16, ge=4, le=64)
+    provider_daily_budget_usd: float = Field(default=25, gt=0, le=1000)
+    # Upper estimates per operation/model, e.g. "speech:configured-model": 0.10.
+    provider_operation_costs: dict[str, float] = Field(default_factory=dict)
     provider: Literal["fake", "openai"] = "fake"
     primary_reasoning_model: str = "gpt-6-astra"
     fallback_reasoning_model: str = "gpt-6.1-sol"
@@ -69,6 +81,47 @@ class Settings(BaseSettings):
     # Per million input/output tokens. Empty means cost is unknown, not zero.
     pricing: dict[str, tuple[float, float]] = Field(default_factory=dict)
 
+    @model_validator(mode="after")
+    def production_configuration(self):
+        if (
+            not math.isfinite(self.provider_daily_budget_usd)
+            or any(
+                not math.isfinite(rate) or rate < 0
+                for pair in self.pricing.values()
+                for rate in pair
+            )
+            or any(
+                not math.isfinite(rate) or rate <= 0
+                for rate in self.provider_operation_costs.values()
+            )
+        ):
+            raise ValueError("Provider budget/pricing must be finite nonnegative amounts")
+        if self.public_origin:
+            origin = urlsplit(self.public_origin)
+            if (
+                origin.scheme not in {"http", "https"}
+                or not origin.hostname
+                or origin.username
+                or origin.password
+                or origin.path
+                or origin.query
+                or origin.fragment
+                or any(ord(c) < 33 or ord(c) > 126 for c in self.public_origin)
+            ):
+                raise ValueError("Public origin must be an exact HTTP(S) origin without a path")
+            _ = origin.port  # Validate a supplied port before accepting the deployment origin.
+            self.public_origin = self.public_origin.lower()
+        if self.environment == "production":
+            if (
+                not self.database_url.get_secret_value().startswith("postgresql+asyncpg://")
+                or not self.public_origin.startswith("https://")
+                or len(self.auth_token.get_secret_value()) < 48
+            ):
+                raise ValueError(
+                    "Production requires PostgreSQL, exact HTTPS origin and 48+ token characters"
+                )
+        return self
+
     @field_validator("voice_provider", mode="before")
     @classmethod
     def optional_voice_provider(cls, value):
@@ -93,8 +146,9 @@ class Settings(BaseSettings):
     @field_validator("auth_token")
     @classmethod
     def token_strength(cls, token: SecretStr) -> SecretStr:
-        if len(token.get_secret_value()) < 32:
-            raise ValueError("JARVIS_AUTH_TOKEN must have at least 32 characters")
+        value = token.get_secret_value()
+        if not 32 <= len(value) <= 512 or any(ord(c) < 33 or ord(c) > 126 for c in value):
+            raise ValueError("JARVIS_AUTH_TOKEN needs 32–512 printable non-space ASCII characters")
         return token
 
     @field_validator("project_roots")

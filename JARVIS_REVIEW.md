@@ -305,3 +305,39 @@ No known unresolved critical/high issue in the bounded local single-worker scope
 Live paid interoperability is unverified. Aggregate provider usage/cost enforcement,
 crash-time remote reconciliation, production identity/TLS/rate limits and coordinated
 multi-worker admission remain Phase 11 work. See VOICE.md and PHASE10_REPORT.md.
+
+## Phase 11 scoped review and fixes
+
+Reviewed quota races/uncertain calls, request/body/peer/origin handling, proxy trust,
+DB role grants and owner membership, second-worker recovery, lease loss, client cleanup,
+voice creation/stop crash windows, exception privacy, packaging and CI scans.
+
+- Durable row-locked pre-call estimates survive cancellation/restart. Settlement is
+  one-use; missing prices deny calls. Unexpected usage is recorded as OVERRUN and its
+  result is withheld before tools. Known token usage remains observable.
+- Ingress rejects oversized declared/chunked bodies, slow requests, ambiguous security
+  headers, foreign origins and request-rate/concurrency overflow before DB audits.
+  Spoofed forwarded headers cannot create peer buckets or HTTPS authority.
+- Production validates restricted runtime privileges, exact origin/TLS and strong
+  bearer configuration. The real role recipe denies audit mutation, DDL and migration
+  writes while allowing fake runs/audit inserts. Existing owner-grant inheritance is
+  rejected. The operator template requires a new role and never alters existing roles.
+- Monitored PostgreSQL session lease prevents a second app from recovering another
+  process's runs. Lease loss revokes health and calls shutdown; ExitStack closes all
+  resources on startup/shutdown failure. One worker is enforced rather than claiming HA.
+- Remote call identifiers/creation intent are durable. Restart cleanup never replays
+  creation or audio; unresolved creation requires a human provider-side stop and an
+  explicit authenticated acknowledgement. Unknown/failing cleanup blocks local live
+  reconnection. No provider ID, audio or credentials enters browser cache/storage.
+- WebRTC client data channels can mutate remote generation settings. Production live
+  microphone is therefore disabled, preserving text and bounded recorded/speech paths;
+  local preview remains. A reservation alone is not advertised as a provider bill cap.
+- Production exceptions/validation responses omit private values. CI uses read-only
+  permissions and medium/high source/dependency scans. Two narrow B108 annotations
+  document private Bubblewrap tmpfs literals; all real kernel tests still run.
+
+No known critical/high issue remains in the bounded single-principal/worker scope.
+This is scoped review, not completion of Phase 12 or public deployment approval.
+Provider invoice enforcement, operational TLS/backups/monitoring, multi-user identity,
+manual live/device testing and full-program acceptance remain pending. See the actual
+results/limitations in PHASE11_REPORT.md.

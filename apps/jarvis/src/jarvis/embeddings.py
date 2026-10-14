@@ -6,6 +6,7 @@ import math
 import re
 from typing import Protocol
 
+from jarvis.budgets import ProviderBudget
 from jarvis.config import Settings
 from jarvis.models import ProviderFailure
 
@@ -57,12 +58,26 @@ class FakeEmbeddingProvider:
 
 
 class OpenAIEmbeddingProvider:
-    def __init__(self, settings: Settings, client=None):
+    def __init__(self, settings: Settings, client=None, budget: ProviderBudget | None = None):
         self.settings, self.client = settings, client
+        self.budget = budget
         self.dimensions = settings.embedding_dimensions
         self.key = f"openai:{settings.embedding_model}:{self.dimensions}"
 
     async def embed(self, text: str) -> list[float]:
+        if self.budget is None:
+            return await self._embed(text)
+        amount = self.budget.token_cost(self.settings.embedding_model, len(text.encode()) + 256)
+        key = await self.budget.reserve("embedding", self.settings.embedding_model, amount)
+        try:
+            result = await self._embed(text)
+        except BaseException:
+            await asyncio.shield(self.budget.finish(key, None, {}, "UNCERTAIN"))
+            raise
+        await self.budget.finish(key, None, {}, "ESTIMATED")
+        return result
+
+    async def _embed(self, text: str) -> list[float]:
         from openai import AsyncOpenAI
 
         try:

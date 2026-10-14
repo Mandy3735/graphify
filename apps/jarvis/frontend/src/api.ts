@@ -8,7 +8,7 @@ export class ApiError extends Error {
           404: 'Resource unavailable.',
           409: 'State changed. Refresh before trying again.',
           422: 'Check the form values and try again.',
-          429: 'Run budget reached. Wait for active work to finish.',
+          429: 'Request budget reached. Wait before retrying.',
           503: 'Service unavailable. Retry when the backend is ready.',
         } as Record<number, string>
       )[status] || 'Request failed. Please retry.',

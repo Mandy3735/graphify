@@ -101,3 +101,15 @@ retain session/run/provider identifiers without SDP, transcript, audio or secret
 Tests use real SDK mock transports, fake voice, deterministic lifecycle/device
 doubles and a production Chromium fake-provider journey. See the
 [Phase 10 report](PHASE10_REPORT.md) for measured results and commands.
+
+## Phase 11 update
+
+The earlier admission/cleanup limits above describe Phase 10. Application 0.8.0 adds
+a durable UTC provider estimate ledger and saved remote-session identifiers in
+migration 0005. Known sessions are hung up during bounded background recovery;
+unknown creation outcomes require explicit operator reconciliation. No audio is
+replayed, and saved provider IDs never reach the browser. Live calls now require
+configured prices or upper operation estimates. Production keeps live microphone
+transport disabled because its data channel cannot enforce a backend generation-cost
+ceiling; fake preview, text, reviewed input and bounded configured speech/transcription
+remain available. See [HARDENING.md](HARDENING.md) for exact current behavior.

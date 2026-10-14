@@ -1,0 +1,34 @@
+Node: ProviderBudget
+  ID:        apps_jarvis_src_jarvis_budgets_providerbudget
+  Source:    apps/jarvis/src/jarvis/budgets.py L21
+  Type:      code
+  Community: Settings
+  Degree:    26
+
+Connections (26):
+  <-- Engine [uses] [INFERRED] apps/jarvis/src/jarvis/engine.py:L46
+  --> Settings [uses] [INFERRED] apps/jarvis/src/jarvis/budgets.py:L22
+  <-- jarvis/engine.py [imports] [EXTRACTED] apps/jarvis/src/jarvis/engine.py:L8
+  <-- jarvis/models.py [imports] [EXTRACTED] apps/jarvis/src/jarvis/models.py:L7
+  --> Database [uses] [INFERRED] apps/jarvis/src/jarvis/budgets.py:L22
+  <-- embeddings.py [imports] [EXTRACTED] apps/jarvis/src/jarvis/embeddings.py:L9
+  <-- budgets.py [contains] [EXTRACTED] apps/jarvis/src/jarvis/budgets.py:L21
+  <-- OpenAIModelProvider [uses] [INFERRED] apps/jarvis/src/jarvis/models.py:L46
+  <-- .__init__() [calls] [EXTRACTED] apps/jarvis/src/jarvis/engine.py:L46
+  <-- OpenAIEmbeddingProvider [uses] [INFERRED] apps/jarvis/src/jarvis/embeddings.py:L61
+  --> .reserve() [method] [EXTRACTED] apps/jarvis/src/jarvis/budgets.py:L43
+  <-- test_budget_settlement_and_pre_call_denial() [uses] [INFERRED] apps/jarvis/tests/test_hardening.py:L189
+  <-- test_provider_cancellation_retains_reservation_and_usage_settles() [uses] [INFERRED] apps/jarvis/tests/test_hardening.py:L203
+  <-- test_unexpected_provider_usage_is_accounted_and_result_withheld() [uses] [INFERRED] apps/jarvis/tests/test_hardening.py:L336
+  --> ProviderCall [uses] [INFERRED] apps/jarvis/src/jarvis/budgets.py:L64
+  <-- test_postgres_provider_budget_admission_is_atomic_and_restart_durable() [uses] [INFERRED] apps/jarvis/tests/test_postgres.py:L601
+  --> .operation() [method] [EXTRACTED] apps/jarvis/src/jarvis/budgets.py:L105
+  --> .operation_cost() [method] [EXTRACTED] apps/jarvis/src/jarvis/budgets.py:L37
+  --> ProviderBudgetDay [uses] [INFERRED] apps/jarvis/src/jarvis/budgets.py:L53
+  --> .status() [method] [EXTRACTED] apps/jarvis/src/jarvis/budgets.py:L115
+  ... and 6 more
+  Grouped by file:
+    --> apps/jarvis/src/jarvis/budgets.py: 3 connections
+    <-- apps/jarvis/src/jarvis/embeddings.py: 1 connection
+    <-- apps/jarvis/src/jarvis/models.py: 1 connection
+    <-- apps/jarvis/tests/test_hardening.py: 1 connection

@@ -112,9 +112,14 @@ class OpenAILiveVoiceProvider:
             raise VoiceUnavailable() from exc
 
     async def stop(self, call: VoiceCall) -> None:
+        from openai import APIStatusError
+
         try:
             async with asyncio.timeout(self.settings.model_timeout):
                 await self.sdk().realtime.calls.hangup(call.provider_id)
+        except APIStatusError as exc:
+            if exc.status_code not in {404, 410}:
+                raise VoiceUnavailable() from exc
         except Exception as exc:
             raise VoiceUnavailable() from exc
 

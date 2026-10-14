@@ -14,8 +14,9 @@ from fastapi import APIRouter, HTTPException
 from pydantic import Field
 from sqlalchemy import select
 
+from jarvis.budgets import BudgetExceeded
 from jarvis.config import Settings
-from jarvis.db import AgentRun, audit
+from jarvis.db import AgentRun, VoiceSession, audit
 from jarvis.domain import ChatRequest, StrictModel
 from jarvis.voice import (
     FakeTranscriptionProvider,
@@ -40,6 +41,10 @@ class SpeechInput(StrictModel):
     run_id: str = Field(pattern=r"^[a-f0-9-]{36}$")
 
 
+class ReconcileInput(StrictModel):
+    remote_stopped: Literal[True]
+
+
 class VoiceService:
     def __init__(self, settings: Settings, engine, provider=None, transcription=None):
         self.cfg, self.engine = settings, engine
@@ -56,6 +61,7 @@ class VoiceService:
         self.lock = asyncio.Lock()
         self.sessions: dict[str, tuple[VoiceCall, asyncio.Task]] = {}
         self.admissions: deque[float] = deque()
+        self.recovery_task: asyncio.Task | None = None
 
     def require_enabled(self):
         if self.cfg.voice_provider == "disabled":
@@ -74,6 +80,57 @@ class VoiceService:
         async with self.engine.db.sessions.begin() as session:
             audit(session, self.engine.actor.id, kind, detail)
 
+    async def session_state(self, key: str, state: str, provider_id: str | None = None):
+        async with self.engine.db.sessions.begin() as session:
+            row = await session.get(VoiceSession, key)
+            if row is not None and row.actor_id == self.engine.actor.id:
+                row.state = state
+                if provider_id is not None:
+                    row.provider_id = provider_id
+
+    async def pending_cleanup(self) -> list[VoiceSession]:
+        async with self.engine.db.sessions() as session:
+            return list(
+                await session.scalars(
+                    select(VoiceSession)
+                    .where(
+                        VoiceSession.actor_id == self.engine.actor.id,
+                        VoiceSession.state != "STOPPED",
+                    )
+                    .order_by(VoiceSession.created_at)
+                    .limit(32)
+                )
+            )
+
+    async def recover(self):
+        async with self.lock:
+            await self._recover()
+
+    async def _recover(self):
+        # Known IDs may be hung up; never recreate a call or replay speech.
+        cleanup_provider = OpenAILiveVoiceProvider(self.cfg)
+        try:
+            async with asyncio.timeout(self.cfg.model_timeout):
+                for row in await self.pending_cleanup():
+                    if row.id in self.sessions:
+                        continue
+                    if row.provider == "fake":
+                        await self.session_state(row.id, "STOPPED")
+                    elif row.provider_id:
+                        try:
+                            await cleanup_provider.stop(VoiceCall(row.provider_id, ""))
+                        except VoiceUnavailable:
+                            await self.session_state(row.id, "STOP_FAILED")
+                        else:
+                            await self.session_state(row.id, "STOPPED")
+                            await self.record("voice.recovered", {"session_id": row.id})
+                    else:
+                        await self.session_state(row.id, "UNRESOLVED")
+        except TimeoutError:
+            pass
+        finally:
+            await cleanup_provider.close()
+
     async def start(self, offer: str):
         if self.lock.locked() or self.sessions:
             raise HTTPException(429, "One voice operation at a time")
@@ -83,8 +140,44 @@ class VoiceService:
                 not offer.startswith("v=0") or "m=audio " not in offer or "m=video " in offer
             ):
                 raise HTTPException(422, "Audio-only SDP required")
-            call = await self.provider.connect(offer)
+            if self.cfg.voice_provider == "openai" and (
+                not self.cfg.voice_model or not self.cfg.transcription_model
+            ):
+                raise VoiceUnavailable()
+            if self.cfg.voice_provider == "openai" and (
+                self.cfg.environment == "production" or await self.pending_cleanup()
+            ):
+                # WebRTC data channels can alter provider generation settings. A reservation
+                # cannot enforce that remote ceiling; production keeps capture disabled.
+                raise VoiceUnavailable()
             key = str(uuid4())
+            async with self.engine.db.sessions.begin() as session:
+                session.add(
+                    VoiceSession(
+                        id=key,
+                        actor_id=self.engine.actor.id,
+                        provider=self.cfg.voice_provider,
+                        provider_id="",
+                        state="CREATING",
+                    )
+                )
+            try:
+                if self.cfg.voice_provider == "openai":
+                    async with self.engine.budget.operation("realtime", self.cfg.voice_model):
+                        call = await self.provider.connect(offer)
+                else:
+                    call = await self.provider.connect(offer)
+            except BudgetExceeded:
+                await self.session_state(key, "STOPPED")
+                raise
+            except BaseException:
+                await asyncio.shield(self.session_state(key, "UNRESOLVED"))
+                raise
+            try:
+                await self.session_state(key, "ACTIVE", call.provider_id)
+            except BaseException:
+                await self.provider.stop(call)
+                raise
             task = asyncio.create_task(self.expire(key))
             self.sessions[key] = call, task
             try:
@@ -114,18 +207,25 @@ class VoiceService:
         try:
             await self.provider.stop(call)
         except VoiceUnavailable:
+            await self.session_state(key, "STOP_FAILED")
             await self.record("voice.stop_failed", {"session_id": key})
             raise
         else:
+            await self.session_state(key, "STOPPED")
             await self.record("voice.stopped", {"session_id": key})
 
     async def close(self):
-        for key in list(self.sessions):
-            try:
-                await self.stop(key)
-            except VoiceUnavailable:
-                pass
-        await self.provider.close()
+        try:
+            if self.recovery_task is not None:
+                self.recovery_task.cancel()
+                await asyncio.gather(self.recovery_task, return_exceptions=True)
+            for key in list(self.sessions):
+                try:
+                    await self.stop(key)
+                except VoiceUnavailable:
+                    pass
+        finally:
+            await self.provider.close()
 
 
 def voice_router(service: VoiceService, auth: list) -> APIRouter:
@@ -140,7 +240,26 @@ def voice_router(service: VoiceService, auth: list) -> APIRouter:
             "session_seconds": service.cfg.voice_session_seconds,
             "speech_enabled": service.cfg.voice_provider == "fake"
             or bool(service.cfg.speech_model),
+            "realtime_enabled": service.cfg.environment != "production",
+            "cleanup_pending": [
+                {"id": row.id, "state": row.state}
+                for row in await service.pending_cleanup()
+                if row.id not in service.sessions
+            ],
         }
+
+    @router.post("/sessions/{session_id}/reconcile", status_code=204)
+    async def reconcile(session_id: str, request: ReconcileInput):
+        rows = await service.pending_cleanup()
+        row = next((row for row in rows if row.id == session_id), None)
+        if (
+            row is None
+            or row.id in service.sessions
+            or row.state not in {"UNRESOLVED", "STOP_FAILED"}
+        ):
+            raise HTTPException(409, "Session is not awaiting operator reconciliation")
+        await service.session_state(session_id, "STOPPED")
+        await service.record("voice.reconciled_by_human", {"session_id": session_id})
 
     @router.post("/sessions", status_code=201)
     async def start(request: Offer):
@@ -178,7 +297,13 @@ def voice_router(service: VoiceService, auth: list) -> APIRouter:
                         raise ValueError("Invalid PCM capture")
             except (wave.Error, EOFError, ValueError):
                 raise HTTPException(422, "Bounded PCM WAV required") from None
-            transcript = await service.transcription.transcribe(audio, request.format)
+            if service.cfg.voice_provider == "openai":
+                async with service.engine.budget.operation(
+                    "transcription", service.cfg.transcription_model
+                ):
+                    transcript = await service.transcription.transcribe(audio, request.format)
+            else:
+                transcript = await service.transcription.transcribe(audio, request.format)
             await service.record("voice.transcribed", {"provider": service.cfg.voice_provider})
             return {"text": transcript, "trust": "UNTRUSTED_DATA", "canonical": False}
 
@@ -218,7 +343,11 @@ def voice_router(service: VoiceService, auth: list) -> APIRouter:
                 if run.state != "COMPLETED" or not run.result:
                     raise HTTPException(409, "Completed result required")
                 text = run.result[:4000]
-            audio = await service.provider.speak(text)
+            if service.cfg.voice_provider == "openai":
+                async with service.engine.budget.operation("speech", service.cfg.speech_model):
+                    audio = await service.provider.speak(text)
+            else:
+                audio = await service.provider.speak(text)
             await service.record("voice.spoken", {"run_id": request.run_id})
             return {"audio": base64.b64encode(audio).decode(), "format": "wav", "synthetic": True}
 

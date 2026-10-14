@@ -63,3 +63,10 @@ graphify is a **local development tool**. It runs as a Claude Code skill and opt
 Phase 10 adds opt-in audio transport without changing Graphify. Provider credentials
 remain server-held; transcripts are untrusted and use existing policy-controlled
 runs. See [voice boundaries](docs/jarvis/VOICE.md) and [threat model](THREAT_MODEL.md).
+
+## JARVIS Phase 11
+
+The independent application adds bounded ingress, durable provider admission estimates,
+production HTTPS/origin/restricted-role checks, an enforced PostgreSQL one-worker lease
+and remote voice cleanup journals. Graphify's security contract is preserved. See
+[hardening controls](docs/jarvis/HARDENING.md) and [threat model](THREAT_MODEL.md).

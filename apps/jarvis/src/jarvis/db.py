@@ -482,6 +482,36 @@ class CampaignEvent(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
 
+class ProviderBudgetDay(Base):
+    __tablename__ = "provider_budget_days"
+    day: Mapped[str] = mapped_column(String(10), primary_key=True)
+    charged_microusd: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class ProviderCall(Base):
+    __tablename__ = "provider_calls"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    day: Mapped[str] = mapped_column(ForeignKey("provider_budget_days.day"), index=True)
+    actor_id: Mapped[str] = mapped_column(String(36), index=True)
+    kind: Mapped[str] = mapped_column(String(24))
+    model: Mapped[str] = mapped_column(String(200))
+    reserved_microusd: Mapped[int] = mapped_column(Integer)
+    charged_microusd: Mapped[int] = mapped_column(Integer)
+    state: Mapped[str] = mapped_column(String(24), default="RESERVED")
+    usage: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class VoiceSession(Base):
+    __tablename__ = "voice_sessions"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
+    actor_id: Mapped[str] = mapped_column(String(36), index=True)
+    provider: Mapped[str] = mapped_column(String(16))
+    provider_id: Mapped[str] = mapped_column(String(128))
+    state: Mapped[str] = mapped_column(String(24), default="ACTIVE")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
 class Database:
     def __init__(self, url: str):
         self.engine = create_async_engine(url, pool_pre_ping=True)

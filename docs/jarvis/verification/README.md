@@ -77,3 +77,8 @@ assets and preserved upstream boundary. Commands/results are in
 Phase 10 snapshots record PostgreSQL/pgvector with all real kernel tests, production
 voice/browser checks, SDK/provider/device/security coverage, graph synchronization
 and baseline upstream failures. See phase10-verification.json and PHASE10_REPORT.md.
+
+Phase 11 snapshots include full dual-DB/kernel tests, restricted-role and quota/lease
+checks, frontend/browser, dependency/source scans, offline TLS-template validation and
+graph navigation. See phase11-verification.json and PHASE11_REPORT.md. Root format/type
+drift and nine preserved upstream failures remain explicitly documented.

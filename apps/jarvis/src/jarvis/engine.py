@@ -5,6 +5,7 @@ from datetime import UTC, timedelta
 
 from sqlalchemy import select, update
 
+from jarvis.budgets import BudgetExceeded, ProviderBudget
 from jarvis.config import Settings
 from jarvis.context import ContextBuilder
 from jarvis.db import AgentRun, AgentStep, ApprovalRequest, Database, audit, now
@@ -12,7 +13,7 @@ from jarvis.domain import TERMINAL, TRANSITIONS, ChatRequest, Message, RunState,
 from jarvis.embeddings import OpenAIEmbeddingProvider, embedding_provider
 from jarvis.game_master import GameMasterService
 from jarvis.memory import MemoryService
-from jarvis.models import ModelRouter, ProviderFailure
+from jarvis.models import ModelRouter, OpenAIModelProvider, ProviderFailure
 from jarvis.policy import Actor, Decision, PolicyEngine, operation_for, operation_hash
 from jarvis.tools import ToolExecutionContext, ToolRegistry
 
@@ -42,9 +43,14 @@ class Engine:
         game_master: GameMasterService | None = None,
     ):
         self.settings, self.db, self.router, self.registry = settings, database, router, registry
+        self.budget = ProviderBudget(database, settings)
+        if isinstance(router.provider, OpenAIModelProvider):
+            router.provider.budget = self.budget
         self.policy = PolicyEngine()
         self.actor = Actor(str(settings.actor_id), settings.capabilities)
         self.memory = memory or MemoryService(database, settings, embedding_provider(settings))
+        if isinstance(self.memory.embeddings, OpenAIEmbeddingProvider):
+            self.memory.embeddings.budget = self.budget
         self.context = ContextBuilder(settings, self.memory, game_master)
         self.tasks: dict[str, asyncio.Task] = {}
         self.admission = asyncio.Lock()
@@ -282,7 +288,11 @@ class Engine:
         except asyncio.CancelledError:
             await self._terminate(run_id, RunState.CANCELLED, "Run cancelled")
         except Exception as exc:
-            code = exc.code if isinstance(exc, ProviderFailure) else type(exc).__name__
+            code = (
+                exc.code
+                if isinstance(exc, (ProviderFailure, BudgetExceeded))
+                else type(exc).__name__
+            )
             if isinstance(exc, ProviderFailure):
                 async with self.db.sessions.begin() as session:
                     current = await self._run(session, run_id)

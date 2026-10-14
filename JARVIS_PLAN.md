@@ -80,3 +80,14 @@ owned-result speech. Server SDP relay replaces browser ephemeral-key issuance: n
 provider credential leaves the backend. No Graphify core/dependency or migration
 change. Live paid validation is deferred. Next: Phase 11 hardening, then full Phase 12
 adversarial review. See [VOICE.md](docs/jarvis/VOICE.md).
+
+## Eighth checkpoint — Phase 11
+
+Application 0.8.0 hardens the delivered single-principal prototype: ingress bounds,
+production HTTPS/origin/role guards, enforced PostgreSQL one-worker lease, durable
+provider reservations/usage estimates, voice restart reconciliation, independent
+CI/dependency/source scans and complete scoped regression checks. Migration 0005 is
+additive; Graphify and migrations 0001–0004 are preserved. Production live microphone
+remains unavailable until its remote generation-cost boundary can be enforced.
+Operational deployment, multi-user/HA and full master acceptance remain deferred.
+Exact results are in PHASE11_REPORT.md. Next: Phase 12 adversarial review.
