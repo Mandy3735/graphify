@@ -23,6 +23,7 @@ test_config = {
     "embedding_provider": "fake",
     "memory_pgvector": False,
     "engineer_enabled": False,
+    "voice_provider": "fake",
     "project_roots": {},
     "capabilities": Settings.model_fields["capabilities"].default,
     "_env_file": None,

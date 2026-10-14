@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Run, Approval, ArtifactSummary } from './contracts';
 import { Client, type Mode, modeNames, segment, terminal } from './api';
 import { Action, Details, Empty, Field, LoadState, Text, field, useLoad } from './ui';
+import { VoicePanel } from './VoicePanel';
 export function RunView({ client, id }: { client: Client; id: string }) {
   const [run, setRun] = useState<Run>();
   const [error, setError] = useState('');
@@ -118,10 +119,7 @@ export function Chat({
     <>
       <section className="panel">
         <h2>Conversation</h2>
-        <p className="muted">
-          {modeNames[mode]} · Text is available. Microphone off; voice integration is planned for
-          Phase 10.
-        </p>
+        <p className="muted">{modeNames[mode]} · Text is available. Microphone starts off.</p>
         <Action
           label="Send message"
           run={(f) =>
@@ -140,6 +138,7 @@ export function Chat({
             Allow the configured fallback model for this request
           </label>
         </Action>
+        <VoicePanel client={client} mode={mode} scope={scope} runId={id} onRun={setId} />
       </section>
       {id && <RunView key={id} client={client} id={id} />}
     </>

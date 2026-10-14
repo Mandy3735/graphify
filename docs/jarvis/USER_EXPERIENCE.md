@@ -130,3 +130,12 @@ identity responses, credential storage, byte bounds and production worker policy
 Backend authority/security suites remain independent and include real disposable
 PostgreSQL/pgvector and opt-in Linux isolation tests. See progress/verification
 snapshots for commands and results actually observed.
+
+## Phase 10 update
+
+The earlier Phase 9 microphone-off/pending descriptions are historical. Conversation
+now has optional voice, reviewed transcripts and explicit completed-answer playback.
+Devices remain off by default. Live configuration permits only same-origin microphone;
+camera/geolocation stay denied. Blob audio playback is the only CSP addition.
+Scope changes/sign-out/offline/hidden tabs stop devices immediately. API/token/audio
+cache and storage boundaries remain unchanged. See [VOICE.md](VOICE.md).

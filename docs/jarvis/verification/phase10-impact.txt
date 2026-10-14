@@ -1,0 +1,27 @@
+Node: VoiceService
+  ID:        apps_jarvis_src_jarvis_voice_api_voiceservice
+  Source:    apps/jarvis/src/jarvis/voice_api.py L41
+  Type:      code
+  Community: jarvis/api.py
+  Degree:    19
+
+Connections (19):
+  <-- create_app() [calls] [EXTRACTED] apps/jarvis/src/jarvis/api.py:L88
+  <-- jarvis/api.py [imports] [EXTRACTED] apps/jarvis/src/jarvis/api.py:L34
+  --> Settings [uses] [INFERRED] apps/jarvis/src/jarvis/voice_api.py:L42
+  <-- voice_api.py [contains] [EXTRACTED] apps/jarvis/src/jarvis/voice_api.py:L41
+  --> OpenAILiveVoiceProvider [uses] [INFERRED] apps/jarvis/src/jarvis/voice_api.py:L45
+  --> VoiceUnavailable [uses] [INFERRED] apps/jarvis/src/jarvis/voice_api.py:L101
+  <-- voice_router() [references] [EXTRACTED] apps/jarvis/src/jarvis/voice_api.py:L129
+  --> FakeVoiceProvider [uses] [INFERRED] apps/jarvis/src/jarvis/voice_api.py:L47
+  --> VoiceCall [uses] [INFERRED] apps/jarvis/src/jarvis/voice_api.py:L55
+  --> .__init__() [method] [EXTRACTED] apps/jarvis/src/jarvis/voice_api.py:L42
+  --> OpenAITranscriptionProvider [uses] [INFERRED] apps/jarvis/src/jarvis/voice_api.py:L50
+  --> .stop() [method] [EXTRACTED] apps/jarvis/src/jarvis/voice_api.py:L105
+  --> .start() [method] [EXTRACTED] apps/jarvis/src/jarvis/voice_api.py:L75
+  --> FakeTranscriptionProvider [uses] [INFERRED] apps/jarvis/src/jarvis/voice_api.py:L52
+  --> .record() [method] [EXTRACTED] apps/jarvis/src/jarvis/voice_api.py:L71
+  --> .admit() [method] [EXTRACTED] apps/jarvis/src/jarvis/voice_api.py:L62
+  --> .expire() [method] [EXTRACTED] apps/jarvis/src/jarvis/voice_api.py:L97
+  --> .close() [method] [EXTRACTED] apps/jarvis/src/jarvis/voice_api.py:L120
+  --> .require_enabled() [method] [EXTRACTED] apps/jarvis/src/jarvis/voice_api.py:L58

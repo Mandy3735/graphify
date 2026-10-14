@@ -73,3 +73,7 @@ Phase 9 snapshots record the local Command Center build/browser/security checks,
 both disposable PostgreSQL configurations with real kernel tests, safe packaged
 assets and preserved upstream boundary. Commands/results are in
 `phase9-verification.json`; these do not claim remote CI or production deployment.
+
+Phase 10 snapshots record PostgreSQL/pgvector with all real kernel tests, production
+voice/browser checks, SDK/provider/device/security coverage, graph synchronization
+and baseline upstream failures. See phase10-verification.json and PHASE10_REPORT.md.

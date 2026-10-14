@@ -284,3 +284,24 @@ complete manual accessibility audit remain outstanding. Chief of Staff watchers,
 voice/integrations, rich graph canvas and richer campaign workflows are not
 implemented. Current verification is in JARVIS_PROGRESS.md and the Phase 9
 snapshots. No public deployment or publication is claimed.
+
+## Phase 10 review
+
+Reviewed device permission races, late negotiation/playback results, sign-out, scope
+remounts, hidden/offline tabs, peer/session expiry, SDK credential isolation, authority
+spoofing, provider output bounds and cache policy. Local cleanup is synchronous and
+independent of server availability. Transcripts cannot invoke human-only approvals,
+quiz evidence, PC reports or canonical commits. No new model tool/grant exists.
+
+Fixed during review: optional malformed voice settings now fail closed while text
+starts; remote hangup errors produce voice.stop_failed rather than claiming success;
+recorded WAV duration/format/frame length are validated before external transcription;
+SDK negotiation headers are read from the actual typed response; obsolete browser
+assertions now check the delivered interface. Speech/transcription use real official
+SDK mock transports, not hand-built HTTP. The exact-approval voice delegation test
+proves a model-requested fake external write remains paused until a human approves.
+
+No known unresolved critical/high issue in the bounded local single-worker scope.
+Live paid interoperability is unverified. Aggregate provider usage/cost enforcement,
+crash-time remote reconciliation, production identity/TLS/rate limits and coordinated
+multi-worker admission remain Phase 11 work. See VOICE.md and PHASE10_REPORT.md.

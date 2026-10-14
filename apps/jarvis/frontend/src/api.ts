@@ -18,6 +18,7 @@ export class ApiError extends Error {
 export class Client {
   private token: string;
   private controllers = new Set<AbortController>();
+  private closers = new Set<() => void>();
   constructor(
     token: string,
     private unauthorized: () => void = () => {},
@@ -25,9 +26,17 @@ export class Client {
     this.token = token;
   }
   close() {
+    for (const close of this.closers) close();
+    this.closers.clear();
     this.token = '';
     for (const c of this.controllers) c.abort();
     this.controllers.clear();
+  }
+  onClose(close: () => void) {
+    this.closers.add(close);
+    return () => {
+      this.closers.delete(close);
+    };
   }
   async request<T = any>(
     path: string,

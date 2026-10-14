@@ -1,0 +1,66 @@
+{
+  "receiving_commit": "2fd7cd17f3ab594c30bcb2f8239b8f0283d76dd4",
+  "branch": "jarvis/phase-10-voice",
+  "application_version": "0.7.0",
+  "receiving_backend": {
+    "passed": 149,
+    "skipped": 28
+  },
+  "receiving_frontend": {
+    "passed": 24
+  },
+  "postgres": {
+    "passed": 191,
+    "skipped": 1,
+    "seconds": 40.81,
+    "real_kernel_tests": 13
+  },
+  "pgvector": {
+    "passed": 191,
+    "skipped": 1,
+    "seconds": 42.72,
+    "real_kernel_tests": 13
+  },
+  "voice_targeted": {
+    "passed": 14
+  },
+  "frontend": {
+    "passed": 33
+  },
+  "browser": {
+    "passed": 5
+  },
+  "lint_format_types_build": "passed",
+  "npm_audit_vulnerabilities": 0,
+  "upstream": {
+    "passed": 6470,
+    "skipped": 108,
+    "failed": 9,
+    "seconds": 152.41,
+    "failures": [
+      "tests/test_detect.py::test_graphifyignore_hermetic_without_vcs",
+      "tests/test_hooks.py::test_no_git_repo_raises",
+      "tests/test_security.py::test_validate_url_accepts_http",
+      "tests/test_security.py::test_validate_url_accepts_https",
+      "tests/test_security.py::test_safe_fetch_returns_bytes",
+      "tests/test_security.py::test_safe_fetch_raises_on_non_2xx",
+      "tests/test_security.py::test_safe_fetch_raises_on_size_exceeded",
+      "tests/test_security.py::test_safe_fetch_text_decodes_utf8",
+      "tests/test_security.py::test_safe_fetch_text_replaces_bad_bytes"
+    ]
+  },
+  "preserved_boundary": "No Graphify source/tests/root metadata/locks/license changes",
+  "graph": {
+    "nodes": 19889,
+    "edges": 42051,
+    "communities": 1053
+  },
+  "paid_provider_calls": false,
+  "published": false,
+  "limitations": [
+    "Live interoperability unverified",
+    "Single-worker local prototype",
+    "Remote cleanup best effort during outage/crash",
+    "Global provider usage/cost quotas deferred"
+  ]
+}

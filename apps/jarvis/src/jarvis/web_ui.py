@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse
 
 CSP = (
     "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; "
-    "font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; "
+    "font-src 'self'; connect-src 'self'; media-src blob:; worker-src 'self'; manifest-src 'self'; "
     "base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'"
 )
 SPA = re.compile(
@@ -29,7 +29,11 @@ def install_web_ui(app: FastAPI, directory: Path | None = None) -> None:
             response.headers["Content-Security-Policy"] = CSP
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Referrer-Policy"] = "no-referrer"
-        response.headers["Permissions-Policy"] = "microphone=(), camera=(), geolocation=()"
+        voice = getattr(app.state, "voice", None)
+        microphone = "(self)" if voice and voice.cfg.voice_provider == "openai" else "()"
+        response.headers["Permissions-Policy"] = (
+            f"microphone={microphone}, camera=(), geolocation=()"
+        )
         response.headers["X-Frame-Options"] = "DENY"
         # The service worker caches a finite build-generated static allowlist only.
         # All ordinary HTTP responses, including authentication errors, are no-store.

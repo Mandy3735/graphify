@@ -1,0 +1,22 @@
+Graph: graphify-out/graph.json (19889 nodes) | Traversal: BFS depth=2 | Start: ['VoiceService', 'apps_jarvis_frontend_src_style', 'api()', 'AppServiceProvider', 'jarvis/api.py', '/src/inbox/ must match src/inbox/ but not x/src/inbox/.', 'voice_api.py'] | 770 nodes found
+
+[!] TRUNCATED: showing 17 of 770 nodes (~500-token budget). The answer may be among the 753 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).
+
+NODE VoiceService [src=apps/jarvis/src/jarvis/voice_api.py loc=L43 community=jarvis/api.py]
+NODE apps_jarvis_frontend_src_style [src= loc= community=App.tsx]
+NODE api() [src=apps/jarvis/frontend/tests/browser/workflows.spec.ts loc=L12 community=package.json]
+NODE AppServiceProvider [src=tests/fixtures/sample_php_container.php loc=L9 community=sample_php_container.php]
+NODE jarvis/api.py [src=apps/jarvis/src/jarvis/api.py loc=L1 community=jarvis/api.py]
+NODE /src/inbox/ must match src/inbox/ but not x/src/inbox/. [src=tests/test_detect.py loc=L1433 community=collect_files]
+NODE voice_api.py [src=apps/jarvis/src/jarvis/voice_api.py loc=L1 community=jarvis/api.py]
+NODE json [src= loc= community=json]
+NODE create_app() [src=apps/jarvis/src/jarvis/api.py loc=L64 community=create_app]
+NODE test_memory.py [src=apps/jarvis/tests/test_memory.py loc=L1 community=pytest]
+NODE GameMasterService [src=apps/jarvis/src/jarvis/game_master.py loc=L160 community=GameMasterService]
+NODE typing [src= loc= community=pathlib]
+NODE Engine [src=apps/jarvis/src/jarvis/engine.py loc=L34 community=Engine]
+NODE game_master.py [src=apps/jarvis/src/jarvis/game_master.py loc=L1 community=GameMasterService]
+NODE StrictModel [src=apps/jarvis/src/jarvis/domain.py loc=L39 community=GameMasterService]
+NODE db.py [src=apps/jarvis/src/jarvis/db.py loc=L1 community=db.py]
+NODE jarvis/engine.py [src=apps/jarvis/src/jarvis/engine.py loc=L1 community=Engine]
+... (truncated — 753 more nodes cut by ~500-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)

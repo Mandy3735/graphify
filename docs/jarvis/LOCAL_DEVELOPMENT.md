@@ -244,3 +244,9 @@ Install the Bubblewrap/util-linux/system-Python runtime described in ENGINEER.md
 Add `JARVIS_TEST_SANDBOX=true` to both disposable PostgreSQL test commands above.
 This opts in to real kernel isolation tests; an unavailable sandbox fails those
 tests. The application keeps execution disabled by default and text available.
+
+## Optional voice
+
+Voice defaults to disabled. See [VOICE.md](VOICE.md) for a no-key fake preview,
+explicit live configuration, microphone controls and limits. Text remains usable
+without voice. Configure model IDs from actual provider access.

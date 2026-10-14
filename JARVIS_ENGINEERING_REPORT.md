@@ -1,3 +1,8 @@
+# Current report — Phase 10
+
+The earlier Phase 8 report below is historical. Current implementation, commands,
+verification and limitations are in [PHASE10_REPORT.md](docs/jarvis/PHASE10_REPORT.md).
+
 # JARVIS engineering report — 2026-10-10
 
 A runnable **Game Master checkpoint** is implemented in the existing Graphify

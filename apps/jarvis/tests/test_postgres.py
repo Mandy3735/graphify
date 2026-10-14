@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from uuid import uuid4
 
 import pytest
 from alembic.autogenerate import compare_metadata
@@ -552,3 +553,41 @@ async def test_postgres_vector_flag_requires_installed_extension(postgres):
     memory, _ = pg_memory(postgres, vector=True)
     with pytest.raises(MemoryConflict, match="extension is not installed"):
         await memory.check_backend()
+
+
+async def test_postgres_voice_delegation_persists_and_audits_without_canonical_authority(postgres):
+    import httpx
+
+    from jarvis.api import create_app
+
+    cfg = pg_settings().model_copy(update={"actor_id": uuid4(), "voice_provider": "fake"})
+    app = create_app(cfg)
+    async with (
+        app.router.lifespan_context(app),
+        httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app),
+            base_url="http://test",
+            headers={"Authorization": f"Bearer {cfg.auth_token.get_secret_value()}"},
+        ) as client,
+    ):
+        started = await client.post("/api/voice/sessions", json={})
+        key = started.json()["id"]
+        assert (await client.delete(f"/api/voice/sessions/{key}")).status_code == 204
+        response = await client.post("/api/voice/submit", json={"message": "Voice fixture"})
+        run_id = response.json()["run_id"]
+        await drain(app.state.engine)
+        assert (await client.get(f"/api/runs/{run_id}")).json()["state"] == "COMPLETED"
+    async with postgres.sessions() as session:
+        from jarvis.db import AgentRun
+
+        run = await session.get(AgentRun, run_id)
+        assert run.request["message"].startswith("[User-reviewed voice transcript;")
+        events = list(
+            await session.scalars(
+                select(AuditEvent).where(
+                    AuditEvent.actor_id == str(cfg.actor_id), AuditEvent.event.like("voice.%")
+                )
+            )
+        )
+        assert {e.event for e in events} == {"voice.started", "voice.stopped", "voice.delegated"}
+        assert all("Voice fixture" not in str(e.details) for e in events)

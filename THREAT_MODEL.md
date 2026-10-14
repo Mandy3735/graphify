@@ -1,4 +1,4 @@
-# JARVIS threat model (phases 0–9 checkpoint)
+# JARVIS threat model (phases 0–10 checkpoint)
 
 Existing Graphify controls remain documented in SECURITY.md. This document
 describes the added persistent application and must not be mistaken for future
@@ -34,7 +34,7 @@ features being implemented.
 | Secret entity ID → dice side channel | Subject visibility is independently checked before roll authority; unauthorized/retired UUIDs return the same not-found boundary |
 | Fabricated or abusive randomness | Strict bounded parser and plausible human totals; injected system/seeded RNG; rolls retain actor, reason, visibility, raw/kept/discarded dice, total, authority and entropy reference |
 | Secret transcript injection | Transcript visibility filtered before scene limit; players cannot author GM-secret or another player's private line; transcripts remain untrusted/non-canonical |
-| Voice spoof / device authority | Voice/device workflows pending; no placeholder claim of enforcement |
+| Voice spoof / device authority | Explicit opt-in and reviewed untrusted transcripts; ordinary policy-controlled runs; no voice authentication or human-decision authority |
 | OAuth/MCP/plugins/supply chain | No integration authority enabled; dependency lock/checks; future integration-specific review |
 | Proactive automation | Watchers pending; no unrestricted polling or self-spawning agents |
 
@@ -89,3 +89,20 @@ Browser E2E checks identity changes and GM-secret exclusion; authority remains i
 existing server policy/services. Session titles are campaign-visible metadata and
 must not be used as a secret field. Production account/session/TLS hardening and
 optional voice still remain later work.
+
+## Phase 10 audio boundary
+
+Only explicit live opt-in enables microphone=(self); camera/geolocation stay denied.
+SDP is bounded/audio-only and SDK credentials remain server-held. Realtime sees no
+backend history/GM state/tools and cannot invoke application APIs. Transcript events
+are bounded data, reviewed before ordinary run submission; all role/policy/approval
+checks remain server-authoritative. Speech loads only an owned completed result.
+Audio/session credentials are never stored/cached; raw audio is not persisted.
+
+Immediate local track/peer/audio cleanup covers stop, sign-out, background/offline,
+timeouts and stale permission/handshake responses. Remote hangup is bounded best
+effort; failures are audited distinctly, and process crashes/outages can leave remote
+work temporarily alive. Voice transport has one-operation/session admission, 30/hour
+requests, bounded SDK deadlines/audio/text/session sizes and no retries. Provider
+data-channel mutation never grants backend authority; stronger provider-level cost
+quotas and crash reconciliation remain production work. See docs/jarvis/VOICE.md.

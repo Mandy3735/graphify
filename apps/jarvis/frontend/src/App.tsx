@@ -311,7 +311,10 @@ function Settings({ client }: { client: Client }) {
         Settings are controlled by the operator. Tokens and private API responses are not saved to
         persistent browser storage. Only public static application assets are cached.
       </p>
-      <p>Microphone off. Optional voice and integrations are not implemented.</p>
+      <p>
+        Microphone starts off. Optional voice is configured by the operator; integrations remain
+        pending.
+      </p>
       <Action
         label="Refresh server settings"
         run={() => client.request('/api/settings')}

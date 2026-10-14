@@ -17,6 +17,11 @@ class Settings(BaseSettings):
     fallback_reasoning_model: str = "gpt-6.1-sol"
     utility_model: str = ""
     voice_model: str = "gpt-live-1"
+    voice_provider: Literal["disabled", "fake", "openai"] = "disabled"
+    transcription_model: str = ""
+    speech_model: str = ""
+    speech_voice: str = "alloy"
+    voice_session_seconds: int = Field(default=120, ge=15, le=300)
     embedding_model: str = ""
     embedding_provider: Literal["fake", "openai"] = "fake"
     embedding_dimensions: int = Field(default=64, ge=16, le=3072)
@@ -63,6 +68,21 @@ class Settings(BaseSettings):
     )
     # Per million input/output tokens. Empty means cost is unknown, not zero.
     pricing: dict[str, tuple[float, float]] = Field(default_factory=dict)
+
+    @field_validator("voice_provider", mode="before")
+    @classmethod
+    def optional_voice_provider(cls, value):
+        # Bad optional transport configuration must not disable the text application.
+        return value if value in {"disabled", "fake", "openai"} else "disabled"
+
+    @field_validator("voice_session_seconds", mode="before")
+    @classmethod
+    def optional_voice_duration(cls, value):
+        try:
+            seconds = int(value)
+        except (TypeError, ValueError, OverflowError):
+            return 120
+        return seconds if 15 <= seconds <= 300 else 120
 
     @model_validator(mode="after")
     def embedding_configuration(self):

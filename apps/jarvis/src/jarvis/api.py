@@ -30,6 +30,8 @@ from jarvis.tools import ToolRegistry, graph_tools
 from jarvis.tutor import TutorConflict, TutorDenied, TutorService
 from jarvis.tutor_api import tutor_router
 from jarvis.tutor_tools import register_tutor_tools
+from jarvis.voice import VoiceUnavailable
+from jarvis.voice_api import VoiceService, voice_router
 from jarvis.web_ui import install_web_ui
 
 
@@ -83,6 +85,7 @@ def create_app(
         register_tutor_tools(registry, tutor)
         register_game_master_tools(registry, game_master)
     engine = Engine(cfg, db, ModelRouter(cfg, provider), registry, memory, game_master)
+    voice = VoiceService(cfg, engine)
 
     @asynccontextmanager
     async def lifespan(app):
@@ -98,17 +101,19 @@ def create_app(
                 register_engineer_tools(registry, engineer)
         await engine.recover()
         yield
+        await voice.close()
         await engine.close()
         if isinstance(provider, OpenAIModelProvider):
             await provider.close()
         await db.dispose()
 
-    app = FastAPI(title="JARVIS", version="0.6.0", lifespan=lifespan)
+    app = FastAPI(title="JARVIS", version="0.7.0", lifespan=lifespan)
     app.state.engine, app.state.database, app.state.graph = engine, db, graph
     app.state.memory = memory
     app.state.tutor = tutor
     app.state.game_master = game_master
     app.state.engineer = engineer
+    app.state.voice = voice
 
     async def authenticate(authorization: Annotated[str | None, Header()] = None):
         if not authorization or not authorization.startswith("Bearer "):
@@ -124,6 +129,15 @@ def create_app(
     app.include_router(memory_router(memory, engine.actor, auth))
     app.include_router(tutor_router(tutor, engine.actor, auth))
     app.include_router(game_master_router(game_master, engine.actor, auth))
+    app.include_router(voice_router(voice, auth))
+
+    @app.exception_handler(VoiceUnavailable)
+    async def voice_unavailable(request, exc):
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(
+            status_code=503, content={"detail": "Voice unavailable; text remains available"}
+        )
 
     @app.exception_handler(MemoryDenied)
     async def memory_denied(request, exc):

@@ -69,3 +69,12 @@ authenticated GM decision endpoint applies an event. See GAME_MASTER.md.
 Deploy this checkpoint as one backend process. Multi-worker coordination, tenant
 identity/OAuth, a production restricted DB role, production UI and the remaining
 operating-mode workflows are subsequent milestones.
+
+## Phase 9–10 transport additions
+
+The same-origin React/PWA wraps existing APIs. Optional VoiceService uses independent
+voice/transcription protocols: authenticated SDK SDP relay → audio-only WebRTC →
+user-reviewed untrusted transcript → existing Engine. Read-aloud synthesizes an
+owned completed result separately. Keys remain server-held; live clients are lazy.
+No canonical, approval or model-tool authority is added. Session state is ephemeral
+and single-worker, with expiry/admission/cleanup. See [VOICE.md](VOICE.md).

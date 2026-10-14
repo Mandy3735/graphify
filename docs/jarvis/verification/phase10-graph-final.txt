@@ -1,0 +1,18 @@
+Re-extracting code files in . (no LLM needed)...
+[graphify watch] 20 file(s) not classified (no supported extension or shebang), skipped: .dockerignore, .env.example, .gitattributes, .gitignore, .gitkeep, .prettierignore (+14 more)
+  AST extraction: 61/61 uncached files (100%) [5 workers]
+  warning: 7 .sql file(s) contributed nothing to the graph because a dependency is missing: tree_sitter_sql not installed. Install it with: pip install "graphifyy[sql]" (#1745)
+  warning: 1 .dm file(s) contributed nothing to the graph because a dependency is missing: tree-sitter-dm not installed. Install it with: pip install "graphifyy[dm]" (#1745)
+  warning: 1 .resource file(s) contributed nothing to the graph because a dependency is missing: robotframework not installed. Install it with: pip install "graphifyy[robot]" (#1745)
+  warning: 1 .robot file(s) contributed nothing to the graph because a dependency is missing: robotframework not installed. Install it with: pip install "graphifyy[robot]" (#1745)
+  warning: 1 file(s) had syntax errors and may be partially extracted: tests/fixtures/sample.luau (first error at line 8, 4 symbol(s) extracted)
+  warning: 31 code file(s) yielded no symbols (0.07 MB) — a data file, or source this extractor models no symbols for: apps/jarvis/frontend/eslint.config.js, apps/jarvis/frontend/playwright.config.ts, apps/jarvis/frontend/src/main.tsx, apps/jarvis/frontend/tests/setup.ts, apps/jarvis/pyproject.toml (+26 more)
+[graphify watch] community set changed since labeling (1049 saved labels, 1053 communities now; renamed 247 community(ies) by their hub). Run `graphify label` to refresh names with the LLM.
+[graphify] backed up curated graph (4 files) -> 2026-10-14/
+Graph has 19889 nodes (above 5000 limit). Building aggregated community view...
+graph.html written (aggregated: 1053 community nodes, 3085 cross-community edges)
+Tip: run with --obsidian for full node-level detail.
+[graphify watch] Rebuilt: 19889 nodes, 42051 edges, 1053 communities
+[graphify watch] graph.json, graph.html and GRAPH_REPORT.md updated in graphify-out
+Code graph updated. For doc/paper/image changes run /graphify --update in your AI assistant.
+Tip: set GEMINI_API_KEY or GOOGLE_API_KEY to use Gemini for semantic extraction.

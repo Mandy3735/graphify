@@ -1,3 +1,32 @@
+# JARVIS progress — Phase 10, 2026-10-14
+
+Verified the published Phase 9 branch at `2fd7cd17f3ab594c30bcb2f8239b8f0283d76dd4`
+and continued locally on `jarvis/phase-10-voice`. Application 0.7.0 delivers optional
+voice/transcription, fake/official SDK providers, server-held credentials via SDP
+relay, opt-in audio-only WebRTC, reviewed untrusted run delegation, owned-result
+speech and immediate local stop/mute/cleanup. No migration/new tool/dependency or
+Graphify core/test/root-lock/license change. No push/merge/deployment/paid call.
+
+Final PostgreSQL and pgvector suites each passed **191 tests, 1 skip**, including
+all 13 real kernel isolation tests. Voice targeted: **14 passed**; frontend:
+**33 passed**; production Chromium: **5 passed**. Lint/format/types/build/package
+checks passed; npm audit reported zero vulnerabilities. Upstream: **6,470 passed,
+108 skipped, 9 documented baseline failure identifiers**. Graph updated and scoped
+query/explain worked. See [PHASE10_REPORT.md](docs/jarvis/PHASE10_REPORT.md),
+[VOICE.md](docs/jarvis/VOICE.md) and verification/phase10-* for evidence/commands.
+
+Phases 0–10 are complete only within the documented prototype scope. Live paid
+interoperability is unverified. Production/global provider-cost/usage admission,
+remote crash reconciliation, identity/TLS/DB-role/rate controls and multi-worker
+coordination remain Phase 11, followed by full Phase 12 adversarial review. Dedicated
+Chief of Staff watchers/integrations remain deferred. The full master definition of
+done is not met. Resolve local checkpoint with `git rev-parse HEAD`.
+
+---
+
+The following Phase 9 and earlier entries are historical verification records.
+Their next-milestone and pending-voice statements are superseded above.
+
 # JARVIS progress — 2026-10-12
 
 Local Phase 9 branch `jarvis/phase-9-user-experience` in `/workspace/graphify`,

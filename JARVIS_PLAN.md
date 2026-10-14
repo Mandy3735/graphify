@@ -71,3 +71,12 @@ history are added. Static-only caching, in-memory authentication, bounded text
 rendering, scoped state resets, browser acceptance/security/accessibility tests
 and independent CI preserve prior authority and secrecy boundaries. See
 docs/jarvis/USER_EXPERIENCE.md and current progress. Optional voice is next.
+
+## Seventh checkpoint — Phase 10
+
+Optional voice/transcription is implemented in the independent application: replaceable
+fake/official SDK providers, audio-only WebRTC, reviewed transcript delegation and
+owned-result speech. Server SDP relay replaces browser ephemeral-key issuance: no
+provider credential leaves the backend. No Graphify core/dependency or migration
+change. Live paid validation is deferred. Next: Phase 11 hardening, then full Phase 12
+adversarial review. See [VOICE.md](docs/jarvis/VOICE.md).
