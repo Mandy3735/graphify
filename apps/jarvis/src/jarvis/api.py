@@ -123,7 +123,7 @@ def create_app(
     production = cfg.environment == "production"
     app = FastAPI(
         title="JARVIS",
-        version="0.8.0",
+        version="0.9.0",
         lifespan=lifespan,
         docs_url=None if production else "/docs",
         redoc_url=None if production else "/redoc",

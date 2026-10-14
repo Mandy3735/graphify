@@ -1,0 +1,287 @@
+* Getting build dependencies for sdist...
+/workspace/graphify/.venv/lib/python3.12/site-packages/wheel/bdist_wheel.py:4: FutureWarning: The 'wheel' package is no longer the canonical location of the 'bdist_wheel' command, and will be removed in a future release. Please update to setuptools v70.1 or later which contains an integrated version of this command.
+  warn(
+running egg_info
+writing src/jarvis_graphify.egg-info/PKG-INFO
+writing dependency_links to src/jarvis_graphify.egg-info/dependency_links.txt
+writing requirements to src/jarvis_graphify.egg-info/requires.txt
+writing top-level names to src/jarvis_graphify.egg-info/top_level.txt
+reading manifest file 'src/jarvis_graphify.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+writing manifest file 'src/jarvis_graphify.egg-info/SOURCES.txt'
+* Building sdist...
+/workspace/graphify/.venv/lib/python3.12/site-packages/wheel/bdist_wheel.py:4: FutureWarning: The 'wheel' package is no longer the canonical location of the 'bdist_wheel' command, and will be removed in a future release. Please update to setuptools v70.1 or later which contains an integrated version of this command.
+  warn(
+running sdist
+running egg_info
+writing src/jarvis_graphify.egg-info/PKG-INFO
+writing dependency_links to src/jarvis_graphify.egg-info/dependency_links.txt
+writing requirements to src/jarvis_graphify.egg-info/requires.txt
+writing top-level names to src/jarvis_graphify.egg-info/top_level.txt
+reading manifest file 'src/jarvis_graphify.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+writing manifest file 'src/jarvis_graphify.egg-info/SOURCES.txt'
+running check
+creating jarvis_graphify-0.9.0
+creating jarvis_graphify-0.9.0/deploy
+creating jarvis_graphify-0.9.0/migrations
+creating jarvis_graphify-0.9.0/migrations/versions
+creating jarvis_graphify-0.9.0/src/jarvis
+creating jarvis_graphify-0.9.0/src/jarvis/web
+creating jarvis_graphify-0.9.0/src/jarvis/web/assets
+creating jarvis_graphify-0.9.0/src/jarvis_graphify.egg-info
+creating jarvis_graphify-0.9.0/tests
+copying files to jarvis_graphify-0.9.0...
+copying .env.example -> jarvis_graphify-0.9.0
+copying MANIFEST.in -> jarvis_graphify-0.9.0
+copying README.md -> jarvis_graphify-0.9.0
+copying alembic.ini -> jarvis_graphify-0.9.0
+copying compose.yaml -> jarvis_graphify-0.9.0
+copying pyproject.toml -> jarvis_graphify-0.9.0
+copying requirements.lock -> jarvis_graphify-0.9.0
+copying deploy/Caddyfile -> jarvis_graphify-0.9.0/deploy
+copying deploy/runtime-role.sql -> jarvis_graphify-0.9.0/deploy
+copying migrations/env.py -> jarvis_graphify-0.9.0/migrations
+copying migrations/versions/0001_foundation.py -> jarvis_graphify-0.9.0/migrations/versions
+copying migrations/versions/0002_memory.py -> jarvis_graphify-0.9.0/migrations/versions
+copying migrations/versions/0003_tutor.py -> jarvis_graphify-0.9.0/migrations/versions
+copying migrations/versions/0004_game_master.py -> jarvis_graphify-0.9.0/migrations/versions
+copying migrations/versions/0005_hardening.py -> jarvis_graphify-0.9.0/migrations/versions
+copying src/jarvis/__init__.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/api.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/budgets.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/config.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/context.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/db.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/domain.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/embeddings.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/engine.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/engineer.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/engineer_schema.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/engineer_tools.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/game_master.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/game_master_api.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/game_master_schema.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/game_master_tools.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/graph.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/graph_worker.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/ingress.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/memory.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/memory_api.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/memory_schema.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/memory_tools.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/models.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/paths.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/policy.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/runtime.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/sandbox.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/tools.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/tutor.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/tutor_api.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/tutor_schema.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/tutor_tools.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/voice.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/voice_api.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/web_ui.py -> jarvis_graphify-0.9.0/src/jarvis
+copying src/jarvis/web/icon.svg -> jarvis_graphify-0.9.0/src/jarvis/web
+copying src/jarvis/web/index.html -> jarvis_graphify-0.9.0/src/jarvis/web
+copying src/jarvis/web/manifest.webmanifest -> jarvis_graphify-0.9.0/src/jarvis/web
+copying src/jarvis/web/sw.js -> jarvis_graphify-0.9.0/src/jarvis/web
+copying src/jarvis/web/assets/index-Bx8O68uA.js -> jarvis_graphify-0.9.0/src/jarvis/web/assets
+copying src/jarvis/web/assets/index-x5iDG4WD.css -> jarvis_graphify-0.9.0/src/jarvis/web/assets
+copying src/jarvis_graphify.egg-info/PKG-INFO -> jarvis_graphify-0.9.0/src/jarvis_graphify.egg-info
+copying src/jarvis_graphify.egg-info/SOURCES.txt -> jarvis_graphify-0.9.0/src/jarvis_graphify.egg-info
+copying src/jarvis_graphify.egg-info/dependency_links.txt -> jarvis_graphify-0.9.0/src/jarvis_graphify.egg-info
+copying src/jarvis_graphify.egg-info/requires.txt -> jarvis_graphify-0.9.0/src/jarvis_graphify.egg-info
+copying src/jarvis_graphify.egg-info/top_level.txt -> jarvis_graphify-0.9.0/src/jarvis_graphify.egg-info
+copying tests/conftest.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_adversarial.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_engine_api.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_engineer.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_game_master.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_graph_security.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_hardening.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_memory.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_policy_models.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_postgres.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_sdk_errors.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_streaming.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_tutor.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_voice.py -> jarvis_graphify-0.9.0/tests
+copying tests/test_web_ui.py -> jarvis_graphify-0.9.0/tests
+Writing jarvis_graphify-0.9.0/setup.cfg
+Creating tar archive
+removing 'jarvis_graphify-0.9.0' (and everything under it)
+* Building wheel from sdist
+* Getting build dependencies for wheel...
+/workspace/graphify/.venv/lib/python3.12/site-packages/wheel/bdist_wheel.py:4: FutureWarning: The 'wheel' package is no longer the canonical location of the 'bdist_wheel' command, and will be removed in a future release. Please update to setuptools v70.1 or later which contains an integrated version of this command.
+  warn(
+running egg_info
+writing src/jarvis_graphify.egg-info/PKG-INFO
+writing dependency_links to src/jarvis_graphify.egg-info/dependency_links.txt
+writing requirements to src/jarvis_graphify.egg-info/requires.txt
+writing top-level names to src/jarvis_graphify.egg-info/top_level.txt
+reading manifest file 'src/jarvis_graphify.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+writing manifest file 'src/jarvis_graphify.egg-info/SOURCES.txt'
+* Building wheel...
+/workspace/graphify/.venv/lib/python3.12/site-packages/wheel/bdist_wheel.py:4: FutureWarning: The 'wheel' package is no longer the canonical location of the 'bdist_wheel' command, and will be removed in a future release. Please update to setuptools v70.1 or later which contains an integrated version of this command.
+  warn(
+running bdist_wheel
+running build
+running build_py
+creating build/lib/jarvis
+copying src/jarvis/web_ui.py -> build/lib/jarvis
+copying src/jarvis/voice_api.py -> build/lib/jarvis
+copying src/jarvis/voice.py -> build/lib/jarvis
+copying src/jarvis/tutor_tools.py -> build/lib/jarvis
+copying src/jarvis/tutor_schema.py -> build/lib/jarvis
+copying src/jarvis/tutor_api.py -> build/lib/jarvis
+copying src/jarvis/tutor.py -> build/lib/jarvis
+copying src/jarvis/tools.py -> build/lib/jarvis
+copying src/jarvis/sandbox.py -> build/lib/jarvis
+copying src/jarvis/runtime.py -> build/lib/jarvis
+copying src/jarvis/policy.py -> build/lib/jarvis
+copying src/jarvis/paths.py -> build/lib/jarvis
+copying src/jarvis/models.py -> build/lib/jarvis
+copying src/jarvis/memory_tools.py -> build/lib/jarvis
+copying src/jarvis/memory_schema.py -> build/lib/jarvis
+copying src/jarvis/memory_api.py -> build/lib/jarvis
+copying src/jarvis/memory.py -> build/lib/jarvis
+copying src/jarvis/ingress.py -> build/lib/jarvis
+copying src/jarvis/graph_worker.py -> build/lib/jarvis
+copying src/jarvis/graph.py -> build/lib/jarvis
+copying src/jarvis/game_master_tools.py -> build/lib/jarvis
+copying src/jarvis/game_master_schema.py -> build/lib/jarvis
+copying src/jarvis/game_master_api.py -> build/lib/jarvis
+copying src/jarvis/game_master.py -> build/lib/jarvis
+copying src/jarvis/engineer_tools.py -> build/lib/jarvis
+copying src/jarvis/engineer_schema.py -> build/lib/jarvis
+copying src/jarvis/engineer.py -> build/lib/jarvis
+copying src/jarvis/engine.py -> build/lib/jarvis
+copying src/jarvis/embeddings.py -> build/lib/jarvis
+copying src/jarvis/domain.py -> build/lib/jarvis
+copying src/jarvis/db.py -> build/lib/jarvis
+copying src/jarvis/context.py -> build/lib/jarvis
+copying src/jarvis/config.py -> build/lib/jarvis
+copying src/jarvis/budgets.py -> build/lib/jarvis
+copying src/jarvis/api.py -> build/lib/jarvis
+copying src/jarvis/__init__.py -> build/lib/jarvis
+running egg_info
+writing src/jarvis_graphify.egg-info/PKG-INFO
+writing dependency_links to src/jarvis_graphify.egg-info/dependency_links.txt
+writing requirements to src/jarvis_graphify.egg-info/requires.txt
+writing top-level names to src/jarvis_graphify.egg-info/top_level.txt
+reading manifest file 'src/jarvis_graphify.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+writing manifest file 'src/jarvis_graphify.egg-info/SOURCES.txt'
+creating build/lib/jarvis/web
+copying src/jarvis/web/sw.js -> build/lib/jarvis/web
+copying src/jarvis/web/manifest.webmanifest -> build/lib/jarvis/web
+copying src/jarvis/web/index.html -> build/lib/jarvis/web
+copying src/jarvis/web/icon.svg -> build/lib/jarvis/web
+creating build/lib/jarvis/web/assets
+copying src/jarvis/web/assets/index-x5iDG4WD.css -> build/lib/jarvis/web/assets
+copying src/jarvis/web/assets/index-Bx8O68uA.js -> build/lib/jarvis/web/assets
+installing to build/bdist.linux-x86_64/wheel
+running install
+running install_lib
+creating build/bdist.linux-x86_64/wheel
+creating build/bdist.linux-x86_64/wheel/jarvis
+creating build/bdist.linux-x86_64/wheel/jarvis/web
+creating build/bdist.linux-x86_64/wheel/jarvis/web/assets
+copying build/lib/jarvis/web/assets/index-Bx8O68uA.js -> build/bdist.linux-x86_64/wheel/./jarvis/web/assets
+copying build/lib/jarvis/web/assets/index-x5iDG4WD.css -> build/bdist.linux-x86_64/wheel/./jarvis/web/assets
+copying build/lib/jarvis/web/icon.svg -> build/bdist.linux-x86_64/wheel/./jarvis/web
+copying build/lib/jarvis/web/index.html -> build/bdist.linux-x86_64/wheel/./jarvis/web
+copying build/lib/jarvis/web/manifest.webmanifest -> build/bdist.linux-x86_64/wheel/./jarvis/web
+copying build/lib/jarvis/web/sw.js -> build/bdist.linux-x86_64/wheel/./jarvis/web
+copying build/lib/jarvis/__init__.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/api.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/budgets.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/config.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/context.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/db.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/domain.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/embeddings.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/engine.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/engineer.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/engineer_schema.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/engineer_tools.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/game_master.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/game_master_api.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/game_master_schema.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/game_master_tools.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/graph.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/graph_worker.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/ingress.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/memory.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/memory_api.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/memory_schema.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/memory_tools.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/models.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/paths.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/policy.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/runtime.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/sandbox.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/tools.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/tutor.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/tutor_api.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/tutor_schema.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/tutor_tools.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/voice.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/voice_api.py -> build/bdist.linux-x86_64/wheel/./jarvis
+copying build/lib/jarvis/web_ui.py -> build/bdist.linux-x86_64/wheel/./jarvis
+running install_egg_info
+Copying src/jarvis_graphify.egg-info to build/bdist.linux-x86_64/wheel/./jarvis_graphify-0.9.0-py3.12.egg-info
+running install_scripts
+creating build/bdist.linux-x86_64/wheel/jarvis_graphify-0.9.0.dist-info/WHEEL
+creating '/workspace/graphify/apps/jarvis/dist/.tmp-hfvhs86r/jarvis_graphify-0.9.0-py3-none-any.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+adding 'jarvis/__init__.py'
+adding 'jarvis/api.py'
+adding 'jarvis/budgets.py'
+adding 'jarvis/config.py'
+adding 'jarvis/context.py'
+adding 'jarvis/db.py'
+adding 'jarvis/domain.py'
+adding 'jarvis/embeddings.py'
+adding 'jarvis/engine.py'
+adding 'jarvis/engineer.py'
+adding 'jarvis/engineer_schema.py'
+adding 'jarvis/engineer_tools.py'
+adding 'jarvis/game_master.py'
+adding 'jarvis/game_master_api.py'
+adding 'jarvis/game_master_schema.py'
+adding 'jarvis/game_master_tools.py'
+adding 'jarvis/graph.py'
+adding 'jarvis/graph_worker.py'
+adding 'jarvis/ingress.py'
+adding 'jarvis/memory.py'
+adding 'jarvis/memory_api.py'
+adding 'jarvis/memory_schema.py'
+adding 'jarvis/memory_tools.py'
+adding 'jarvis/models.py'
+adding 'jarvis/paths.py'
+adding 'jarvis/policy.py'
+adding 'jarvis/runtime.py'
+adding 'jarvis/sandbox.py'
+adding 'jarvis/tools.py'
+adding 'jarvis/tutor.py'
+adding 'jarvis/tutor_api.py'
+adding 'jarvis/tutor_schema.py'
+adding 'jarvis/tutor_tools.py'
+adding 'jarvis/voice.py'
+adding 'jarvis/voice_api.py'
+adding 'jarvis/web_ui.py'
+adding 'jarvis/web/icon.svg'
+adding 'jarvis/web/index.html'
+adding 'jarvis/web/manifest.webmanifest'
+adding 'jarvis/web/sw.js'
+adding 'jarvis/web/assets/index-Bx8O68uA.js'
+adding 'jarvis/web/assets/index-x5iDG4WD.css'
+adding 'jarvis_graphify-0.9.0.dist-info/METADATA'
+adding 'jarvis_graphify-0.9.0.dist-info/WHEEL'
+adding 'jarvis_graphify-0.9.0.dist-info/top_level.txt'
+adding 'jarvis_graphify-0.9.0.dist-info/RECORD'
+removing build/bdist.linux-x86_64/wheel
+Successfully built jarvis_graphify-0.9.0.tar.gz and jarvis_graphify-0.9.0-py3-none-any.whl

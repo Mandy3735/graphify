@@ -129,3 +129,21 @@ capability, canonical state or personal/campaign visibility boundary is weakened
 Provider-side billing limits, operational TLS/backups/monitoring, multi-user identity,
 HA, retention and full Phase 12 acceptance remain out of scope. The new TLS/role
 files are reviewed templates, not deployed infrastructure. See HARDENING.md.
+
+## Phase 12 revalidation and availability
+
+Public response concurrency is separate from authenticated admission. GET/HEAD
+requests never wait for body messages and declared bodies are rejected; public
+write methods are rejected before admission. Body deadlines still apply to API writes.
+Conventional credential config names and key/container files are excluded by shared
+workspace/Graphify/Engineer path rules. This cannot classify secrets embedded in
+ordinary source or arbitrary filenames; operators must register sanitized projects.
+
+Campaign scenes are rebuilt after retrieval awaits. Current scene outputs replace
+historical scene tools; packet changes establish a durable history cutoff excluding
+older derived assistant/tool content from future model input, including resumed runs.
+Previously authorized owner-retained run/audit history remains retained. Final snapshot
+authorization cannot recall already transmitted context. Session active-location UUIDs
+are independently visibility-filtered. Whole microphone setup/capture is bounded to
+120 seconds locally; sign-out clears/aborts credentials before isolated device cleanup.
+See JARVIS_REVIEW.md for findings, evidence and remaining release limits.

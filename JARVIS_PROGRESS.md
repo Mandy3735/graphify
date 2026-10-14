@@ -1,3 +1,36 @@
+# JARVIS progress — Phase 12, 2026-10-14
+
+Continued from published Phase 11 `6d0b05acdc7db62256cf8134e4990dd62a390000` on
+local `jarvis/phase-12-adversarial-review`. Application **0.9.0**, unchanged schema
+**0005**. Hostile review fixed three high and three medium findings: isolated public
+HTTP admission, credential-config exclusions in all staging/read paths, campaign
+context/history revalidation with persistent/legacy-safe cutoff, hidden location
+IDs, whole microphone-lifecycle deadlines and resilient sign-out cleanup.
+
+Final ordinary PostgreSQL and pgvector suites each passed **228 tests, 1 skip**,
+including all 13 real kernel tests. Focused adversarial/GM: **30 passed**; frontend:
+**38 passed**; production Chromium: **5 passed**. JARVIS lint/format/types, frontend
+checks/build, wheel/sdist, dependency audits and offline TLS-template validation passed.
+Medium/high Bandit: zero; nine reviewed low findings. Graph synchronized at 20,050
+nodes / 42,476 edges / 1,062 communities; query/explain/neighbor checks run; measured outputs are in verification/phase12-*.
+
+Preserved upstream: **6,470 passed, 108 skipped, 9 known baseline failures**. Root
+Ruff lint passed; existing formatter/type drift remains (413 files would reformat;
+618 errors/4 warnings). No upstream core/tests/root dependency/license, app Python
+lock or immutable-migration change. No Phase 12 push/merge/deployment/paid call.
+See [PHASE12_REPORT.md](docs/jarvis/PHASE12_REPORT.md) and [JARVIS_REVIEW.md](JARVIS_REVIEW.md).
+
+Phases 0–12 are complete within documented prototype scope. Full master delivery,
+Chief of Staff/integrations, operational identity/TLS/backups/monitoring, provider
+invoice ceilings, multi-user/HA/retention, manual accessibility and live validation
+remain incomplete. The next increment follows the user's instruction. Resolve this
+local checkpoint with git rev-parse HEAD.
+
+---
+
+Earlier records are historical. Phase 11 was subsequently published with user
+authorization; earlier local-only publication and next-Phase-12 statements are superseded.
+
 # JARVIS progress — Phase 11, 2026-10-14
 
 Continued from published Phase 10 `8aa688a450a4633f55ec677947f3393ee35774d0` on

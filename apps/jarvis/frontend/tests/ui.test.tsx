@@ -240,3 +240,23 @@ it('queries a registered Engineer graph and renders extracted source evidence', 
     budget: 1200,
   });
 });
+
+it('a failing cleanup callback cannot prevent sign-out or cancellation', async () => {
+  vi.spyOn(globalThis, 'fetch').mockImplementation(
+    (_, options) =>
+      new Promise((_, reject) => {
+        options?.signal?.addEventListener('abort', () => reject(new Error('aborted')));
+      }),
+  );
+  const client = new Client('private-token');
+  const clean = vi.fn();
+  client.onClose(() => {
+    throw new Error('device cleanup failure');
+  });
+  client.onClose(clean);
+  const pending = client.request('/api/runs').catch((e) => e.message);
+  expect(() => client.close()).not.toThrow();
+  expect(clean).toHaveBeenCalledOnce();
+  expect(await pending).toBe('aborted');
+  await expect(client.request('/api/runs')).rejects.toThrow();
+});

@@ -1,3 +1,70 @@
+# Phase 12 adversarial review — 2026-10-14
+
+Reviewed published Phase 11 `6d0b05acdc7db62256cf8134e4990dd62a390000` and remediated
+locally on `jarvis/phase-12-adversarial-review`, application **0.9.0**, schema **0005**.
+This is a source/test review of supported prototype behavior, not an independent
+penetration test or production release. Prior review sections below are historical.
+
+## Findings and remediation
+
+| ID | Severity | Reproduction / impact | Fix and evidence |
+|---|---|---|---|
+| P12-01 | HIGH | Four public GETs with an unfinished body exhausted a four-slot HTTP gate and made an authenticated request return 429. Public response work also shared authorized capacity. | Reject body-bearing GET/HEAD and unsupported public methods before body reads; bodyless requests never await inbound data; separate four-slot public response pool. Two adversarial admission tests verify authenticated capacity and cleanup. |
+| P12-02 | HIGH | `credentials.json`, `secrets.yaml`, `client_secret.toml`, and service-account JSON passed workspace reads and eligible tracked-source staging. | Shared sensitive config-name and credential-container exclusions cover reads, Graphify staging and Engineer manifests. Four read cases and a real Git snapshot test prove exclusion while preserving `credentials.py`. |
+| P12-03 | HIGH | A GM scene captured in tool history survived a canonical GM→PLAYER role downgrade; revocation during awaited retrieval also left an old scene in outgoing context. Derived prose and tool arguments could carry the same secret. | Refresh the scene after retrieval awaits, replace historical scene outputs with the current authorized view, and withhold historical assistant/tool content on a packet change. Persist a fingerprint and history cutoff in run metadata so later steps/resumes cannot reintroduce old content. Tests cover role changes, controlled await timing, derived text/arguments and a subsequent build preserving new authorized content. |
+| P12-04 | MEDIUM | A player session/scene returned the UUID of a GM-secret active location. | Independently authorize the referenced location; return null for unavailable, retired or hidden entries in scene and session lists. Adversarial test exercises both surfaces. Session titles remain deliberately campaign-visible metadata. |
+| P12-05 | MEDIUM | Microphone permission or WebRTC offer negotiation could stall before the session timer started. | A 120-second local deadline covers the entire setup/capture lifetime; server negotiation cannot extend it. Late permission streams are stopped and late sessions are hung up. Two fake-timer device tests cover pending permission and active capture during stalled offer creation. |
+| P12-06 | MEDIUM | One throwing device cleanup callback prevented token clearing, pending request cancellation and later resource cleanup during sign-out. | Clear credentials and abort requests before isolated cleanup callbacks. A throwing-callback regression proves cancellation, subsequent cleanup and refusal of new authenticated requests. |
+
+Nine receiving-source reproductions failed before remediation; all eleven final
+backend adversarial cases pass, plus three new browser component/device regressions.
+No identified critical/high finding remains open within supported scope. Filename
+exclusion is not secret-content classification: arbitrary embedded literals or
+unconventionally named configs remain an operator registration/content-hygiene risk.
+No real credential was used in the fixtures.
+
+## Hostile review coverage and residual limits
+
+| Boundary reviewed | Evidence / decision |
+|---|---|
+| Architecture, Graphify coupling, future merges | Only `graph.py` / private `graph_worker.py` call preserved Graphify internals. AST staging uses the shared path exclusions; no upstream core/test/root dependency/license or prior migration change. Adapter extraction runs privately with a constructed environment. Internal Graphify API compatibility needs regression testing on future upstream upgrades. |
+| Authorization and audit bypass | Strict registered schemas and trusted actor/capability/mode; exact operation/actor/run/nonce/expiry approvals rechecked at execution. PostgreSQL one-use races and restricted-role smoke verify audit append-only/DDL denial. Database admins/application source remain trusted; this is single-principal application authorization, not tenant isolation. |
+| Secret handling / injection | Credential-config regression above; literal bounded UI, untrusted tool/graph/memory/scene data; poisoned memory/repository cannot grant capabilities or bypass policy. No URL locator fetching, model authority edits, canonical GM commits, or model Tutor mastery tools. Owner-retained historical runs are not retroactively erased by campaign revocation; subsequent model context is reauthorized. |
+| Sandbox / async cleanup | All 13 real kernel probes run in both DB configurations: no host network/secret/Git/workspace writes; limits, cancellation and child cleanup; no host-shell fallback. Shared-kernel risks, aggregate cgroup memory limits and unsupported-host execution remain documented constraints. Public admission no longer consumes authenticated slots. |
+| Models / fallbacks / cost | Fake and official Responses adapter protocols, explicit fallback consent, high-stakes/auth failures, timeout/cancel and visible usage tested. No paid SDK interoperability exercised. Daily durable estimates are admission controls, not an invoice ceiling; production live microphone remains disabled because remote data-channel generation settings cannot be bounded authoritatively. |
+| Database consistency / lifecycle | Immutable migrations 0001–0005, upgrade/downgrade/upgrade/parity, approval/memory/Tutor/campaign/quota races, restart retention, monitored single-worker lease and unhealthy-on-loss tests. One worker is supported; HA/multi-user identity, external idempotency, operational backup/restore and retention require separate work. |
+| GM secrecy / canonical state | SQL membership/visibility before candidate limits; scene/output/history revalidation above; controller-only human/default PC rolls and one-use delegation; auditable NPC dice; GM-only structured canonical decisions. Authorization reflects the final context snapshot; revocation cannot recall data already sent to a provider or previously read by an authorized actor. Packet changes conservatively withhold older derived context, trading continuity for secrecy. |
+| Frontend accessibility / cache / device | Type/lint/format/build, 38 component/security/device tests, five Chromium flows including mobile axe, forms and identity changes; static-only worker and no private cache/storage. Complete manual keyboard/screen-reader, device/permission UX and live browser-provider checks remain unverified. |
+| Deployment / supply chain / tests | Restricted-role SQL, exact HTTPS origin/proxy trust and offline Caddy validation; locked dependency audits and source scan. Templates are not deployed infrastructure. Certificate issuance, token lifecycle/production identity, backups/monitoring, paid provider and independent pen testing remain release prerequisites. Test fakes are visibly fake; skips and upstream failures remain explicit. |
+
+## Master acceptance reconciliation
+
+| Master scenario | Actual supported evidence |
+|---|---|
+| E2E-1 graph intelligence | Adapter fixture index/query/explain/path/impact/source provenance and `test_graphify_engineer_evidence_precedes_model_and_injection_cannot_grant`. |
+| E2E-2 engineering change | Real `test_engineering_e2e_real_worktree_tests_graph_impact_and_artifact`: sanitized isolated worktree, configured targeted/regression commands, AST update, impact, diff/artifact. Bounded Python fixture support only. |
+| E2E-3 approval | `test_external_write_pause_exact_approval_resume_and_replay`, mutation/expiry/revocation plus atomic PostgreSQL claims. External service is a fake fixture; no live integration delivery claimed. |
+| E2E-4 memory provenance | `test_source_grounded_chat_exposes_retrieval_provenance`, inspector/revision/deletion and pgvector/offline ranking. Source citations are retained asserted data, not fetched verification. |
+| E2E-5 GM secrecy | Player context/filter-before-limit and Phase 12 permission/history/await regressions; hidden location identifiers filtered. |
+| E2E-6 human PC / E2E-7 NPC dice | `test_game_master_e2e_visibility_roll_authority_delegation_and_canonical_event` and competing one-use PG delegation; controller human reports, configured adjudication and auditable bounded dice. |
+| E2E-8 injection | Graphify evidence, poisoned personal memory, project hooks/filters and campaign text adversarial tests; deterministic grants unchanged. |
+| E2E-9 model migration | Routing/provider protocol and `test_visible_fallback_usage_metadata`; failure or allowed configured fallback, persisted attempts/usage; no assumed live model availability. |
+
+The definition-of-done's preserved Graphify, bounded adapter, fake backend/frontend,
+migrations, durable runs/cancellation, configuration/fallback, policy/approvals/audit,
+provenance/structured memory, Engineer/Tutor/GM/dice/rules and injection/kernel/build
+claims have executable prototype evidence. Responsive UI/accessibility has automated
+coverage but not complete manual sign-off. Documentation reflects current scope.
+The broad master product is **not complete**: dedicated Chief of Staff projects/tasks/
+checkpoints/watchers, outbound integrations, richer graph/campaign features,
+production identity/operations, billing authority, retention and live validation
+remain deferred. Phase 12 review completion does not turn those omissions into delivery.
+
+Final check results, commands and unchanged upstream failures are recorded in
+[PHASE12_REPORT.md](docs/jarvis/PHASE12_REPORT.md) and `docs/jarvis/verification/phase12-*`.
+
+---
+
 # Adversarial review — foundation through Command Center checkpoint
 
 Sections through Phase 8 retain the earlier review history; the Phase 9 section

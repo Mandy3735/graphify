@@ -26,11 +26,17 @@ export class Client {
     this.token = token;
   }
   close() {
-    for (const close of this.closers) close();
-    this.closers.clear();
     this.token = '';
     for (const c of this.controllers) c.abort();
     this.controllers.clear();
+    for (const close of this.closers) {
+      try {
+        close();
+      } catch {
+        // One device cleanup failure must not retain credentials or other devices.
+      }
+    }
+    this.closers.clear();
   }
   onClose(close: () => void) {
     this.closers.add(close);

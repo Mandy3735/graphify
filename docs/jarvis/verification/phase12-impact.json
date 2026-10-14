@@ -1,0 +1,531 @@
+{
+  "method": "One-hop stored graph edges around changed boundary symbols; source/tests remain authoritative",
+  "targets": [
+    "apps_jarvis_src_jarvis_context_contextbuilder",
+    "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+    "apps_jarvis_src_jarvis_ingress_ingress",
+    "apps_jarvis_src_jarvis_paths_credential_config"
+  ],
+  "edges": [
+    {
+      "source": "apps_jarvis_src_jarvis_api_create_app",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_engine_engine_init",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_paths_credential_config",
+      "target": "re",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_paths_parts",
+      "target": "apps_jarvis_src_jarvis_paths_credential_config",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_api",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_api",
+      "target": "apps_jarvis_src_jarvis_ingress_ingress",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_engine",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_engine",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_api",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_tools",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_engine_engine_init",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_ingress",
+      "target": "apps_jarvis_src_jarvis_ingress_ingress",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_paths",
+      "target": "apps_jarvis_src_jarvis_paths_credential_config",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder_init",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder_refresh_memory_tools",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder_build",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_decide_proposal",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_init",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_member",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_campaign",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_require_gm",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_entry",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_entry_visible",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_campaign_view",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_entry_view",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_session_view",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_authorized_session_view",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_create_campaign",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_list_campaigns",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_add_member",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_create_entry",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_create_session",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_transcript_view",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_append_transcript",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_scene_packet",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_delegate_roll",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_delegation_view",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_roll_view",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_roll",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_report_human_roll",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_propose_event",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_proposal_view",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_list_sessions",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice_list_proposals",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_ingress_ingress",
+      "target": "apps_jarvis_src_jarvis_ingress_ingress_init",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_ingress_ingress",
+      "target": "apps_jarvis_src_jarvis_ingress_ingress_allow",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_ingress_ingress",
+      "target": "apps_jarvis_src_jarvis_ingress_ingress_reject",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_ingress_ingress",
+      "target": "apps_jarvis_src_jarvis_ingress_ingress_call",
+      "confidence": "EXTRACTED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_api_game_master_router",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_tools_register_game_master_tools",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_api_create_app",
+      "target": "apps_jarvis_src_jarvis_ingress_ingress",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterscope",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "target": "apps_jarvis_src_jarvis_memory_memoryconflict",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "target": "apps_jarvis_src_jarvis_config_settings",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "target": "apps_jarvis_src_jarvis_memory_memoryservice",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "target": "apps_jarvis_src_jarvis_domain_message",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "target": "apps_jarvis_src_jarvis_memory_memoryscope",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "target": "apps_jarvis_src_jarvis_domain_tooloutput",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "target": "apps_jarvis_src_jarvis_policy_actor",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "target": "apps_jarvis_src_jarvis_domain_chatrequest",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "target": "apps_jarvis_src_jarvis_domain_mode",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_engine_engine",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_engine_engine",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_schema_campaignchangeaction",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_db_campaignevent",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_db_database",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_db_campaignmember",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_db_campaign",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_db_campaignentry",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_schema_campaignvisibility",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_db_campaignsession",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_schema_campaigncreate",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_schema_campaignmembercreate",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_schema_campaignentrycreate",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_schema_campaignsessioncreate",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_db_campaigntranscript",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_schema_transcriptcreate",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_schema_delegationcreate",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_db_rolldelegation",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_db_diceroll",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_schema_dicerequest",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_game_master_schema_campaignproposalcreate",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "target": "apps_jarvis_src_jarvis_db_campaigneventproposal",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_src_jarvis_ingress_ingress",
+      "target": "apps_jarvis_src_jarvis_config_settings",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_adversarial_test_campaign_packet_is_rechecked_after_awaited_memory_retrieval",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_adversarial_test_campaign_revocation_withholds_derived_prose_and_arguments",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_adversarial_test_campaign_tool_history_cannot_replay_gm_secrets_after_revocation",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_adversarial_test_public_response_slots_are_separate_from_authenticated_work",
+      "target": "apps_jarvis_src_jarvis_ingress_ingress",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_adversarial_test_public_slow_bodies_cannot_starve_authenticated_admission",
+      "target": "apps_jarvis_src_jarvis_ingress_ingress",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_game_master_campaign_fixture",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_game_master_test_rules_plugin_is_replaceable",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_hardening_test_body_deadline_concurrency_and_duplicate_headers",
+      "target": "apps_jarvis_src_jarvis_ingress_ingress",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_hardening_test_https_host_and_lease_fail_closed_without_trusting_forwarded_headers",
+      "target": "apps_jarvis_src_jarvis_ingress_ingress",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_hardening_test_production_errors_hide_exception_parameters",
+      "target": "apps_jarvis_src_jarvis_ingress_ingress",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_memory_test_context_and_tool_results_exclude_gm_secrets_before_player_model",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_memory_test_context_budget_skips_large_memory_and_counts_unicode_conservatively",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_memory_test_context_combines_five_classes_and_retains_visible_provenance",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_memory_test_context_refreshes_deleted_memory_from_historical_tool_results",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_memory_test_context_token_budget_includes_tool_schemas",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_memory_test_deletion_during_embedding_wait_never_reenters_context",
+      "target": "apps_jarvis_src_jarvis_context_contextbuilder",
+      "confidence": "INFERRED"
+    },
+    {
+      "source": "apps_jarvis_tests_test_postgres_pg_game",
+      "target": "apps_jarvis_src_jarvis_game_master_gamemasterservice",
+      "confidence": "INFERRED"
+    }
+  ]
+}

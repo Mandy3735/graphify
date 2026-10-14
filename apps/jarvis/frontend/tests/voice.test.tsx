@@ -234,3 +234,46 @@ it('unresolved remote cleanup blocks another microphone session', async () => {
   expect(await screen.findByRole('button', { name: 'Enable microphone' })).toBeDisabled();
   expect(d.getUserMedia).not.toHaveBeenCalled();
 });
+
+it('expires pending microphone permission and stops a late stream', async () => {
+  vi.useFakeTimers();
+  const d = devices(),
+    s = setup();
+  let resolve!: (stream: MediaStream) => void;
+  d.getUserMedia.mockImplementation(
+    () =>
+      new Promise((r) => {
+        resolve = r;
+      }),
+  );
+  const pending = s.controller.start(live);
+  await vi.advanceTimersByTimeAsync(120000);
+  expect(s.state).toHaveBeenLastCalledWith('Stopped');
+  resolve(d.stream);
+  await pending;
+  expect(d.stop).toHaveBeenCalled();
+  expect(s.client.request).not.toHaveBeenCalled();
+  s.controller.dispose();
+  vi.useRealTimers();
+});
+it('stops active capture when offer negotiation stalls', async () => {
+  vi.useFakeTimers();
+  const d = devices(),
+    s = setup();
+  let resolve!: (offer: RTCSessionDescriptionInit) => void;
+  d.peer.createOffer.mockImplementation(
+    () =>
+      new Promise((r) => {
+        resolve = r;
+      }),
+  );
+  const pending = s.controller.start(live);
+  await vi.advanceTimersByTimeAsync(120000);
+  expect(d.stop).toHaveBeenCalled();
+  expect(d.peer.close).toHaveBeenCalled();
+  resolve({ type: 'offer', sdp: 'v=0' });
+  await pending;
+  expect(s.client.request).not.toHaveBeenCalled();
+  s.controller.dispose();
+  vi.useRealTimers();
+});

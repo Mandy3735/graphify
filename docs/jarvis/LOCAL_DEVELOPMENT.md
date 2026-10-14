@@ -263,3 +263,11 @@ The test URL must still use localhost/127.0.0.1 and a database ending in _test.
 JARVIS_TEST_PSQL can select a trusted local psql wrapper for container-only tooling;
 it is test configuration, never an API/tool input. Both DB variants run the role
 script, migration parity, quota race, lease loss and all existing authority tests.
+
+## Phase 12 review checkpoint
+
+Application 0.9.0 retains Alembic 0005; rebuild the frontend before serving/package
+creation. Review and actual checks are in PHASE12_REPORT.md and root JARVIS_REVIEW.md.
+Public admission, credential config exclusions, campaign history/visibility and
+browser lifecycle fixes preserve the existing text/fake deployment setup. No live
+production deployment, paid validation or full master-product completion is claimed.

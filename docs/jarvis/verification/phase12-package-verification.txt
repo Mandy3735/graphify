@@ -1,0 +1,3 @@
+0.9.0 wheel: Python module/public build-asset parity passed.
+0.9.0 sdist: migration 0005 and deployment-role template membership passed.
+Public HTML/JS contain no adversarial credential fixture.

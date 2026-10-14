@@ -91,3 +91,12 @@ additive; Graphify and migrations 0001–0004 are preserved. Production live mic
 remains unavailable until its remote generation-cost boundary can be enforced.
 Operational deployment, multi-user/HA and full master acceptance remain deferred.
 Exact results are in PHASE11_REPORT.md. Next: Phase 12 adversarial review.
+
+## Ninth checkpoint — Phase 12
+
+Application 0.9.0, unchanged schema 0005: hostile review identifies and fixes three
+high and three medium findings in public HTTP admission, credential-config staging,
+campaign context/history, hidden locations, microphone deadlines and sign-out cleanup.
+Master E2E evidence and deferred scope are reconciled in JARVIS_REVIEW.md. Final
+verification is in PHASE12_REPORT.md. No additional numbered milestone is invented;
+next work is a separately scoped release/operations or deferred-product increment.

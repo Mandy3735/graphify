@@ -7,6 +7,8 @@ with inspectable personal memory around the preserved Graphify engine. Start wit
 Phase 10 adds [optional voice/transcription](docs/jarvis/VOICE.md), disabled by default,
 on top of the Command Center and preserved Graphify subsystem.
 Phase 11 adds [runtime and admission hardening](docs/jarvis/HARDENING.md).
+Phase 12 adds [adversarial review and remediation](JARVIS_REVIEW.md); see
+[verified results and remaining scope](docs/jarvis/PHASE12_REPORT.md).
 
 <p align="center">
   <a href="https://graphify.com"><img src="https://raw.githubusercontent.com/Graphify-Labs/graphify/v8/docs/graphify-logo.png" width="480" height="252" alt="Graphify"/></a>

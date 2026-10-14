@@ -1,0 +1,6 @@
+{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"routes":[{"match":[{"host":["jarvis.example"]}],"handle":[{"handler":"subroute","routes":[{"handle":[{"handler":"request_body","max_size":3000000},{"handler":"reverse_proxy","upstreams":[{"dial":"127.0.0.1:8000"}]}]}]}],"terminal":true}]}}}}}
+{"level":"info","ts":1792012103.7056046,"logger":"tls.cache.maintenance","msg":"started background certificate maintenance","cache":"0xc0003a4180"}
+{"level":"info","ts":1792012103.7056456,"logger":"http.auto_https","msg":"server is listening only on the HTTPS port but has no TLS connection policies; adding one to enable TLS","server_name":"srv0","https_port":443}
+{"level":"info","ts":1792012103.7056587,"logger":"http.auto_https","msg":"enabling automatic HTTP->HTTPS redirects","server_name":"srv0"}
+{"level":"info","ts":1792012103.7059505,"logger":"http","msg":"servers shutting down with eternal grace period"}
+{"level":"info","ts":1792012103.7060368,"logger":"tls.cache.maintenance","msg":"stopped background certificate maintenance","cache":"0xc0003a4180"}

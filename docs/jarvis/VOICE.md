@@ -113,3 +113,13 @@ configured prices or upper operation estimates. Production keeps live microphone
 transport disabled because its data channel cannot enforce a backend generation-cost
 ceiling; fake preview, text, reviewed input and bounded configured speech/transcription
 remain available. See [HARDENING.md](HARDENING.md) for exact current behavior.
+
+## Phase 12 device lifecycle
+
+Local microphone setup and capture share a 120-second deadline starting before
+permission. Stalled offers or permissions cannot keep later capture active; a late
+stream is stopped and a late server session is hung up. A server duration can shorten
+but cannot extend this local deadline. Sign-out clears credentials and aborts requests
+before isolated device cleanup; local tracks/peers stop, while failed authenticated
+remote cleanup remains covered by session expiry/journal recovery. Live production
+microphone stays disabled. No paid interoperability test is claimed.

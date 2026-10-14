@@ -1,12 +1,34 @@
 """Bounded descriptor-relative IO. Fail closed on platforms without no-follow support."""
 
 import os
+import re
 import secrets
 from contextlib import contextmanager
 from pathlib import Path, PurePosixPath
 
 BLOCKED = {"id_rsa", "id_ed25519", "credentials", "secrets", "secrets.json"}
 TEXT_SUFFIXES = {".py", ".md", ".txt", ".json", ".toml", ".yaml", ".yml", ".ts", ".js"}
+CONFIG_SUFFIXES = {".json", ".toml", ".yaml", ".yml", ".txt"}
+
+
+def credential_config(component: str) -> bool:
+    name = PurePosixPath(component.lower())
+    if name.suffix not in CONFIG_SUFFIXES:
+        return False
+    words = re.split(r"[._-]+", name.stem)
+    return bool(
+        set(words)
+        & {
+            "credential",
+            "credentials",
+            "secret",
+            "secrets",
+            "token",
+            "tokens",
+            "password",
+            "passwords",
+        }
+    ) or "service_account" in "_".join(words)
 
 
 class PathDenied(ValueError):
@@ -27,7 +49,11 @@ def parts(path: str, *, internal: bool = False) -> tuple[str, ...]:
         raise PathDenied("Traversal or empty path component rejected")
     if not internal and any(p.startswith(".") or p.lower() in BLOCKED for p in segments):
         raise PathDenied("Sensitive or hidden path rejected")
-    if not internal and any(p.lower().endswith((".pem", ".key", ".p12")) for p in segments):
+    if not internal and any(
+        p.lower().endswith((".pem", ".key", ".p12", ".pfx", ".jks", ".keystore"))
+        or credential_config(p)
+        for p in segments
+    ):
         raise PathDenied("Credential file rejected")
     return segments
 

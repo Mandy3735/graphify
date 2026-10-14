@@ -82,6 +82,8 @@ export class VoiceController {
     this.seen.clear();
     this.transcript('');
     this.state('Processing/delegating');
+    const started = Date.now();
+    this.timer = setTimeout(() => this.stop(), 120000);
     try {
       let offer = '';
       if (status.provider === 'openai') {
@@ -142,9 +144,10 @@ export class VoiceController {
         return;
       }
       this.session = session.id;
+      clearTimeout(this.timer);
       this.timer = setTimeout(
         () => this.stop(),
-        Math.min(300, Math.max(15, session.seconds)) * 1000,
+        Math.max(0, Math.min(120, Math.max(15, session.seconds)) * 1000 - (Date.now() - started)),
       );
       if (this.peer) await this.peer.setRemoteDescription({ type: 'answer', sdp: session.sdp });
       else this.state('Listening');

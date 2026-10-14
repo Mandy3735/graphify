@@ -179,3 +179,12 @@ opt-in means unavailable kernel isolation fails the suite, rather than silently
 skipping escape tests. Without opt-in, real-kernel cases skip; validation/dry-run
 cases still run. CI installs the Linux runtime and opts in for both database jobs.
 Current local results and remote/publication limitations are in JARVIS_PROGRESS.md.
+
+## Phase 12 credential-name exclusions
+
+Shared path checks now reject conventional credential/secret/token/password config
+stems, client-secret and service-account names, plus key/container extensions. The
+same checks protect filesystem reads, Graphify source staging and tracked Engineer
+manifests. Implementation files such as credentials.py remain eligible. These rules
+do not detect secrets embedded in ordinary source or arbitrary names: sanitize operator
+registered repositories rather than treating filename exclusions as secret discovery.

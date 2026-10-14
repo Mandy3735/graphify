@@ -1,0 +1,20 @@
+
+> jarvis-command-center@0.9.0 build
+> tsc --noEmit && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 25 modules transformed.
+rendering chunks...
+computing gzip size...
+../src/jarvis/web/index.html                   0.57 kB │ gzip:  0.34 kB
+../src/jarvis/web/sw.js                        1.17 kB
+../src/jarvis/web/assets/index-x5iDG4WD.css    4.39 kB │ gzip:  1.62 kB
+../src/jarvis/web/assets/index-Bx8O68uA.js   265.62 kB │ gzip: 81.27 kB
+
+✓ built in 705ms
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

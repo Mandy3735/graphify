@@ -141,6 +141,7 @@ async def test_body_deadline_concurrency_and_duplicate_headers(settings):
     gate.cfg.request_body_timeout = 0.01
     scope = {
         "type": "http",
+        "method": "POST",
         "scheme": "http",
         "path": "/api/chat",
         "client": ("test", 0),

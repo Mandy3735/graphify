@@ -89,3 +89,17 @@ Migration 0005 adds durable UTC provider estimate totals/call journals and voice
 identifiers. SDK adapters reserve before live calls and settle known usage once;
 uncertain attempts remain charged. Voice restart cleanup never replays creation/audio.
 Existing state, tools and exact approvals remain unchanged. See HARDENING.md.
+
+## Phase 12 context and admission boundaries
+
+Application 0.9.0 retains schema 0005 and the independent Graphify adapter. Public
+HTTP work has a separate four-request pool; safe bodyless methods never await
+inbound bodies. Shared path exclusions cover conventional credential configs during
+reads and both source staging paths; arbitrary source literals require operator hygiene.
+ContextBuilder rechecks live memory and campaign state after retrieval. A canonical
+scene fingerprint plus persistent run history cutoff withholds older derived model/tool
+content when state changes while preserving tool-call pairing and new authorized context.
+Historic owner-retained records remain available under existing retention contracts.
+GM session views filter referenced location visibility independently. Browser capture
+has a 120-second whole-lifecycle deadline; client shutdown revokes local credentials
+before best-effort device callbacks. See PHASE12_REPORT.md and root JARVIS_REVIEW.md.

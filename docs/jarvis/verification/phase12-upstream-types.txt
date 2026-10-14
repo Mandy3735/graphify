@@ -1,0 +1,12 @@
+  /workspace/graphify/tests/test_ts_receiver_member_calls.py:157:16 - error: Operator "in" not supported for types "Literal['runLocal']" and "Unknown | None"
+    Operator "in" not supported for types "Literal['runLocal']" and "None" (reportOperatorIssue)
+  /workspace/graphify/tests/test_ts_receiver_member_calls.py:157:36 - error: Operator "in" not supported for types "Literal['save']" and "Unknown | None"
+    Operator "in" not supported for types "Literal['save']" and "None" (reportOperatorIssue)
+/workspace/graphify/tests/test_validate.py
+  /workspace/graphify/tests/test_validate.py:27:34 - error: Argument of type "list[Any]" cannot be assigned to parameter "data" of type "dict[Unknown, Unknown]" in function "validate_extraction"
+    "list[Any]" is not assignable to "dict[Unknown, Unknown]" (reportArgumentType)
+/workspace/graphify/tests/test_watch.py
+  /workspace/graphify/tests/test_watch.py:1388:16 - error: Import "watchdog" could not be resolved (reportMissingImports)
+  /workspace/graphify/tests/test_watch.py:4178:10 - error: Import "watchdog" could not be resolved (reportMissingImports)
+  /workspace/graphify/tests/test_watch.py:5070:30 - error: Operator "+" not supported for "None" (reportOptionalOperand)
+618 errors, 4 warnings, 0 informations

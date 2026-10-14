@@ -1,0 +1,32 @@
+Node: ContextBuilder
+  ID:        apps_jarvis_src_jarvis_context_contextbuilder
+  Source:    apps/jarvis/src/jarvis/context.py L48
+  Type:      code
+  Community: MemoryService
+  Degree:    26
+
+Connections (26):
+  <-- Engine [uses] [INFERRED] apps/jarvis/src/jarvis/engine.py:L54
+  --> Settings [uses] [INFERRED] apps/jarvis/src/jarvis/context.py:L51
+  <-- jarvis/engine.py [imports] [EXTRACTED] apps/jarvis/src/jarvis/engine.py:L10
+  --> MemoryService [uses] [INFERRED] apps/jarvis/src/jarvis/context.py:L52
+  --> MemoryScope [uses] [INFERRED] apps/jarvis/src/jarvis/context.py:L58
+  --> ChatRequest [uses] [INFERRED] apps/jarvis/src/jarvis/context.py:L84
+  --> Actor [uses] [INFERRED] apps/jarvis/src/jarvis/context.py:L83
+  --> ToolOutput [uses] [INFERRED] apps/jarvis/src/jarvis/context.py:L72
+  --> Mode [uses] [INFERRED] apps/jarvis/src/jarvis/context.py:L97
+  --> GameMasterScope [uses] [INFERRED] apps/jarvis/src/jarvis/context.py:L103
+  --> Message [uses] [INFERRED] apps/jarvis/src/jarvis/context.py:L58
+  <-- context.py [contains] [EXTRACTED] apps/jarvis/src/jarvis/context.py:L48
+  --> MemoryConflict [uses] [INFERRED] apps/jarvis/src/jarvis/context.py:L173
+  --> .build() [method] [EXTRACTED] apps/jarvis/src/jarvis/context.py:L81
+  <-- .__init__() [calls] [EXTRACTED] apps/jarvis/src/jarvis/engine.py:L54
+  <-- test_campaign_revocation_withholds_derived_prose_and_arguments() [uses] [INFERRED] apps/jarvis/tests/test_adversarial.py:L264
+  <-- test_campaign_tool_history_cannot_replay_gm_secrets_after_revocation() [uses] [INFERRED] apps/jarvis/tests/test_adversarial.py:L123
+  <-- test_context_and_tool_results_exclude_gm_secrets_before_player_model() [uses] [INFERRED] apps/jarvis/tests/test_memory.py:L390
+  <-- test_campaign_packet_is_rechecked_after_awaited_memory_retrieval() [uses] [INFERRED] apps/jarvis/tests/test_adversarial.py:L166
+  <-- test_context_combines_five_classes_and_retains_visible_provenance() [uses] [INFERRED] apps/jarvis/tests/test_memory.py:L238
+  ... and 6 more
+  Grouped by file:
+    <-- apps/jarvis/tests/test_memory.py: 4 connections
+    --> apps/jarvis/src/jarvis/context.py: 2 connections

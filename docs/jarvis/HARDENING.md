@@ -167,3 +167,11 @@ provider billing enforcement, manual hardware/live-browser testing and full-prog
 Phase 12 adversarial acceptance remain separate work. Use PHASE11_REPORT.md for
 actual results and commands. No public deployment, live paid call or publication was
 performed by this Phase 11 task.
+
+## Phase 12 update
+
+Application 0.9.0 keeps migration 0005. Public response slots (four) no longer consume
+authenticated concurrency. GET/HEAD declared bodies and public unsupported methods
+are rejected; safe methods never await an inbound body. Other API writes retain the
+byte/deadline gates. Phase 12 review/remediation is complete within supported scope;
+production and deferred product limitations in JARVIS_REVIEW.md still apply.

@@ -81,3 +81,13 @@ maps, semantic transcript search, recap generation, richer rulesets and the visu
 GM console remain future work. Database administrators remain trusted. Production
 still needs a restricted DB role, quotas/rate limits, multi-worker coordination,
 identity/session hardening and notification/retention workers.
+
+## Phase 12 secrecy review
+
+Scene construction is refreshed after awaited retrieval. Historical scene tools are
+rebound to the current authorized packet. Any packet change conservatively withholds
+older derived model prose/tool arguments/results; a persisted history cutoff maintains
+this across later steps/resumes while allowing new authorized content. Campaign
+revocation does not erase owner-retained historical runs or recall already transmitted
+context. Hidden/retired active-location UUIDs are null in session lists/scene views.
+Session titles remain campaign-visible metadata. See root JARVIS_REVIEW.md.

@@ -268,6 +268,14 @@ class GameMasterService:
             "created_at": utc(session.created_at).isoformat(),
         }
 
+    async def _authorized_session_view(self, db_session, scope, member, row):
+        view = self._session_view(row)
+        if view and view["active_location_id"]:
+            location = await db_session.get(CampaignEntry, view["active_location_id"])
+            if location is None or not self._entry_visible(member, scope.actor.id, location):
+                view["active_location_id"] = None
+        return view
+
     async def create_campaign(self, scope: GameMasterScope, body: CampaignCreate) -> dict:
         scope.require("campaign.write")
         if body.rules_plugin not in self.rules_plugins:
@@ -619,7 +627,9 @@ class GameMasterService:
             return {
                 "trust": "UNTRUSTED_CAMPAIGN_CONTENT",
                 "campaign": self._campaign_view(campaign, member.role),
-                "session": self._session_view(current_session),
+                "session": await self._authorized_session_view(
+                    session, scope, member, current_session
+                ),
                 "entries": selected,
                 "transcript": transcript,
                 "authorized_visibilities": sorted({item["visibility"] for item in selected}),
@@ -966,14 +976,17 @@ class GameMasterService:
     async def list_sessions(self, scope: GameMasterScope, campaign_id: str) -> list[dict]:
         scope.require("campaign.read")
         async with self.db.sessions() as session:
-            await self._member(session, scope, campaign_id)
+            member = await self._member(session, scope, campaign_id)
             rows = await session.scalars(
                 select(CampaignSession)
                 .where(CampaignSession.campaign_id == campaign_id)
                 .order_by(CampaignSession.created_at.desc())
                 .limit(100)
             )
-            return [view for row in rows if (view := self._session_view(row)) is not None]
+            views = [
+                await self._authorized_session_view(session, scope, member, row) for row in rows
+            ]
+            return [view for view in views if view is not None]
 
     async def list_proposals(self, scope: GameMasterScope, campaign_id: str) -> list[dict]:
         """The cockpit needs durable proposal history; full changes are GM-only."""

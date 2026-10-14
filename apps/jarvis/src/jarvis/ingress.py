@@ -18,6 +18,7 @@ class Ingress:
         self.public: deque[float] = deque()
         self.peers: OrderedDict[str, deque[float]] = OrderedDict()
         self.active = 0
+        self.public_active = 0
 
     def allow(self, bucket: deque[float], limit: int) -> bool:
         current = time.monotonic()
@@ -81,7 +82,12 @@ class Ingress:
                 return await self.reject(send, 429, "Request budget reached")
             if api and not authenticated:
                 return await self.reject(send, 401, "Bearer authentication required")
-        if self.active >= self.cfg.concurrent_http_requests:
+        method = scope.get("method", "GET")
+        if not api and method not in {"GET", "HEAD"}:
+            return await self.reject(send, 405, "Method not allowed")
+        active = self.active if authenticated else self.public_active
+        ceiling = self.cfg.concurrent_http_requests if authenticated else 4
+        if active >= ceiling:
             return await self.reject(send, 429, "Concurrent request budget reached")
         # Audio has a dedicated wire ceiling. All other endpoints share a smaller bound.
         maximum = 2_700_000 if scope["path"] == "/api/voice/transcribe" else self.cfg.request_bytes
@@ -91,12 +97,18 @@ class Ingress:
             return await self.reject(send, 400, "Invalid content length")
         if length < 0 or length > maximum:
             return await self.reject(send, 413, "Request exceeds byte budget")
-        self.active += 1
+        bodyless = method in {"GET", "HEAD"}
+        if bodyless and (length or b"transfer-encoding" in headers):
+            return await self.reject(send, 400, "Request body not allowed")
+        if authenticated:
+            self.active += 1
+        else:
+            self.public_active += 1
         try:
             body = bytearray()
             try:
                 async with asyncio.timeout(self.cfg.request_body_timeout):
-                    while True:
+                    while not bodyless:
                         message = await receive()
                         if message["type"] == "http.disconnect":
                             return
@@ -137,4 +149,7 @@ class Ingress:
                 elif not finished:
                     await send({"type": "http.response.body", "body": b"", "more_body": False})
         finally:
-            self.active -= 1
+            if authenticated:
+                self.active -= 1
+            else:
+                self.public_active -= 1

@@ -1,0 +1,12 @@
+  --> tests/test_zero_node_no_cache.py:9:1
+   |
+8  | """
+9  +
+10 | from __future__ import annotations
+--------------------------------------------------------------------------------
+46 |     from graphify.cache import load_cached
+47 +
+48 |     assert load_cached(f, tmp_path / "out") is not None, "non-empty result should be cached"
+   |
+
+413 files would be reformatted, 159 files already formatted

@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-14",
+  "receiving_commit": "6d0b05acdc7db62256cf8134e4990dd62a390000",
+  "branch": "jarvis/phase-12-adversarial-review",
+  "application_version": "0.9.0",
+  "schema": "0005",
+  "findings_fixed": {
+    "critical": 0,
+    "high": 3,
+    "medium": 3
+  },
+  "checks": {
+    "postgres": "228 passed, 1 skipped in 54.97s",
+    "pgvector": "228 passed, 1 skipped in 53.42s",
+    "targeted": "30 passed in 4.31s",
+    "frontend": "Tests  38 passed (38)",
+    "browser": "5 passed (16.7s)",
+    "architecture": "38 passed, 1 warning in 0.37s",
+    "upstream": "9 failed, 6470 passed, 108 skipped, 1306 warnings in 192.53s (0:03:12)",
+    "jarvis_static": "Ruff lint/format and Pyright passed, 0 errors/warnings",
+    "frontend_static": "TypeScript, ESLint, Prettier and production build passed",
+    "bandit": "0 medium/high; 9 low reviewed",
+    "python_dependency_audit": "0 known vulnerabilities",
+    "npm_dependency_audit": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "upstream_static": "Ruff lint passed; 413 files need formatting; Pyright 618 errors/4 warnings remain",
+    "package": "0.9.0 wheel/sdist built and archive parity passed",
+    "caddy": "Offline adapt --validate passed",
+    "kernel": "All 13 real kernel isolation cases enabled in both final DB runs"
+  },
+  "upstream_failure_ids": [
+    "tests/test_detect.py::test_graphifyignore_hermetic_without_vcs",
+    "tests/test_hooks.py::test_no_git_repo_raises",
+    "tests/test_security.py::test_validate_url_accepts_http",
+    "tests/test_security.py::test_validate_url_accepts_https",
+    "tests/test_security.py::test_safe_fetch_returns_bytes",
+    "tests/test_security.py::test_safe_fetch_raises_on_non_2xx",
+    "tests/test_security.py::test_safe_fetch_raises_on_size_exceeded",
+    "tests/test_security.py::test_safe_fetch_text_decodes_utf8",
+    "tests/test_security.py::test_safe_fetch_text_replaces_bad_bytes"
+  ],
+  "protected_paths_unchanged": [
+    "graphify",
+    "tests",
+    "pyproject.toml",
+    "uv.lock",
+    "LICENSE",
+    "LICENSE-MIT",
+    "NOTICE",
+    "apps/jarvis/requirements.lock",
+    "apps/jarvis/migrations"
+  ],
+  "graph": {
+    "nodes": 20050,
+    "edges": 42476
+  },
+  "paid_calls": false,
+  "published": false,
+  "deployed": false,
+  "full_master_product_complete": false
+}

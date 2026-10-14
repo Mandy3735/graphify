@@ -7,7 +7,7 @@ from sqlalchemy import select, update
 
 from jarvis.budgets import BudgetExceeded, ProviderBudget
 from jarvis.config import Settings
-from jarvis.context import ContextBuilder
+from jarvis.context import ContextBuilder, scene_fingerprint
 from jarvis.db import AgentRun, AgentStep, ApprovalRequest, Database, audit, now
 from jarvis.domain import TERMINAL, TRANSITIONS, ChatRequest, Message, RunState, ToolProposal
 from jarvis.embeddings import OpenAIEmbeddingProvider, embedding_provider
@@ -184,6 +184,8 @@ class Engine:
                         request,
                         [Message.model_validate(m) for m in run.messages],
                         schemas,
+                        run.metadata_json.get("scene_fingerprint"),
+                        run.metadata_json.get("scene_history_cutoff", 0),
                     )
                     messages = built.messages
                     async with self.db.sessions.begin() as session:
@@ -196,6 +198,8 @@ class Engine:
                             "retrieved_memory_ids": [record["id"] for record in built.records],
                             "context_tokens_upper_bound": built.estimated_tokens_upper_bound,
                             "memory_omitted_for_budget": built.omitted_for_budget,
+                            "scene_fingerprint": scene_fingerprint(built.scene_packet),
+                            "scene_history_cutoff": built.scene_history_cutoff,
                             "scene_packet": (
                                 {
                                     "campaign_id": built.scene_packet["campaign"]["id"],
